@@ -1,7 +1,7 @@
 import {
   PMTiles,
 } from "pmtiles";
-import { nativeDecompress, CACHE, getSource } from "utils/pmtiles";
+import { CACHE, getSource, nativeDecompress } from "utils/pmtiles"
 
 export type tileReqParams = {
   params: {

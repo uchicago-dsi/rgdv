@@ -1,5 +1,5 @@
-import React from "react"
 import * as Slider from "@radix-ui/react-slider"
+import React from "react"
 import "./styles.css"
 export interface SliderProps {
   value: number[]
