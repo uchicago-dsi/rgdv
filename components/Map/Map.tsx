@@ -45,11 +45,11 @@ const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
   const data = datasets.map((d) => dataService.data[d]?.[id]).filter(Boolean)
 
   return (
-    <div style={{ background: "white", position: "fixed", left: x, top: y, padding:'1rem', zIndex:1001 }}>
+    <div style={{ background: "white", position: "fixed", left: x, top: y, padding: "1rem", zIndex: 1001 }}>
       {data.map((d) =>
-        Object.entries(d!).map(([k, v]) => {
+        Object.entries(d!).map(([k, v], i) => {
           return (
-            <p>
+            <p key={i}>
               {k}: {v}
             </p>
           )
@@ -131,7 +131,7 @@ export const Map = () => {
         <div className="ColorLegend">
           <h3>{currentColumnSpec?.name}</h3>
           {!!(colors.length && breaks.length) &&
-            colors.map((_, i) => <BreakText colors={colors} breaks={breaks} index={i} />)}
+            colors.map((_, i) => <BreakText key={i} colors={colors} breaks={breaks} index={i} />)}
           <p style={{ maxWidth: "35ch", fontSize: "0.75rem" }}>
             <i>
               Data source InfoGroup Refernce USA. Concentration index (HHI) includes grocery, superstore, and dollar
@@ -149,8 +149,8 @@ export const Map = () => {
               onValueChange={handleSetColumn}
             >
               <>
-                {currentDataSpec?.columns.map((c) => (
-                  <Select.Item className="SelectItem" value={c.column as string}>
+                {currentDataSpec?.columns.map((c, i) => (
+                  <Select.Item className="SelectItem" value={c.column as string} key={i}>
                     <Select.ItemText>{c.name}</Select.ItemText>
                     <Select.ItemIndicator className="SelectItemIndicator">
                       <CheckIcon />
