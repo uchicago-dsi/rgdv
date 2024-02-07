@@ -112,7 +112,7 @@ export const Map = () => {
         getFillColor: [isReady, currentColumnSpec?.column],
       },
       onHover: (info: any) => {
-        if (info?.x && info?.y) {
+        if (info?.x && info?.y && info?.object) {
           dispatch(setTooltipInfo({ x: info.x, y: info.y, id: info.object?.properties?.GEOID }))
         } else {
           dispatch(setTooltipInfo(null))
