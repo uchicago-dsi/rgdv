@@ -42,14 +42,24 @@ const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
   }
   const { x, y, id } = tooltip
   const datasets = Object.keys(dataService.data)
-  const data = datasets.map((d) => dataService.data[d]?.[id]).filter(Boolean)
+  const data = datasets.map((d) => dataService.data[d]?.[+id]).filter(Boolean)
 
   return (
-    <div style={{ background: "white", position: "fixed", left: x, top: y, padding: "1rem", zIndex: 1001 }}>
+    <div
+      style={{
+        background: "white",
+        position: "fixed",
+        left: x + 10,
+        top: y + 10,
+        pointerEvents: "none",
+        padding: "1rem",
+        zIndex: 1001,
+      }}
+    >
       {data.map((d) =>
         Object.entries(d!).map(([k, v], i) => {
           return (
-            <p key={i}>
+            <p key={i} style={{ lineHeight: 1, fontSize: 12 }}>
               {k}: {v}
             </p>
           )
@@ -102,10 +112,10 @@ export const Map = () => {
         getFillColor: [isReady, currentColumnSpec?.column],
       },
       onHover: (info: any) => {
-        if (info?.x !== -1 && info?.y !== -1) {
+        if (info?.x && info?.y) {
           dispatch(setTooltipInfo({ x: info.x, y: info.y, id: info.object?.properties?.GEOID }))
         } else {
-          // dispatch(setTooltipInfo(null))
+          dispatch(setTooltipInfo(null))
         }
       },
       lineWidthMinPixels: 1,
