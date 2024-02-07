@@ -144,8 +144,7 @@ export const Map = () => {
             colors.map((_, i) => <BreakText key={i} colors={colors} breaks={breaks} index={i} />)}
           <p style={{ maxWidth: "35ch", fontSize: "0.75rem" }}>
             <i>
-              Data source InfoGroup Refernce USA. Concentration index (HHI) includes grocery, superstore, and dollar
-              stores.
+              Data source InfoGroup Refernce USA. Concentration index (HHI) includes grocery and superstores only.
             </i>
           </p>
         </div>
