@@ -1,5 +1,11 @@
 import React from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import {
+  HamburgerMenuIcon,
+  DotFilledIcon,
+  CheckIcon,
+  ChevronRightIcon,
+} from '@radix-ui/react-icons';
 import './styles.css';
 export interface DropdownProps {
   children: React.ReactNode;  
@@ -13,7 +19,7 @@ export const DropdownMenuDemo: React.FC<DropdownProps> = ({
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button className="IconButton" aria-label="Customise options">
-          <p>Year</p>
+          <HamburgerMenuIcon />
         </button>
       </DropdownMenu.Trigger>
 

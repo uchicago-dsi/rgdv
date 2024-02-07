@@ -105,7 +105,7 @@ button {
 .IconButton {
   font-family: inherit;
   height: 35px;
-  width: 4rem;
+  width: 35px;
   display: inline-flex;
   font-weight: bold;
   align-items: center;
