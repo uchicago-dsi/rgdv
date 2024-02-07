@@ -33,15 +33,26 @@ export class DataService {
 
     this.data[config.filename] = {};
     const dataStore = this.data[config.filename]
-    P.parse(config.filename, {
+    P.parse<Record<string,any>>(config.filename, {
       download: true,
       header: true,
       dynamicTyping: true,
-      step: (row) => {
-        // @ts-ignore
-        dataStore[row.data[config.id]] = row.data;
-      },
-      complete: () => {
+      complete: (results) => {
+        const data = results.data;
+        if (!dataStore) {
+          console.error(`No data store for ${config.filename}`);
+          return;
+        }
+
+        for (let i=0; i<data.length; i++) {
+          const row = data[i];
+          if (!row?.[config.id]) {
+            console.error(`Row ${i} in ${config.filename} is missing a valid id`);
+            continue;
+          }
+          
+          dataStore[row[config.id]] = row;
+        }
         console.log("All done!");
         if (this.completeCallback) {
           this.completeCallback(config.filename);
