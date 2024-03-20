@@ -1,26 +1,14 @@
-import Map from "components/Map/Map"
+import Map from "components/Pages/Map"
 
 export const metadata = {
-  title: "Next.js Enterprise Boilerplate",
-  twitter: {
-    card: "summary_large_image",
-  },
-  openGraph: {
-    url: "https://next-enterprise.vercel.app/",
-    images: [
-      {
-        width: 1200,
-        height: 630,
-        url: "https://raw.githubusercontent.com/Blazity/next-enterprise/main/.github/assets/project-logo.png",
-      },
-    ],
-  },
+  title: "Feeding Fairness Map",
 }
 
+const ISCLIENT = typeof window !== "undefined"
 export default function Web() {
   return (
     <>
-      <Map/>
+      {ISCLIENT && <Map/>}
     </>
   )
 }

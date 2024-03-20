@@ -33,7 +33,8 @@ const GravityNoDollar: DataConfig = {
   columns: gravityColumns,
   eager: true,
   attribution: '',
-  colorScheme: 'schemePuBuGn',
+  colorScheme: 'schemeRdYlGn',
+  nBins: 9,
 }
 
 const GravityDollar: DataConfig = {
@@ -57,10 +58,10 @@ const GravityDollar: DataConfig = {
   // ]
 }
 
-export const defaultData = DollarStoreHhiConfig.filename
+export const defaultData = GravityNoDollar.filename
 
 export default [
-  GravityDollar,
+  // GravityDollar,
   GravityNoDollar,
-  DollarStoreHhiConfig
+  // DollarStoreHhiConfig
 ]
