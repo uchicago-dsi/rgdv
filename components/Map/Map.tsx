@@ -1,6 +1,6 @@
 "use client"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
-import { setCurrentColumn, setTooltipInfo, setYear } from "utils/state/map"
+import { setCurrentColumn, setCurrentData, setCurrentFilter, setTooltipInfo, setYear } from "utils/state/map"
 import { Provider, useSelector } from "react-redux"
 import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
 import GlMap, { NavigationControl, useControl } from "react-map-gl"
@@ -16,6 +16,7 @@ import { SelectMenu } from "components/Select/Select"
 import * as Select from "@radix-ui/react-select"
 import { CheckIcon } from "@radix-ui/react-icons"
 import { DataService } from "utils/data/service"
+import { Button } from "components/Button/Button"
 
 const BreakText: React.FC<{ breaks: number[]; index: number; colors: number[][] }> = ({ breaks, index, colors }) => {
   let text = ""
@@ -91,12 +92,12 @@ export const Map = () => {
   const { isReady, data, colorFunc, colors, ds, breaks, currentColumnSpec, currentDataSpec } = useDataService()
   const getElementColor = (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
     if (!isReady) {
-      return [0, 0, 0, 120]
+      return [120, 120, 120, 120]
     }
     const id = element?.properties?.GEOID
-    const d = data?.[+id]
+    const d = data?.[id]
     if (id === undefined || d === undefined) {
-      return [0, 0, 0, 120]
+      return [120, 120, 120, 120]
     }
     // @ts-ignore
     return colorFunc(d)
@@ -109,7 +110,7 @@ export const Map = () => {
       getLineColor: [192, 192, 192, 50],
       getFillColor: getElementColor,
       updateTriggers: {
-        getFillColor: [isReady, currentColumnSpec?.column],
+        getFillColor: [isReady, currentColumnSpec?.column, currentDataSpec?.filename, colorFunc],
       },
       onHover: (info: any) => {
         if (info?.x && info?.y && info?.object) {
@@ -127,13 +128,14 @@ export const Map = () => {
   ]
   const mapRef = useRef(null)
   const year = useAppSelector((state) => state.map.year)
+
+  // ACTIONS
   const dispatch = useAppDispatch()
-  const handleYearChange = (year: number) => {
-    dispatch(setYear(year))
-  }
-  const handleSetColumn = (col: string | number) => {
-    dispatch(setCurrentColumn(col))
-  }
+  const handleYearChange = (year: number) => dispatch(setYear(year)) 
+  const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col))
+  const handleChangeData = (data: string) => dispatch(setCurrentData(data))
+  const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
+
 
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}>
@@ -152,6 +154,14 @@ export const Map = () => {
       <div style={{ position: "absolute", top: "1rem", left: "1rem", zIndex: 999 }}>
         <DropdownMenuDemo>
           <>
+            <p>Choose Data</p>
+            <hr/>
+            {config.map((c, i) => (
+              <Button key={i} onClick={() => handleChangeData(c.filename)}>
+                {c.name}
+              </Button>
+            ))}
+            <hr/>
             <SelectMenu
               title="Choose a column"
               value={currentColumnSpec?.name || "Choose a column"}
@@ -168,6 +178,8 @@ export const Map = () => {
                 ))}
               </>
             </SelectMenu>
+            {/* text input */}
+            <input type="text" placeholder="Filter" onChange={(e) => handleSetFilter(e.target.value)} />
           </>
         </DropdownMenuDemo>
       </div>
