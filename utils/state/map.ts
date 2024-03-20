@@ -1,7 +1,7 @@
 "use client"
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import config from 'utils/data/config'
+import config, { defaultData } from 'utils/data/config'
 import { DataService } from 'utils/data/service'
 
 export interface MapState {
@@ -10,7 +10,8 @@ export interface MapState {
   colors: Array<Array<number>>
   completeData: Array<string>
   currentData: string,
-  currentColumn: string | number
+  currentColumn: string | number,
+  idFilter?: string,
   tooltip: {
     x: number,
     y: number,
@@ -25,9 +26,10 @@ const initialState: MapState = {
     255, 255, 255, 0
   ]],
   completeData: [],
-  currentData: 'data/concentration_metrics_wide_ds.csv',
+  currentData: defaultData,
   currentColumn: 2021,
-  tooltip: null
+  tooltip: null,
+  idFilter: undefined
 }
 
 export const mapSlice = createSlice({
@@ -35,7 +37,6 @@ export const mapSlice = createSlice({
   initialState,
   reducers: {
     setYear: (state, action: PayloadAction<number>) => {
-      console.log('setYear', action.payload)
       state.year = action.payload
     },
     setBreaks: (state, action: PayloadAction<Array<number>>) => {
@@ -62,11 +63,15 @@ export const mapSlice = createSlice({
     },
     setTooltipInfo: (state, action: PayloadAction<{x: number, y: number, id: string}|null>) => {
       state.tooltip = action.payload
-    }
-  },
+    },
+    setCurrentFilter: (state, action: PayloadAction<string>) => {
+      console.log('FITLER STATE', action.payload)
+      state.idFilter = action.payload
+    },
+  }
 })
 
 // Action creators are generated for each case reducer function
-export const { setYear, setBreaks, setColors, setCurrentColumn, setTooltipInfo } = mapSlice.actions
+export const { setYear, setBreaks, setColors, setCurrentColumn, setTooltipInfo, setCurrentData, setCurrentFilter } = mapSlice.actions
 
 export default mapSlice.reducer

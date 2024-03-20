@@ -1,4 +1,5 @@
-import defaultConfig, { DataConfig } from "./config";
+import defaultConfig from "./config";
+import { DataConfig } from "./config.types";
 import * as P from 'papaparse';
 
 export class DataService {
@@ -37,6 +38,7 @@ export class DataService {
       download: true,
       header: true,
       dynamicTyping: true,
+      fastMode: true,
       complete: (results) => {
         const data = results.data;
         if (!dataStore) {
@@ -50,8 +52,13 @@ export class DataService {
             console.error(`Row ${i} in ${config.filename} is missing a valid id`);
             continue;
           }
-          
-          dataStore[row[config.id]] = row;
+          let id = `${row[config.id]}`
+          if (id.length === 10) {
+            id = `0${id}`
+          }
+          dataStore[id] = row;
+          // @ts-ignore
+          dataStore[id]['id'] = id;
         }
         console.log("All done!");
         if (this.completeCallback) {
