@@ -1,0 +1,15 @@
+fragment PageParts on Page {
+  __typename
+  body
+  sections {
+    __typename
+    title
+    body
+  }
+}
+
+fragment PostParts on Post {
+  __typename
+  title
+  body
+}
