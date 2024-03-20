@@ -1,12 +1,13 @@
-import Map from "components/Map/Map"
+import { client } from 'tina/__generated__/client'
+import Home from "components/Pages/Home";
 
 export const metadata = {
-  title: "Next.js Enterprise Boilerplate",
+  title: "Feeding Fairness",
   twitter: {
     card: "summary_large_image",
   },
   openGraph: {
-    url: "https://next-enterprise.vercel.app/",
+    url: "https://rgdv.vercel.app",
     images: [
       {
         width: 1200,
@@ -16,11 +17,18 @@ export const metadata = {
     ],
   },
 }
+type HomePageContent = {
+  sections: Array<{
+    title: string,
+    body: string
+  }>
+}
 
-export default function Web() {
+export default async function HomePage() {
+  const pageInfo = await client.queries.page({ relativePath: 'home.mdx' })
   return (
     <>
-      <Map/>
+      <Home pageInfo={pageInfo} />
     </>
   )
 }
