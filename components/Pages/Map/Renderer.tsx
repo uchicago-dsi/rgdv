@@ -1,6 +1,8 @@
 "use client"
-import Map from "components/Map/Map"
-
+import React from "react"
+// lazy load the map
+import dynamic from "next/dynamic"
+const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 export function Renderer() {
   return (
     <>
