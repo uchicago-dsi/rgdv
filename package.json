@@ -128,6 +128,7 @@
     "@storybook/react": "^7.5.3",
     "@storybook/test-runner": "^0.15.2",
     "@storybook/testing-library": "^0.2.2",
+    "@tailwindcss/typography": "^0.5.10",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.1.2",
     "@total-typescript/ts-reset": "^0.5.1",
