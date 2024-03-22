@@ -17,7 +17,7 @@ const parseRich = (mdxContent: string) => {
   }, (f: any) => f)
 }
 
-export const getMdxContent = async (contentType: keyof typeof client.queries, relativePath: string) => {
+export const getMdxContent = async <T extends any>(contentType: keyof typeof client.queries, relativePath: string)=> {
   if (DEV) {
     const r = await client.queries[contentType]({ relativePath })
     return r
@@ -25,11 +25,14 @@ export const getMdxContent = async (contentType: keyof typeof client.queries, re
     const filepath = path.join(process.cwd(), 'content', contentType, relativePath)
     const mdxContent = fs.readFileSync(filepath, 'utf-8')
     const frontMatter = matter(mdxContent)
-    const data: any = {}
-    data[contentType] = {}
-    data[contentType].id = `content/${contentType}/${relativePath}`
-    data[contentType].__typename = contentType
-    data[contentType].body = parseRich(frontMatter.content)
+    const data: any = {
+      [contentType]: {
+        id: `content/${contentType}/${relativePath}`,
+        __typename: contentType,
+        body: parseRich(frontMatter.content)
+      }
+    }
+
     const fmData = frontMatter.data
     const dataKeys = Object.keys(fmData)
     for (let i = 0; i < dataKeys.length; i++) {
