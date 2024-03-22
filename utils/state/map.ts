@@ -54,7 +54,7 @@ export const mapSlice = createSlice({
       if (!dataConfig?.columns?.[0]) {
         return
       }
-      if (state.currentColumn === '' || !dataConfig?.columns.find(c => c.name === state.currentColumn)) {
+      if (state.currentColumn === '' || !dataConfig?.columns.find(c => c.column === state.currentColumn)) {
         state.currentColumn = dataConfig.columns[0].column
       }
     },
