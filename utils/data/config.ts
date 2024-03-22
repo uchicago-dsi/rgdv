@@ -60,7 +60,7 @@ const GravityDollar: DataConfig = {
   // ]
 }
 
-export const defaultData = DollarStoreHhiConfig.filename
+export const defaultData = GravityDollar.filename
 
 export default [
   GravityDollar,
