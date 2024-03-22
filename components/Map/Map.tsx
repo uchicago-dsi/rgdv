@@ -5,7 +5,7 @@ import { Provider, useSelector } from "react-redux"
 import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
 import GlMap, { NavigationControl, useControl } from "react-map-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
-import React, { useRef } from "react"
+import React, { useMemo, useRef } from "react"
 import { MVTLayer } from "@deck.gl/geo-layers/typed"
 import DropdownMenuDemo from "components/Dropdown/Dropdown"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
@@ -39,34 +39,49 @@ const BreakText: React.FC<{ breaks: number[]; index: number; colors: number[][] 
 
 const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
   const tooltip = useAppSelector((state) => state.map.tooltip)
-  if (!tooltip) {
+  const { x, y, id } = tooltip || {}
+
+  const data = useMemo(() => {
+    if (!id) {
+      return []
+    }
+    const output = config.map((d) => {
+      const dataOutput = {
+        "header": d.name
+      } as any
+      const data = dataService.data[d.filename]?.[id]
+      if (data) {
+        d.columns.forEach((c) => {
+          dataOutput[c.name] = data[c.column]
+        })
+      }
+      return dataOutput
+    })
+    return output
+  },[id])
+  
+  if (!x || !y || !id) {
     return null
   }
-  const { x, y, id } = tooltip
-  const datasets = Object.keys(dataService.data)
-  const data = datasets.map((d) => dataService.data[d]?.[+id]).filter(Boolean)
-
+  
   return (
     <div
+    className="shadow-md bg-white bg-opacity-90 border border-gray-200 rounded-md p-2 fixed pointer-events-none padding-4 z-[1001]"
       style={{
-        background: "white",
-        position: "fixed",
         left: x + 10,
         top: y + 10,
-        pointerEvents: "none",
-        padding: "1rem",
-        zIndex: 1001,
       }}
     >
-      {data.map((d) =>
-        Object.entries(d!).map(([k, v], i) => {
-          return (
-            <p key={i} style={{ lineHeight: 1, fontSize: 12 }}>
-              {k}: {v}
-            </p>
-          )
-        })
-      )}
+      {data.map((d) => {
+        const keys = Object.keys(d).filter(k => k !== 'header')
+        // nice skeumorphic shadow
+        return <p className="pb-2">
+          <b>{d.header}</b>
+          <ul>
+            {keys.map(k => <li>{k}: {d[k]}</li>)}
+          </ul>
+        </p>
+      })}
     </div>
   )
 }
