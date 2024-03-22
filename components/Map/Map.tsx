@@ -173,7 +173,7 @@ export const Map = () => {
       </div>
       <div className="absolute left-4 top-4 z-50">
         <DropdownMenuDemo>
-          <div className="p-4">
+          <div className="p-4 max-w-[100vw]">
             <p>Choose Data</p>
             <hr />
             {config.map((c, i) => (
@@ -199,7 +199,7 @@ export const Map = () => {
                 className="mr-2"
                 intent={c.column == currentColumnSpec?.column ? "primary" : "secondary"}
               >
-                {c.name}
+                {c.column}
               </Button>
             ))}
             {/* text input */}
