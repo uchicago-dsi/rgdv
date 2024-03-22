@@ -55,7 +55,7 @@ export const mapSlice = createSlice({
         return
       }
       if (state.currentColumn === '' || !dataConfig?.columns.find(c => c.name === state.currentColumn)) {
-        state.currentColumn = dataConfig.columns[0].name
+        state.currentColumn = dataConfig.columns[0].column
       }
     },
     setCurrentColumn: (state, action: PayloadAction<string|number>) => {
@@ -65,7 +65,6 @@ export const mapSlice = createSlice({
       state.tooltip = action.payload
     },
     setCurrentFilter: (state, action: PayloadAction<string>) => {
-      console.log('FITLER STATE', action.payload)
       state.idFilter = action.payload
     },
   }

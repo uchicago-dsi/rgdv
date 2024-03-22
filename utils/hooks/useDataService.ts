@@ -28,7 +28,6 @@ export const useDataService = () => {
   const data = ds.data[currentData]
   const isReady = completeData.includes(currentData)
 
-
   const { colorFunc, breaks, colors } = useD3Color({
     data,
     column: currentColumn,

@@ -82,6 +82,7 @@ export const useD3Color: ColorHook = ({
       }
       return innerColorFn(d[column])
     }
+
     return {
       colorFunc,
       breaks,
