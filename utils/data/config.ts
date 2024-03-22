@@ -3,12 +3,14 @@ import {
   ColumnConfig
 } from './config.types'
 
-const years = Array.from({ length: 25 }, (_, i) => 1997 + i);
+const years = [2000,2010,2020]
+
 const hhiColumns: Array<ColumnConfig> = years.map(year => ({
   name: `Concentration Index ${year}`,
   column: year,
   description: `Herfindahl-Hirschman Index for ${year}`
 }))
+
 const gravityColumns: Array<ColumnConfig> = years.map(year => ({
   name: `Gravity ${year}`,
   column: year,
@@ -58,10 +60,10 @@ const GravityDollar: DataConfig = {
   // ]
 }
 
-export const defaultData = GravityNoDollar.filename
+export const defaultData = DollarStoreHhiConfig.filename
 
 export default [
-  // GravityDollar,
+  GravityDollar,
   GravityNoDollar,
-  // DollarStoreHhiConfig
+  DollarStoreHhiConfig
 ]
