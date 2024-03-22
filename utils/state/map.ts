@@ -1,7 +1,7 @@
 "use client"
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import config, { defaultData } from 'utils/data/config'
+import config, { defaultData, defaultYear } from 'utils/data/config'
 import { DataService } from 'utils/data/service'
 
 export interface MapState {
@@ -20,14 +20,14 @@ export interface MapState {
 }
 
 const initialState: MapState = {
-  year: 2021,
+  year: defaultYear,
   breaks: [0, 1, 2, 3, 4, 5],
   colors: [[
     255, 255, 255, 0
   ]],
   completeData: [],
   currentData: defaultData,
-  currentColumn: 2021,
+  currentColumn: defaultYear,
   tooltip: null,
   idFilter: undefined
 }

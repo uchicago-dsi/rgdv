@@ -24,6 +24,7 @@ export const useDataService = () => {
   }
   const currentColumn = useAppSelector((state) => state.map.currentColumn)
   const currentDataSpec = config.find(f => f.filename == currentData)
+
   const currentColumnSpec = currentDataSpec?.columns?.find((f) => f.column === currentColumn)
   const data = ds.data[currentData]
   const isReady = completeData.includes(currentData)

@@ -96,9 +96,9 @@ export default function MapOuter() {
 
 // Viewport settings
 const INITIAL_VIEW_STATE = {
-  longitude: -122.41669,
-  latitude: 37.7853,
-  zoom: 13,
+  longitude: -98.6,
+  latitude: 39.8283,
+  zoom: 4,
   pitch: 0,
   bearing: 0,
 }
@@ -152,7 +152,7 @@ export const Map = () => {
   const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col))
   const handleChangeData = (data: string) => dispatch(setCurrentData(data))
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
-
+  console.log('currentColumnSpec', currentColumnSpec)
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}>
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
@@ -161,7 +161,7 @@ export const Map = () => {
           {!!(colors.length && breaks.length) &&
             colors.map((_, i) => <BreakText key={i} colors={colors} breaks={breaks} index={i} />)}
           <p style={{ maxWidth: "35ch", fontSize: "0.75rem" }}>
-            <i>Data source: InfoGroup Reference USA. Concentration index (HHI) includes grocery and superstores only.</i>
+            <i>{currentDataSpec?.attribution}</i>
           </p>
         </div>
       </div>
@@ -208,10 +208,11 @@ export const Map = () => {
       </div>
       <Tooltip dataService={ds} />
       <GlMap
-        hash={true}
+        // hash={true}
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         mapStyle="mapbox://styles/dhalpern/clsb432ya02pi01pf1o813uwa"
         initialViewState={INITIAL_VIEW_STATE}
+        projection={"mercator"}
         // @ts-ignore
         ref={mapRef}
         reuseMaps={true}

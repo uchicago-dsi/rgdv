@@ -6,7 +6,7 @@ import {
 const years = [2000,2010,2020]
 
 const hhiColumns: Array<ColumnConfig> = years.map(year => ({
-  name: `Concentration Index ${year}`,
+  name: `Concentration Index ${year} (No Dollar Stores)`,
   column: year,
   description: `Herfindahl-Hirschman Index for ${year}`
 }))
@@ -23,7 +23,7 @@ const DollarStoreHhiConfig: DataConfig = {
   id: 'GEOID',
   columns: hhiColumns,
   eager: true,
-  attribution: '',
+  attribution: 'Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.',
   colorScheme: 'schemeYlOrRd',
   nBins: 6,
 }
@@ -34,7 +34,7 @@ const GravityNoDollar: DataConfig = {
   id: 'GEOID',
   columns: gravityColumns,
   eager: true,
-  attribution: '',
+  attribution: 'Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.',
   colorScheme: 'schemeRdYlGn',
   nBins: 9,
 }
@@ -45,7 +45,7 @@ const GravityDollar: DataConfig = {
   id: 'GEOID',
   columns: gravityColumns,
   eager: true,
-  attribution: '',
+  attribution: 'Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.',
   colorScheme: 'schemeRdYlGn',
   nBins: 9,
   // manualBreaks: [
@@ -61,7 +61,7 @@ const GravityDollar: DataConfig = {
 }
 
 export const defaultData = GravityDollar.filename
-
+export const defaultYear = 2020
 export default [
   GravityDollar,
   GravityNoDollar,
