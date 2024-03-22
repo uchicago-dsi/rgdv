@@ -17,6 +17,7 @@ import * as Select from "@radix-ui/react-select"
 import { CheckIcon } from "@radix-ui/react-icons"
 import { DataService } from "utils/data/service"
 import { Button } from "components/Button/Button"
+import CountyFilterSelector from "components/CountyFilterSelector"
 
 const BreakText: React.FC<{ breaks: number[]; index: number; colors: number[][] }> = ({ breaks, index, colors }) => {
   let text = ""
@@ -89,7 +90,8 @@ const INITIAL_VIEW_STATE = {
 
 const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
 export const Map = () => {
-  const { isReady, data, colorFunc, colors, ds, breaks, currentColumnSpec, currentDataSpec } = useDataService()
+  const { isReady, data, colorFunc, colors, ds, breaks, currentColumnSpec, currentDataSpec, currentFilter } =
+    useDataService()
   const getElementColor = (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
     if (!isReady) {
       return [120, 120, 120, 120]
@@ -131,11 +133,10 @@ export const Map = () => {
 
   // ACTIONS
   const dispatch = useAppDispatch()
-  const handleYearChange = (year: number) => dispatch(setYear(year)) 
+  const handleYearChange = (year: number) => dispatch(setYear(year))
   const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col))
   const handleChangeData = (data: string) => dispatch(setCurrentData(data))
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
-
 
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}>
@@ -145,42 +146,49 @@ export const Map = () => {
           {!!(colors.length && breaks.length) &&
             colors.map((_, i) => <BreakText key={i} colors={colors} breaks={breaks} index={i} />)}
           <p style={{ maxWidth: "35ch", fontSize: "0.75rem" }}>
-            <i>
-              Data source InfoGroup Refernce USA. Concentration index (HHI) includes grocery and superstores only.
-            </i>
+            <i>Data source: InfoGroup Reference USA. Concentration index (HHI) includes grocery and superstores only.</i>
           </p>
         </div>
       </div>
-      <div style={{ position: "absolute", top: "1rem", left: "1rem", zIndex: 999 }}>
+      <div className="absolute top-4 left-4 z-50">
         <DropdownMenuDemo>
-          <>
+          <div className="p-4">
             <p>Choose Data</p>
-            <hr/>
+            <hr />
             {config.map((c, i) => (
-              <Button key={i} onClick={() => handleChangeData(c.filename)}>
+              <Button
+                key={i}
+                onClick={() => handleChangeData(c.filename)}
+                size="sm"
+                className="mr-2"
+                intent={c.filename == currentDataSpec?.filename ? "primary" : "secondary"}
+              >
                 {c.name}
               </Button>
             ))}
-            <hr/>
-            <SelectMenu
-              title="Choose a column"
-              value={currentColumnSpec?.name || "Choose a column"}
-              onValueChange={handleSetColumn}
-            >
-              <>
-                {currentDataSpec?.columns.map((c, i) => (
-                  <Select.Item className="SelectItem" value={c.column as string} key={i}>
-                    <Select.ItemText>{c.name}</Select.ItemText>
-                    <Select.ItemIndicator className="SelectItemIndicator">
-                      <CheckIcon />
-                    </Select.ItemIndicator>
-                  </Select.Item>
-                ))}
-              </>
-            </SelectMenu>
+
+            <hr className="my-2"/>
+            <h3>Year</h3>
+
+            {currentDataSpec?.columns.map((c, i) => (
+              <Button
+                key={i}
+                onClick={() => handleSetColumn(c.column)}
+                size="sm"
+                className="mr-2"
+                intent={c.column == currentColumnSpec?.column ? "primary" : "secondary"}
+              >
+                {c.name}
+              </Button>
+            ))}
             {/* text input */}
-            <input type="text" placeholder="Filter" onChange={(e) => handleSetFilter(e.target.value)} />
-          </>
+            <hr className="my-2"/>
+            <h3>Filter</h3>
+            <CountyFilterSelector 
+              handleSetFilter={handleSetFilter}
+              currentFilter={currentFilter}
+            />
+          </div>
         </DropdownMenuDemo>
       </div>
       <Tooltip dataService={ds} />
