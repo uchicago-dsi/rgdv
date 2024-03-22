@@ -47,7 +47,7 @@ const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
     }
     const output = config.map((d) => {
       const dataOutput = {
-        "header": d.name
+        header: d.name,
       } as any
       const data = dataService.data[d.filename]?.[id]
       if (data) {
@@ -58,29 +58,35 @@ const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
       return dataOutput
     })
     return output
-  },[id])
-  
+  }, [id])
+
   if (!x || !y || !id) {
     return null
   }
-  
+
   return (
     <div
-    className="shadow-md bg-white bg-opacity-90 border border-gray-200 rounded-md p-2 fixed pointer-events-none padding-4 z-[1001]"
+      className="padding-4 pointer-events-none fixed z-[1001] rounded-md border border-gray-200 bg-white bg-opacity-90 p-2 shadow-md"
       style={{
         left: x + 10,
         top: y + 10,
       }}
     >
-      {data.map((d) => {
-        const keys = Object.keys(d).filter(k => k !== 'header')
+      {data.map((d, i) => {
+        const keys = Object.keys(d).filter((k) => k !== "header")
         // nice skeumorphic shadow
-        return <p className="pb-2">
-          <b>{d.header}</b>
-          <ul>
-            {keys.map(k => <li>{k}: {d[k]}</li>)}
-          </ul>
-        </p>
+        return (
+          <p className="pb-2" key={i}>
+            <b>{d.header}</b>
+            <ul>
+              {keys.map((k,i) => (
+                <li key={i}>
+                  {k}: {d[k]}
+                </li>
+              ))}
+            </ul>
+          </p>
+        )
       })}
     </div>
   )
@@ -152,7 +158,7 @@ export const Map = () => {
   const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col))
   const handleChangeData = (data: string) => dispatch(setCurrentData(data))
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
-  console.log('currentColumnSpec', currentColumnSpec)
+
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}>
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
@@ -165,7 +171,7 @@ export const Map = () => {
           </p>
         </div>
       </div>
-      <div className="absolute top-4 left-4 z-50">
+      <div className="absolute left-4 top-4 z-50">
         <DropdownMenuDemo>
           <div className="p-4">
             <p>Choose Data</p>
@@ -182,7 +188,7 @@ export const Map = () => {
               </Button>
             ))}
 
-            <hr className="my-2"/>
+            <hr className="my-2" />
             <h3>Year</h3>
 
             {currentDataSpec?.columns.map((c, i) => (
@@ -197,12 +203,9 @@ export const Map = () => {
               </Button>
             ))}
             {/* text input */}
-            <hr className="my-2"/>
+            <hr className="my-2" />
             <h3>Filter</h3>
-            <CountyFilterSelector 
-              handleSetFilter={handleSetFilter}
-              currentFilter={currentFilter}
-            />
+            <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={currentFilter} />
           </div>
         </DropdownMenuDemo>
       </div>
@@ -212,6 +215,7 @@ export const Map = () => {
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         mapStyle="mapbox://styles/dhalpern/clsb432ya02pi01pf1o813uwa"
         initialViewState={INITIAL_VIEW_STATE}
+        // @ts-ignore
         projection={"mercator"}
         // @ts-ignore
         ref={mapRef}
