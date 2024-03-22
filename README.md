@@ -1,3 +1,7 @@
+## Quickstart
+`docker build --platform=linux/amd64 -t rgdv-app .`
+`docker run -v $(pwd):/app -p 3000:3000 rgdv-app`
+
 <img align="right" width="360px" height="410px" src="./.github/assets/project-logo-vertical.png">
 
 # Next.js Enterprise Boilerplate </br>  [![GitHub Actions Workflow Status][check-workflow-badge]][check-workflow-badge-link] [![GitHub License][github-license-badge]][github-license-badge-link] [![GitHub contributors][github-contributors-badge]][github-contributors-badge-link] [![Discord][discord-badge]][discord-badge-link] [![Blazity][made-by-blazity-badge]][made-by-blazity-badge-link]

@@ -12,7 +12,7 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
           <a href="/">Home</a>
         </li>
         <li>
-          <a href="/about">About</a>
+          <a href="/map">Map</a>
         </li>
         <li>
           <a href="/admin/index.html">Admin</a>
