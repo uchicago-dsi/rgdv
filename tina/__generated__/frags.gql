@@ -13,3 +13,17 @@ fragment PostParts on Post {
   title
   body
 }
+
+fragment NavParts on Nav {
+  __typename
+  links {
+    __typename
+    title
+    path
+    sublinks {
+      __typename
+      title
+      path
+    }
+  }
+}

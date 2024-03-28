@@ -85,6 +85,8 @@ export type Query = {
   pageConnection: PageConnection;
   post: Post;
   postConnection: PostConnection;
+  nav: Nav;
+  navConnection: NavConnection;
 };
 
 
@@ -138,9 +140,25 @@ export type QueryPostConnectionArgs = {
   filter?: InputMaybe<PostFilter>;
 };
 
+
+export type QueryNavArgs = {
+  relativePath?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryNavConnectionArgs = {
+  before?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<NavFilter>;
+};
+
 export type DocumentFilter = {
   page?: InputMaybe<PageFilter>;
   post?: InputMaybe<PostFilter>;
+  nav?: InputMaybe<NavFilter>;
 };
 
 export type DocumentConnectionEdges = {
@@ -180,7 +198,7 @@ export type CollectionDocumentsArgs = {
   folder?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type DocumentNode = Page | Post | Folder;
+export type DocumentNode = Page | Post | Nav | Folder;
 
 export type PageSections = {
   __typename?: 'PageSections';
@@ -260,6 +278,55 @@ export type PostConnection = Connection & {
   edges?: Maybe<Array<Maybe<PostConnectionEdges>>>;
 };
 
+export type NavLinksSublinks = {
+  __typename?: 'NavLinksSublinks';
+  title?: Maybe<Scalars['String']['output']>;
+  path?: Maybe<Scalars['String']['output']>;
+};
+
+export type NavLinks = {
+  __typename?: 'NavLinks';
+  title?: Maybe<Scalars['String']['output']>;
+  path?: Maybe<Scalars['String']['output']>;
+  sublinks?: Maybe<Array<Maybe<NavLinksSublinks>>>;
+};
+
+export type Nav = Node & Document & {
+  __typename?: 'Nav';
+  links?: Maybe<Array<Maybe<NavLinks>>>;
+  id: Scalars['ID']['output'];
+  _sys: SystemInfo;
+  _values: Scalars['JSON']['output'];
+};
+
+export type NavLinksSublinksFilter = {
+  title?: InputMaybe<StringFilter>;
+  path?: InputMaybe<StringFilter>;
+};
+
+export type NavLinksFilter = {
+  title?: InputMaybe<StringFilter>;
+  path?: InputMaybe<StringFilter>;
+  sublinks?: InputMaybe<NavLinksSublinksFilter>;
+};
+
+export type NavFilter = {
+  links?: InputMaybe<NavLinksFilter>;
+};
+
+export type NavConnectionEdges = {
+  __typename?: 'NavConnectionEdges';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<Nav>;
+};
+
+export type NavConnection = Connection & {
+  __typename?: 'NavConnection';
+  pageInfo: PageInfo;
+  totalCount: Scalars['Float']['output'];
+  edges?: Maybe<Array<Maybe<NavConnectionEdges>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addPendingDocument: DocumentNode;
@@ -270,6 +337,8 @@ export type Mutation = {
   createPage: Page;
   updatePost: Post;
   createPost: Post;
+  updateNav: Nav;
+  createNav: Nav;
 };
 
 
@@ -323,15 +392,29 @@ export type MutationCreatePostArgs = {
   params: PostMutation;
 };
 
+
+export type MutationUpdateNavArgs = {
+  relativePath: Scalars['String']['input'];
+  params: NavMutation;
+};
+
+
+export type MutationCreateNavArgs = {
+  relativePath: Scalars['String']['input'];
+  params: NavMutation;
+};
+
 export type DocumentUpdateMutation = {
   page?: InputMaybe<PageMutation>;
   post?: InputMaybe<PostMutation>;
+  nav?: InputMaybe<NavMutation>;
   relativePath?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DocumentMutation = {
   page?: InputMaybe<PageMutation>;
   post?: InputMaybe<PostMutation>;
+  nav?: InputMaybe<NavMutation>;
 };
 
 export type PageSectionsMutation = {
@@ -349,9 +432,26 @@ export type PostMutation = {
   body?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type NavLinksSublinksMutation = {
+  title?: InputMaybe<Scalars['String']['input']>;
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type NavLinksMutation = {
+  title?: InputMaybe<Scalars['String']['input']>;
+  path?: InputMaybe<Scalars['String']['input']>;
+  sublinks?: InputMaybe<Array<InputMaybe<NavLinksSublinksMutation>>>;
+};
+
+export type NavMutation = {
+  links?: InputMaybe<Array<InputMaybe<NavLinksMutation>>>;
+};
+
 export type PagePartsFragment = { __typename: 'Page', body?: any | null, sections?: Array<{ __typename: 'PageSections', title?: string | null, body?: any | null } | null> | null };
 
 export type PostPartsFragment = { __typename: 'Post', title?: string | null, body?: string | null };
+
+export type NavPartsFragment = { __typename: 'Nav', links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null };
 
 export type PageQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -391,6 +491,25 @@ export type PostConnectionQueryVariables = Exact<{
 
 export type PostConnectionQuery = { __typename?: 'Query', postConnection: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PostConnectionEdges', cursor: string, node?: { __typename: 'Post', id: string, title?: string | null, body?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
 
+export type NavQueryVariables = Exact<{
+  relativePath: Scalars['String']['input'];
+}>;
+
+
+export type NavQuery = { __typename?: 'Query', nav: { __typename: 'Nav', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null } };
+
+export type NavConnectionQueryVariables = Exact<{
+  before?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<NavFilter>;
+}>;
+
+
+export type NavConnectionQuery = { __typename?: 'Query', navConnection: { __typename?: 'NavConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'NavConnectionEdges', cursor: string, node?: { __typename: 'Nav', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null } | null } | null> | null } };
+
 export const PagePartsFragmentDoc = gql`
     fragment PageParts on Page {
   __typename
@@ -407,6 +526,21 @@ export const PostPartsFragmentDoc = gql`
   __typename
   title
   body
+}
+    `;
+export const NavPartsFragmentDoc = gql`
+    fragment NavParts on Nav {
+  __typename
+  links {
+    __typename
+    title
+    path
+    sublinks {
+      __typename
+      title
+      path
+    }
+  }
 }
     `;
 export const PageDocument = gql`
@@ -519,6 +653,61 @@ export const PostConnectionDocument = gql`
   }
 }
     ${PostPartsFragmentDoc}`;
+export const NavDocument = gql`
+    query nav($relativePath: String!) {
+  nav(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ...NavParts
+  }
+}
+    ${NavPartsFragmentDoc}`;
+export const NavConnectionDocument = gql`
+    query navConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: NavFilter) {
+  navConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+        ...NavParts
+      }
+    }
+  }
+}
+    ${NavPartsFragmentDoc}`;
 export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R>
   export function getSdk<C>(requester: Requester<C>) {
     return {
@@ -533,6 +722,12 @@ export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) 
       },
     postConnection(variables?: PostConnectionQueryVariables, options?: C): Promise<{data: PostConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PostConnectionQueryVariables, query: string}> {
         return requester<{data: PostConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PostConnectionQueryVariables, query: string}, PostConnectionQueryVariables>(PostConnectionDocument, variables, options);
+      },
+    nav(variables: NavQueryVariables, options?: C): Promise<{data: NavQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: NavQueryVariables, query: string}> {
+        return requester<{data: NavQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: NavQueryVariables, query: string}, NavQueryVariables>(NavDocument, variables, options);
+      },
+    navConnection(variables?: NavConnectionQueryVariables, options?: C): Promise<{data: NavConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: NavConnectionQueryVariables, query: string}> {
+        return requester<{data: NavConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: NavConnectionQueryVariables, query: string}, NavConnectionQueryVariables>(NavConnectionDocument, variables, options);
       }
     };
   }

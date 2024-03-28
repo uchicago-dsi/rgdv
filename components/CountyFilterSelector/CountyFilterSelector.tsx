@@ -1,9 +1,9 @@
-import CountyList from "./county_list.json"
 import React from "react"
 import type { CountyFilterSelectorProps } from "./types"
 import { SelectMenu } from "components/Select/Select"
 import * as Select from "@radix-ui/react-select"
 import { CheckboxIcon } from "@radix-ui/react-icons"
+import CountyList from "./county_list.json"
 
 export const CountyFilterSelector: React.FC<CountyFilterSelectorProps> = ({ handleSetFilter, currentFilter }) => {
   const filterState = currentFilter?.length ? currentFilter.slice(0, 2) : ""

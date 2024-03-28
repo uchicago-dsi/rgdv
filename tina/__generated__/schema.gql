@@ -57,11 +57,14 @@ type Query {
   pageConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: PageFilter): PageConnection!
   post(relativePath: String): Post!
   postConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: PostFilter): PostConnection!
+  nav(relativePath: String): Nav!
+  navConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: NavFilter): NavConnection!
 }
 
 input DocumentFilter {
   page: PageFilter
   post: PostFilter
+  nav: NavFilter
 }
 
 type DocumentConnectionEdges {
@@ -87,7 +90,7 @@ type Collection {
   documents(before: String, after: String, first: Float, last: Float, sort: String, filter: DocumentFilter, folder: String): DocumentConnection!
 }
 
-union DocumentNode = Page | Post | Folder
+union DocumentNode = Page | Post | Nav | Folder
 
 type PageSections {
   title: String
@@ -160,6 +163,50 @@ type PostConnection implements Connection {
   edges: [PostConnectionEdges]
 }
 
+type NavLinksSublinks {
+  title: String
+  path: String
+}
+
+type NavLinks {
+  title: String
+  path: String
+  sublinks: [NavLinksSublinks]
+}
+
+type Nav implements Node & Document {
+  links: [NavLinks]
+  id: ID!
+  _sys: SystemInfo!
+  _values: JSON!
+}
+
+input NavLinksSublinksFilter {
+  title: StringFilter
+  path: StringFilter
+}
+
+input NavLinksFilter {
+  title: StringFilter
+  path: StringFilter
+  sublinks: NavLinksSublinksFilter
+}
+
+input NavFilter {
+  links: NavLinksFilter
+}
+
+type NavConnectionEdges {
+  cursor: String!
+  node: Nav
+}
+
+type NavConnection implements Connection {
+  pageInfo: PageInfo!
+  totalCount: Float!
+  edges: [NavConnectionEdges]
+}
+
 type Mutation {
   addPendingDocument(collection: String!, relativePath: String!, template: String): DocumentNode!
   updateDocument(collection: String, relativePath: String!, params: DocumentUpdateMutation!): DocumentNode!
@@ -169,17 +216,21 @@ type Mutation {
   createPage(relativePath: String!, params: PageMutation!): Page!
   updatePost(relativePath: String!, params: PostMutation!): Post!
   createPost(relativePath: String!, params: PostMutation!): Post!
+  updateNav(relativePath: String!, params: NavMutation!): Nav!
+  createNav(relativePath: String!, params: NavMutation!): Nav!
 }
 
 input DocumentUpdateMutation {
   page: PageMutation
   post: PostMutation
+  nav: NavMutation
   relativePath: String
 }
 
 input DocumentMutation {
   page: PageMutation
   post: PostMutation
+  nav: NavMutation
 }
 
 input PageSectionsMutation {
@@ -195,6 +246,21 @@ input PageMutation {
 input PostMutation {
   title: String
   body: String
+}
+
+input NavLinksSublinksMutation {
+  title: String
+  path: String
+}
+
+input NavLinksMutation {
+  title: String
+  path: String
+  sublinks: [NavLinksSublinksMutation]
+}
+
+input NavMutation {
+  links: [NavLinksMutation]
 }
 
 schema {

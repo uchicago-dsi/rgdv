@@ -18,6 +18,9 @@ const parseRich = (mdxContent: string) => {
 }
 
 export const getMdxContent = async <T extends any>(contentType: keyof typeof client.queries, relativePath: string)=> {
+  console.log('DEV MODE')
+  console.log('contentType', contentType)
+  console.log('relativePath', relativePath)
   if (DEV) {
     const r = await client.queries[contentType]({ relativePath })
     return r
@@ -58,6 +61,8 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
     }
     return {
       data
+    } as {
+      data: T
     }
   }
 }

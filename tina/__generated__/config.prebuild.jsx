@@ -85,6 +85,84 @@ var post_default = {
   }
 };
 
+// tina/collections/nav.js
+var nav_default = {
+  label: "Navigation",
+  name: "nav",
+  path: "content/nav",
+  format: "mdx",
+  create: true,
+  fields: [
+    {
+      name: "links",
+      label: "Links",
+      type: "object",
+      list: true,
+      ui: {
+        itemProps: (item) => {
+          return { label: item?.title };
+        },
+        router: ({ document }) => {
+          if (document._sys.filename === "home") {
+            return `/`;
+          }
+          return void 0;
+        }
+      },
+      fields: [
+        {
+          name: "title",
+          label: "Title",
+          type: "string"
+        },
+        {
+          name: "path",
+          label: "path",
+          type: "string"
+        },
+        // subitems
+        {
+          name: "sublinks",
+          label: "Sublinks",
+          type: "object",
+          list: true,
+          ui: {
+            itemProps: (item) => {
+              return { label: item?.title };
+            },
+            router: ({ document }) => {
+              if (document._sys.filename === "home") {
+                return `/`;
+              }
+              return void 0;
+            }
+          },
+          fields: [
+            {
+              name: "title",
+              label: "Title",
+              type: "string"
+            },
+            {
+              name: "path",
+              label: "path",
+              type: "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  ui: {
+    router: ({ document }) => {
+      if (document._sys.filename === "home") {
+        return `/`;
+      }
+      return void 0;
+    }
+  }
+};
+
 // tina/config.js
 var config = defineConfig({
   clientId: "",
@@ -111,7 +189,7 @@ var config = defineConfig({
     // within the public folder
   },
   schema: {
-    collections: [page_default, post_default]
+    collections: [page_default, post_default, nav_default]
   }
 });
 var config_default = config;

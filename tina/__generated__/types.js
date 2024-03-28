@@ -23,6 +23,21 @@ export const PostPartsFragmentDoc = gql`
   body
 }
     `;
+export const NavPartsFragmentDoc = gql`
+    fragment NavParts on Nav {
+  __typename
+  links {
+    __typename
+    title
+    path
+    sublinks {
+      __typename
+      title
+      path
+    }
+  }
+}
+    `;
 export const PageDocument = gql`
     query page($relativePath: String!) {
   page(relativePath: $relativePath) {
@@ -133,6 +148,61 @@ export const PostConnectionDocument = gql`
   }
 }
     ${PostPartsFragmentDoc}`;
+export const NavDocument = gql`
+    query nav($relativePath: String!) {
+  nav(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ...NavParts
+  }
+}
+    ${NavPartsFragmentDoc}`;
+export const NavConnectionDocument = gql`
+    query navConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: NavFilter) {
+  navConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+        ...NavParts
+      }
+    }
+  }
+}
+    ${NavPartsFragmentDoc}`;
 export function getSdk(requester) {
   return {
     page(variables, options) {
@@ -146,6 +216,12 @@ export function getSdk(requester) {
     },
     postConnection(variables, options) {
       return requester(PostConnectionDocument, variables, options);
+    },
+    nav(variables, options) {
+      return requester(NavDocument, variables, options);
+    },
+    navConnection(variables, options) {
+      return requester(NavConnectionDocument, variables, options);
     }
   };
 }
