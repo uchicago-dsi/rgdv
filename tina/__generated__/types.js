@@ -26,6 +26,7 @@ export const PostPartsFragmentDoc = gql`
 export const NavPartsFragmentDoc = gql`
     fragment NavParts on Nav {
   __typename
+  title
   links {
     __typename
     title

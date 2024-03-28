@@ -175,6 +175,7 @@ type NavLinks {
 }
 
 type Nav implements Node & Document {
+  title: String
   links: [NavLinks]
   id: ID!
   _sys: SystemInfo!
@@ -193,6 +194,7 @@ input NavLinksFilter {
 }
 
 input NavFilter {
+  title: StringFilter
   links: NavLinksFilter
 }
 
@@ -260,6 +262,7 @@ input NavLinksMutation {
 }
 
 input NavMutation {
+  title: String
   links: [NavLinksMutation]
 }
 

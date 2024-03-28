@@ -293,6 +293,7 @@ export type NavLinks = {
 
 export type Nav = Node & Document & {
   __typename?: 'Nav';
+  title?: Maybe<Scalars['String']['output']>;
   links?: Maybe<Array<Maybe<NavLinks>>>;
   id: Scalars['ID']['output'];
   _sys: SystemInfo;
@@ -311,6 +312,7 @@ export type NavLinksFilter = {
 };
 
 export type NavFilter = {
+  title?: InputMaybe<StringFilter>;
   links?: InputMaybe<NavLinksFilter>;
 };
 
@@ -444,6 +446,7 @@ export type NavLinksMutation = {
 };
 
 export type NavMutation = {
+  title?: InputMaybe<Scalars['String']['input']>;
   links?: InputMaybe<Array<InputMaybe<NavLinksMutation>>>;
 };
 
@@ -451,7 +454,7 @@ export type PagePartsFragment = { __typename: 'Page', body?: any | null, section
 
 export type PostPartsFragment = { __typename: 'Post', title?: string | null, body?: string | null };
 
-export type NavPartsFragment = { __typename: 'Nav', links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null };
+export type NavPartsFragment = { __typename: 'Nav', title?: string | null, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null };
 
 export type PageQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -496,7 +499,7 @@ export type NavQueryVariables = Exact<{
 }>;
 
 
-export type NavQuery = { __typename?: 'Query', nav: { __typename: 'Nav', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null } };
+export type NavQuery = { __typename?: 'Query', nav: { __typename: 'Nav', id: string, title?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null } };
 
 export type NavConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -508,7 +511,7 @@ export type NavConnectionQueryVariables = Exact<{
 }>;
 
 
-export type NavConnectionQuery = { __typename?: 'Query', navConnection: { __typename?: 'NavConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'NavConnectionEdges', cursor: string, node?: { __typename: 'Nav', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null } | null } | null> | null } };
+export type NavConnectionQuery = { __typename?: 'Query', navConnection: { __typename?: 'NavConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'NavConnectionEdges', cursor: string, node?: { __typename: 'Nav', id: string, title?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null } | null } | null> | null } };
 
 export const PagePartsFragmentDoc = gql`
     fragment PageParts on Page {
@@ -531,6 +534,7 @@ export const PostPartsFragmentDoc = gql`
 export const NavPartsFragmentDoc = gql`
     fragment NavParts on Nav {
   __typename
+  title
   links {
     __typename
     title

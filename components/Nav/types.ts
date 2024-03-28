@@ -8,6 +8,7 @@ export type NavProps = {
     variables: any,
     data: {
       nav:{ 
+        title: string;
         links: Array<LinkSpec & {subLinks: Array<LinkSpec>}>
       }
     }

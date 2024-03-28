@@ -16,6 +16,7 @@ fragment PostParts on Post {
 
 fragment NavParts on Nav {
   __typename
+  title
   links {
     __typename
     title

@@ -9,6 +9,11 @@ export default {
   create: true,
   fields: [
     {
+      name: "title",
+      label: "Title",
+      type: "string",
+    },
+    {
       name: "links",
       label: "Links",
       type: "object",
