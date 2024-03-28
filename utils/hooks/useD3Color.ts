@@ -39,7 +39,7 @@ export const useD3Color: ColorHook = ({
     if (breaksSchema.type === "manual") {
       breaks = breaksSchema.breaks
     }
-    if (breaksSchema.type === "quantile") {
+    if (data && breaksSchema.type === "quantile") {
       let values = [];
       const keys = Object.keys(data)
       for (let i = 0; i < keys.length; i++) {

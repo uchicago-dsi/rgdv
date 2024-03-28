@@ -14,6 +14,7 @@ export const useDataService = () => {
     ds.setCompleteCallback((s) => {
       dispatch(mapSlice.actions.setComplete(s))
     })
+    ds.initData()
   }, [dispatch])
 
   const completeData = useAppSelector((state) => state.map.completeData)

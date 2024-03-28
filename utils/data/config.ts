@@ -18,7 +18,7 @@ const gravityColumns: Array<ColumnConfig> = years.map(year => ({
 }))
 
 const DollarStoreHhiConfig: DataConfig = {
-  filename: 'data/concentration_metrics_wide_ds.csv',
+  filename: 'data/concentration_metrics_wide_ds.parquet',
   name: 'Concentration Metrics',
   id: 'GEOID',
   columns: hhiColumns,
@@ -29,7 +29,7 @@ const DollarStoreHhiConfig: DataConfig = {
 }
 
 const GravityNoDollar: DataConfig = {
-  filename: 'data/gravity_no_dollar_pivoted.csv',
+  filename: 'data/gravity_no_dollar_pivoted.parquet',
   name: 'Gravity (No Dollar Stores)',
   id: 'GEOID',
   columns: gravityColumns,
@@ -41,7 +41,7 @@ const GravityNoDollar: DataConfig = {
 
 const GravityDollar: DataConfig = {
   name: 'Gravity (With Dollar Stores)',
-  filename: 'data/gravity_dollar_pivoted.csv',
+  filename: 'data/gravity_dollar_pivoted.parquet',
   id: 'GEOID',
   columns: gravityColumns,
   eager: true,
