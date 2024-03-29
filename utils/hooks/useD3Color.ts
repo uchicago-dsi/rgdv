@@ -1,9 +1,10 @@
 import * as d3 from "d3"
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import tinycolor from "tinycolor2"
+import { ds } from "utils/data/service"
 
 export type ColorHook = (props: {
-  data: any
+  table: string
   column: string | number
   colorScheme: string
   idColumn: string
@@ -25,8 +26,8 @@ export type ColorHook = (props: {
 }
 
 // @ts-ignore
-export const useD3Color: ColorHook = ({
-  data,
+export const useMapColor: ColorHook = ({
+  table,
   column,
   colorScheme,
   breaksSchema,
@@ -34,61 +35,39 @@ export const useD3Color: ColorHook = ({
   idColumn,
   currentFilter,
 }) => {
-  const out = useMemo(() => {
-    let breaks: number[] = []
-    if (breaksSchema.type === "manual") {
-      breaks = breaksSchema.breaks
-    }
-    if (data && breaksSchema.type === "quantile") {
-      let values = [];
-      const keys = Object.keys(data)
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i] as keyof typeof data
-        const row = data[key]
-        if (currentFilter?.length && row.id.startsWith(currentFilter) === false) {
-          continue
-        } 
-        values.push(row[column])
-      }
-      values = values.sort((a, b) => a - b)
-      breaks = []
-      const nBreakpoints = breaksSchema.nBins
-      for (let i = 1; i < nBreakpoints; i++) {
+  const [out, setOut] = useState<any>({
+    colorFunc: () => [120, 120, 120, 0],
+    breaks: [],
+    colors: [],
+  })
+
+  useEffect(() => {
+    const main = async () => {
+      const { colorMap, breaks, colors } = await ds.getColorValues(
+        idColumn,
+        colorScheme,
+        reversed || false,
+        column,
+        table,
         // @ts-ignore
-        breaks.push(Math.round(d3.quantileSorted(values, i / nBreakpoints) * 100) / 100)
-      }
-    }
-    // @ts-ignore
-    const nBins = breaksSchema?.nBins || breaksSchema?.breaks?.length
+        breaksSchema.nBins || 5
+      )
 
-    // @ts-ignore
-    let colors = d3[colorScheme][nBins]?.map((c) => {
-      const tc = tinycolor(c).toRgb()
-      return [tc.r, tc.g, tc.b]
-    })
-    if (reversed) {
-      colors.reverse()
-    }
-    // @ts-ignore
-    const innerColorFn = d3.scaleThreshold().domain(breaks).range(colors)
-    const colorFunc = (d: Record<string | number, any>) => {
-      const id = d.id
-      if (currentFilter?.length && id.startsWith(currentFilter) === false) {
-        return [120, 120, 120, 0]
+      const colorFunc = (_id: string | number) => {
+        const id = _id.toString()
+        if (currentFilter?.length && id.startsWith(currentFilter) === false) {
+          return [120, 120, 120, 0]
+        }
+        // @ts-ignore
+        return colorMap?.[+id] || [120, 120, 120, 0]
       }
-      const val = d[column]
-      if (val === undefined || val === null || isNaN(val)) {
-        return [120, 120, 120, 0]
-      }
-      return innerColorFn(d[column])
+      setOut({
+        colorFunc,
+        breaks,
+        colors,
+      })
     }
-
-    return {
-      colorFunc,
-      breaks,
-      colors,
-    }
-  }, [data, column, colorScheme, breaksSchema])
-
+    main()
+  }, [table, column, colorScheme, JSON.stringify(breaksSchema.type)])
   return out
 }

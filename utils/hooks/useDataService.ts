@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from "react"
 import { DataService } from "utils/data/service"
 import { mapSlice } from "utils/state/map"
 import { useAppDispatch, useAppSelector } from "utils/state/store"
-import { useD3Color } from "./useD3Color"
+import { useMapColor } from "./useD3Color"
 import config from "utils/data/config"
 
 const ds = new DataService()
@@ -30,8 +30,8 @@ export const useDataService = () => {
   const data = ds.data[currentData]
   const isReady = completeData.includes(currentData)
 
-  const { colorFunc, breaks, colors } = useD3Color({
-    data,
+  const { colorFunc, breaks, colors } = useMapColor({
+    table: currentDataSpec?.filename!,
     column: currentColumn,
     idColumn: currentDataSpec?.id || "GEOID",
     colorScheme: currentDataSpec?.colorScheme || "schemeYlOrRd",
@@ -45,8 +45,9 @@ export const useDataService = () => {
       nBins: currentDataSpec?.nBins || 5
     }
   })
-
+  
   return {
+    testfn: () => {},
     ds,
     isReady,
     data,

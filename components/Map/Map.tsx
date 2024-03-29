@@ -111,19 +111,18 @@ const INITIAL_VIEW_STATE = {
 
 const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
 export const Map = () => {
-  const { isReady, data, colorFunc, colors, ds, breaks, currentColumnSpec, currentDataSpec, currentFilter } =
+  const { isReady, data, testfn, colorFunc, colors, ds, breaks, currentColumnSpec, currentDataSpec, currentFilter } =
     useDataService()
   const getElementColor = (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
     if (!isReady) {
       return [120, 120, 120, 120]
     }
     const id = element?.properties?.GEOID
-    const d = data?.[id]
-    if (id === undefined || d === undefined) {
+    if (id === undefined) {
       return [120, 120, 120, 120]
     }
     // @ts-ignore
-    return colorFunc(d)
+    return colorFunc(id)
   }
   const layers = [
     new MVTLayer({
@@ -158,19 +157,26 @@ export const Map = () => {
   const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col))
   const handleChangeData = (data: string) => dispatch(setCurrentData(data))
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
-
+  
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}>
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
         <div className="ColorLegend">
           <h3>{currentColumnSpec?.name}</h3>
-          {!!(colors.length && breaks.length) &&
+          {!!(colors?.length && breaks?.length) &&
             colors.map((_, i) => <BreakText key={i} colors={colors} breaks={breaks} index={i} />)}
           <p style={{ maxWidth: "35ch", fontSize: "0.75rem" }}>
             <i>{currentDataSpec?.attribution}</i>
           </p>
         </div>
       </div>
+      {/* <button style={{
+        position:'fixed',
+        top: 0,
+        left: 0,
+        zIndex: 500,
+        background:'red'
+      }} onClick={testfn}>TEST FN</button> */}
       <div className="absolute left-4 top-4 z-50">
         <DropdownMenuDemo>
           <div className="p-4 max-w-[100vw]">

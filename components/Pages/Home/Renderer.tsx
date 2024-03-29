@@ -3,7 +3,7 @@ import { TinaMarkdown } from "tinacms/dist/rich-text"
 
 export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
   const sections = pageInfo.data.page.sections || []
-
+  
   return (
     <article className="prose p-4">
       <h1>Pages</h1>
