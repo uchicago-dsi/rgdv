@@ -49,11 +49,13 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
           }
           data[contentType][key].push(valueOut)
         }
-      } else {
+      } else if (typeof value === 'object'){
         data[contentType][key] = {
           ...value,
           body: parseRich(value.body)
         }
+      } else {
+        data[contentType][key] = value
       }
     }
     return {

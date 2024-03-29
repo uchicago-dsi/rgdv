@@ -8,7 +8,7 @@ export const NavRenderer: React.FC<NavProps> = ({ navInfo }) => {
   return (
     <div className="sticky bg-gray-800 p-4 text-white">
       <div className="flex justify-between">
-        {/* <h1>{navInfo.data.nav.title}</h1> */}
+        <h1>{navInfo.data.nav.title}</h1>
         <ul className="flex justify-end">
           {links.map((link, li) => (
             <li className="mr-4" key={li}>
