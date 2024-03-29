@@ -10,6 +10,7 @@ csvs = glob(path.join(data_dir, "*.csv"))
 compression = "gzip"
 for csv in csvs:
     df = pd.read_csv(csv)
+    df['GEOID'] = df['GEOID'].astype(str).str.zfill(11)
     parquet = path.splitext(csv)[0] + ".parquet"
     df.to_parquet(parquet, compression=compression)
 # %%
