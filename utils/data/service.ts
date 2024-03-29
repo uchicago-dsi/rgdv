@@ -16,6 +16,7 @@ export class DataService {
   db?: AsyncDuckDB
   baseURL: string = window.location.origin
   conn?: AsyncDuckDBConnection
+  tooltipResults: any = {}
 
   constructor(completeCallback?: (s: string) => void, config: DataConfig[] = defaultConfig) {
     this.config = config
@@ -79,27 +80,37 @@ export class DataService {
     }
   }
 
-  async runQuery(query: string) {
+  async runQuery(query: string, freshConn?: boolean) {
     await this.initDb()
     try {
-      return await runQuery({
-        conn: this.conn!,
+      const conn = freshConn ? await this.db!.connect() : this.conn!
+      const r =  await runQuery({
+        conn,
         query,
       })
+      if (freshConn) {
+        await conn.close()
+      }
+      return r
     } catch (e) {
       console.error(e)
       return []
     }
   }
-  async getQuantiles(column: string | number, table: string, n: number): Promise<Array<number>> {
+  async getQuantiles(column: string | number, table: string, n: number, idCol: string, filter?: string): Promise<Array<number>> {
     // breakpoints to use for quantile breaks
     // eg. n=5 - 0.2, 0.4, 0.6, 0.8 - 4 breaks
     // eg. n=4 - 0.25, 0.5, 0.75 - 3 breaks
     const quantileFractions = Array.from({ length: n - 1 }, (_, i) => (i + 1) / n)
-    const query = `SELECT 
+    let query = `SELECT 
       ${quantileFractions.map((f, i) => `approx_quantile("${column}", ${f}) as break${i}`)}
-      FROM ${this.getFromQueryString(table)};
+      FROM ${this.getFromQueryString(table)}
     `
+    if (filter) {
+      query += ` WHERE "${idCol}" LIKE '${filter}%';`
+    } else {
+      query += ";"
+    }
     const result = await this.runQuery(query)
     if (!result || result.length === 0) {
       console.error(`No results for quantile query: ${query}`)
@@ -114,7 +125,8 @@ export class DataService {
     reversed: boolean,
     column: string | number,
     table: string,
-    n: number
+    n: number,
+    filter?: string
   ) {
     // @ts-ignore
     const d3Colors = d3[colorScheme]?.[n]
@@ -133,15 +145,21 @@ export class DataService {
     if (reversed) {
       rgbColors.reverse()
     }
-    const quantiles = await this.getQuantiles(column, table, n)
-    const query = `
+    const quantiles = await this.getQuantiles(column, table, n, idColumn, filter)
+    let query = `
       SELECT "${column}", "${idColumn}",
       CASE 
         ${quantiles.map((q, i) => `WHEN "${column}" < ${q} THEN [${rgbColors[i]}]`).join("\n")}
+        WHEN "${column}" IS NULL THEN [120,120,120,0]
         ELSE [${rgbColors[rgbColors.length - 1]}]
         END as color
-        FROM ${this.getFromQueryString(table)};
+        FROM ${this.getFromQueryString(table)}
     `
+    if (filter) {
+      query += ` WHERE "${idColumn}" LIKE '${filter}%';`
+    } else {
+      query += ";"
+    }
     // @ts-ignore
     const colorValues = await this.runQuery(query)
     const colorMap = {}
@@ -156,41 +174,40 @@ export class DataService {
     }
   }
 
-  ingestData(data: Array<any>, config: DataConfig, dataStore: any) {
-    console.log(config, data[0])
-    for (let i = 0; i < data.length; i++) {
-      const row = data[i]
-      if (!row?.[config.id]) {
-        console.error(`Row ${i} in ${config.filename} is missing a valid id`)
+  async getTooltipValues(
+    id: string
+  ) {
+    if (this.tooltipResults[id]) {
+      return this.tooltipResults[id]
+    }
+    let data: any[] = []
+    for (let i = 0; i < this.config.length; i++) {
+      const c = this.config[i]
+      if (!c) {
         continue
       }
-      let id = `${row[config.id]}`
-      // if (id.length === 10) {
-      //   id = `0${id}`
-      // }
-      dataStore[id] = {
-        ...row,
-        id,
+
+      const query = `SELECT "${c.columns.map(spec => spec.column).join('","')}" FROM ${this.getFromQueryString(c.filename)} WHERE "${c.id}" = '${id}'`
+      const result = await this.runQuery(query, true)
+      data.push(result[0])
+    }
+    const mappedTooltipContent = this.config.map((c,i) => {
+      const dataOutput = {
+      header: c.name,
       }
-      // @ts-ignore
-    }
-    console.log("All done!")
-    if (this.completeCallback) {
-      this.completeCallback(config.filename)
-    }
-    this.complete.push(config.filename)
-  }
-  async fetchData(config: DataConfig) {
-    if (this.complete.includes(config.filename)) {
-      return
-    }
-    await this.initDb()
-    const dataStore = this.data[config.filename]
-    if (this.data[config.filename]) {
-      // console.error(`Data store already exists for ${config.filename}`);
-      return
-    }
-    this.data[config.filename] = {}
+      if (!data[i]) {
+        return dataOutput
+      }
+      const columns = JSON.parse(JSON.stringify(data![i]))
+      if (columns) {
+        c.columns.forEach((col) => {
+          // @ts-ignore
+          dataOutput[col.name] = columns[col.column]
+        })
+      }
+      return dataOutput
+    })
+    this.tooltipResults[id] = mappedTooltipContent
   }
 
   setCompleteCallback(cb: (s: string) => void) {

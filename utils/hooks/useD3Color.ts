@@ -1,3 +1,4 @@
+import { current } from "@reduxjs/toolkit"
 import * as d3 from "d3"
 import { useEffect, useMemo, useState } from "react"
 import tinycolor from "tinycolor2"
@@ -36,7 +37,7 @@ export const useMapColor: ColorHook = ({
   currentFilter,
 }) => {
   const [out, setOut] = useState<any>({
-    colorFunc: () => [120, 120, 120, 0],
+    colorFunc: () => [0, 0, 0, 0],
     breaks: [],
     colors: [],
   })
@@ -50,16 +51,16 @@ export const useMapColor: ColorHook = ({
         column,
         table,
         // @ts-ignore
-        breaksSchema.nBins || 5
+        breaksSchema.nBins || 5,
+        currentFilter
       )
-
       const colorFunc = (_id: string | number) => {
         const id = _id.toString()
         if (currentFilter?.length && id.startsWith(currentFilter) === false) {
           return [120, 120, 120, 0]
         }
         // @ts-ignore
-        return colorMap?.[+id] || [120, 120, 120, 0]
+        return colorMap?.[id] || [120, 120, 120, 0]
       }
       setOut({
         colorFunc,
@@ -68,6 +69,6 @@ export const useMapColor: ColorHook = ({
       })
     }
     main()
-  }, [table, column, colorScheme, JSON.stringify(breaksSchema.type)])
+  }, [table, column, colorScheme, JSON.stringify(breaksSchema.type), currentFilter])
   return out
 }

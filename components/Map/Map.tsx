@@ -5,7 +5,7 @@ import { Provider, useSelector } from "react-redux"
 import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
 import GlMap, { NavigationControl, useControl } from "react-map-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
-import React, { useMemo, useRef } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { MVTLayer } from "@deck.gl/geo-layers/typed"
 import DropdownMenuDemo from "components/Dropdown/Dropdown"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
@@ -40,27 +40,22 @@ const BreakText: React.FC<{ breaks: number[]; index: number; colors: number[][] 
 const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
   const tooltip = useAppSelector((state) => state.map.tooltip)
   const { x, y, id } = tooltip || {}
+  // @ts-ignore
+  const data = dataService.tooltipResults[id]
+  const [_updateTrigger, setUpdateTrigger] = useState<boolean>(true)
 
-  const data = useMemo(() => {
-    if (!id) {
-      return []
-    }
-    const output = config.map((d) => {
-      const dataOutput = {
-        header: d.name,
-      } as any
-      const data = dataService.data[d.filename]?.[id]
-      if (data) {
-        d.columns.forEach((c) => {
-          dataOutput[c.name] = data[c.column]
-        })
+  useEffect(() => {
+    const main = async () => {
+      if (!id) {
+        return
       }
-      return dataOutput
-    })
-    return output
+      const tooltipData = await dataService.getTooltipValues(id)
+      setUpdateTrigger((v) => !v)
+    }
+    main()
   }, [id])
 
-  if (!x || !y || !id) {
+  if (!x || !y) {
     return null
   }
 
@@ -72,22 +67,26 @@ const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
         top: y + 10,
       }}
     >
-      {data.map((d, i) => {
-        const keys = Object.keys(d).filter((k) => k !== "header")
-        // nice skeumorphic shadow
-        return (
-          <p className="pb-2" key={i}>
-            <b>{d.header}</b>
-            <ul>
-              {keys.map((k,i) => (
-                <li key={i}>
-                  {k}: {d[k]}
-                </li>
-              ))}
-            </ul>
-          </p>
-        )
-      })}
+      {/* @ts-ignore */}
+      {data ? (
+        data.map((d: any, i: number) => {
+          const keys = Object.keys(d).filter((k) => k !== "header")
+          return (
+            <p className="pb-2" key={i}>
+              <b>{d.header}</b>
+              <ul>
+                {keys.map((k, i) => (
+                  <li key={i}>
+                    {k}: {d[k]}
+                  </li>
+                ))}
+              </ul>
+            </p>
+          )
+        })
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   )
 }
@@ -134,8 +133,12 @@ export const Map = () => {
       updateTriggers: {
         getFillColor: [isReady, currentColumnSpec?.column, currentDataSpec?.filename, colorFunc],
       },
+      onClick: (info: any) => {
+        console.log(info)
+      },
       onHover: (info: any) => {
-        if (info?.x && info?.y && info?.object) {
+        const isFiltered = currentFilter && info.object?.properties?.GEOID?.startsWith(currentFilter) === false
+        if (info?.x && info?.y && info?.object && !isFiltered) {
           dispatch(setTooltipInfo({ x: info.x, y: info.y, id: info.object?.properties?.GEOID }))
         } else {
           dispatch(setTooltipInfo(null))
@@ -157,7 +160,7 @@ export const Map = () => {
   const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col))
   const handleChangeData = (data: string) => dispatch(setCurrentData(data))
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
-  
+
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}>
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
@@ -170,16 +173,9 @@ export const Map = () => {
           </p>
         </div>
       </div>
-      {/* <button style={{
-        position:'fixed',
-        top: 0,
-        left: 0,
-        zIndex: 500,
-        background:'red'
-      }} onClick={testfn}>TEST FN</button> */}
       <div className="absolute left-4 top-4 z-50">
         <DropdownMenuDemo>
-          <div className="p-4 max-w-[100vw]">
+          <div className="max-w-[100vw] p-4">
             <p>Choose Data</p>
             <hr />
             {config.map((c, i) => (
