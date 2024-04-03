@@ -18,6 +18,7 @@ import { CheckIcon } from "@radix-ui/react-icons"
 import { DataService } from "utils/data/service"
 import { Button } from "components/Button/Button"
 import CountyFilterSelector from "components/CountyFilterSelector"
+import { zeroPopTracts } from "utils/zeroPopTracts"
 
 const BreakText: React.FC<{ breaks: number[]; index: number; colors: number[][] }> = ({ breaks, index, colors }) => {
   let text = ""
@@ -124,6 +125,9 @@ export const Map = () => {
     if (!isReady) {
       return [120, 120, 120, 120]
     }
+    if (zeroPopTracts.indexOf(element?.properties?.GEOID) !== -1){
+      return [0, 0, 0, 0]
+    }
     const id = element?.properties?.GEOID
     if (id === undefined) {
       return [120, 120, 120, 120]
@@ -145,8 +149,10 @@ export const Map = () => {
         console.log(info)
       },
       onHover: (info: any) => {
+        console.log(info.object?.properties?.GEOID)
+        const isZeroPop = zeroPopTracts.indexOf(info.object?.properties?.GEOID) !== -1
         const isFiltered = currentFilter && info.object?.properties?.GEOID?.startsWith(currentFilter) === false
-        if (info?.x && info?.y && info?.object && !isFiltered) {
+        if (info?.x && info?.y && info?.object && !isFiltered && !isZeroPop) {
           dispatch(setTooltipInfo({ x: info.x, y: info.y, id: info.object?.properties?.GEOID }))
         } else {
           dispatch(setTooltipInfo(null))
