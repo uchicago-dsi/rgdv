@@ -8,7 +8,6 @@ import * as duckdb from "@duckdb/duckdb-wasm"
 import { AsyncDuckDB, DuckDBBundle } from "@duckdb/duckdb-wasm"
 import Worker from "web-worker"
 import path from "path"
-import { useEffect, useState } from "react"
 
 const ENABLE_DUCK_LOGGING = false
 
@@ -117,18 +116,6 @@ export async function loadParquet<T>(path: string): Promise<T[]> {
     db,
     query: `select * from read_parquet('${path}')`,
   })
-}
-
-/**
- * Hook for loading a parquet file or URL; starts out `null`, gets populated asynchronously
- */
-export function useParquet<T>(url?: string): T[] | null {
-  const [data, setData] = useState<T[] | null>(null)
-  useEffect(() => {
-    if (!url) return
-    loadParquet<T>(url).then((data) => setData(data))
-  }, [])
-  return data
 }
 
 /**
