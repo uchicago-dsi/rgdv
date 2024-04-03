@@ -103,7 +103,7 @@ export class DataService {
     // eg. n=4 - 0.25, 0.5, 0.75 - 3 breaks
     const quantileFractions = Array.from({ length: n - 1 }, (_, i) => (i + 1) / n)
     let query = `SELECT 
-      ${quantileFractions.map((f, i) => `approx_quantile("${column}", ${f}) as break${i}`)}
+      ${quantileFractions.map((f, i) => `round(approx_quantile("${column}", ${f}), 3) as break${i}`)}
       FROM ${this.getFromQueryString(table)}
     `
     if (filter) {

@@ -17,6 +17,17 @@ const gravityColumns: Array<ColumnConfig> = years.map(year => ({
   description: `Gravity for ${year}`
 }))
 
+const sdohCols: Array<ColumnConfig> = ['LQ_White_Alone', 'LQ_Black_Alone', 'LQ_API_Alone', 'LQ_Hispanic',
+'LQ_NH_White_Alone', 'ICE_Black_Alone_White_Alone',
+'ICE_API_Alone_White_Alone', 'ICE_Hispanic_NH_White_Alone',
+'Lex_Is_Black_Alone_White_Alone', 'Lex_Is_API_Alone_White_Alone',
+'Lex_Is_Hispanic_NH_White_Alone', 'LIS_White_Alone', 'LIS_Black_Alone',
+'LIS_API_Alone', 'LIS_Hispanic', 'LIS_NH_White_Alone'].map(col => ({
+  name: col,
+  column: col,
+  description: `Segregation factor for ${col}`
+}))
+
 const DollarStoreHhiConfig: DataConfig = {
   filename: 'data/concentration_metrics_wide_ds.parquet',
   name: 'Concentration Metrics',
@@ -60,10 +71,22 @@ const GravityDollar: DataConfig = {
   // ]
 }
 
+const SdohData: DataConfig = {
+  filename: 'data/sdoh.parquet',
+  name: 'Segregation Factors',
+  id: 'GEOID',
+  columns: sdohCols,
+  eager: true,
+  attribution: 'Data source: NIH NCI.',
+  colorScheme: 'schemeBlues',
+  nBins: 5,
+}
+
 export const defaultData = GravityDollar.filename
 export const defaultYear = 2020
 export default [
   GravityDollar,
   GravityNoDollar,
-  DollarStoreHhiConfig
+  DollarStoreHhiConfig,
+  SdohData
 ]

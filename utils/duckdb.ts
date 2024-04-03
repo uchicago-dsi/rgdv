@@ -132,13 +132,13 @@ export async function parquetBuf2json<T>(bytes: number[] | Uint8Array, table: st
   })
 }
 
-/**
- * Hook for converting a Parquet byte array to records
- */
-export function useParquetBuf<T>(bytes: number[] | Uint8Array, table: string): T[] | null {
-  const [data, setData] = useState<T[] | null>(null)
-  useEffect(() => {
-    parquetBuf2json<T>(bytes, table).then((data) => setData(data))
-  }, [])
-  return data
-}
+// /**
+//  * Hook for converting a Parquet byte array to records
+//  */
+// export function useParquetBuf<T>(bytes: number[] | Uint8Array, table: string): T[] | null {
+//   const [data, setData] = useState<T[] | null>(null)
+//   useEffect(() => {
+//     parquetBuf2json<T>(bytes, table).then((data) => setData(data))
+//   }, [])
+//   return data
+// }
