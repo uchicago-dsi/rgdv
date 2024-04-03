@@ -20,14 +20,30 @@ import { Button } from "components/Button/Button"
 import CountyFilterSelector from "components/CountyFilterSelector"
 import { zeroPopTracts } from "utils/zeroPopTracts"
 
+const formatNumber = (n: number) => {
+  if (typeof n == 'number') {
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'decimal',
+      notation: 'compact',
+      maximumFractionDigits: 2,
+    })
+    return formatter.format(n)
+  } else {
+    return n 
+  }
+}
+
 const BreakText: React.FC<{ breaks: number[]; index: number; colors: number[][] }> = ({ breaks, index, colors }) => {
   let text = ""
   if (index === 0) {
-    text = `<${breaks[0]}`
+    // @ts-ignore
+    text = `< ${formatNumber(breaks[0])}`
   } else if (index === breaks.length) {
-    text = `>${breaks[breaks.length - 1]}`
+    // @ts-ignore
+    text = `> ${formatNumber(breaks[breaks.length - 1])}`
   } else {
-    text = `${breaks[index - 1]}-${breaks[index]}`
+    // @ts-ignore
+    text = `${formatNumber(breaks[index - 1])} - ${formatNumber(breaks[index])}`
   }
   return (
     <div className="ColorRow">
