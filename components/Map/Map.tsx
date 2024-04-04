@@ -11,6 +11,7 @@ import { GeoJsonLayer, ScatterplotLayer} from "@deck.gl/layers/typed"
 import DropdownMenuDemo from "components/Dropdown/Dropdown"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { useDataService } from "utils/hooks/useDataService"
+import { ScaleControl } from "react-map-gl"
 import "./styles.css"
 import config from "utils/data/config"
 import { SelectMenu } from "components/Select/Select"
@@ -314,6 +315,7 @@ export const Map = () => {
         ref={mapRef}
         reuseMaps={true}
       >
+        <ScaleControl unit="imperial" />
         <NavigationControl />
         <DeckGLOverlay layers={layers} interleaved={true} />
       </GlMap>

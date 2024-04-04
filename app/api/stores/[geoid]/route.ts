@@ -1,7 +1,8 @@
 "use server"
 import path from "path";
 import fs from "fs";
-import { unpack } from 'msgpackr';
+import { unpack, UnpackrStream } from 'msgpackr';
+import nodeFetch from "node-fetch";
 
 export type ReqParams = {
   params: {
@@ -14,15 +15,16 @@ const isochorones: Record<string, Record<string, {geometry:any}>> = {}
 const getIsochrone = async (geoid: string) => {
   const state =  geoid.slice(0, 2)
   if (isochorones[state] === undefined) {
-    const isochroneFile = path.join(process.cwd(), "public", "data", "isochrones", `isochrones${state}.msgpack`)
-    const buffer = fs.readFileSync(isochroneFile)
-    let data = unpack(buffer);
+    const r = await nodeFetch(`${process.env.DATA_ENDPOINT}isochrones/isochrones${state}.msgpack`)
+    const buffer = await r.arrayBuffer()
+    const dataBuffer = Buffer.from(buffer)
+    let data = unpack(dataBuffer);
     isochorones[state] = data
   }
   return isochorones[state]![geoid]
 }
 
-export async function GET(request: Request, reqParams: ReqParams) {
+export async function GET(_req: Request, reqParams: ReqParams) {
   const geoid = reqParams.params.geoid
   if (!geoid || geoid == 'null') {
     return new Response("Not found", { status: 404 });
