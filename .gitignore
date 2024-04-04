@@ -35,3 +35,4 @@ yarn-error.log*
 /.npm-only-allow
 .env
 package.json
+public/data/___*
