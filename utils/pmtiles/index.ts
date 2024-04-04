@@ -27,7 +27,7 @@ export async function nativeDecompress(
 
 export const CACHE = new ResolvedValueCache(25, undefined, nativeDecompress); 
 
-const PMTILES_ENDPOINT = process.env.PMTILES_ENDPOINT!
+const PMTILES_ENDPOINT = process.env.DATA_ENDPOINT
 
 const sources: Record<string, FetchSource> = {}
 
