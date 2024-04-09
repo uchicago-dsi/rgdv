@@ -17,10 +17,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        skeu: '0 2px 4px rgba(0, 0, 0, 0.2), inset 0 -1px 2px rgba(0, 0, 0, 0.1)',
+      },
       colors: {
         ...blackA,
         ...mauve,
         ...violet,
+        canvas: '#F7EEC1',
         primary: {
           50: "#eff6ff",
           100: "#dbeafe",
