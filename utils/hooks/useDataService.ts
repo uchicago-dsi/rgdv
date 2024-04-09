@@ -29,20 +29,24 @@ export const useDataService = () => {
   const currentColumnSpec = currentDataSpec?.columns?.find((f) => f.column === currentColumn)
   const data = ds.data[currentData]
   const isReady = completeData.includes(currentData)
-
+  const manualBreaks = currentColumnSpec?.manualBreaks || currentDataSpec?.manualBreaks
+  const colorScheme = currentColumnSpec?.colorScheme || currentDataSpec?.colorScheme || "schemeYlOrRd"
+  const reversed = currentColumnSpec?.reversed || currentDataSpec?.reversed || false
+  const nBins = currentColumnSpec?.nBins || currentDataSpec?.nBins || 5
+  
   const { colorFunc, breaks, colors } = useMapColor({
     table: currentDataSpec?.filename!,
     column: currentColumn,
     idColumn: currentDataSpec?.id || "GEOID",
-    colorScheme: currentDataSpec?.colorScheme || "schemeYlOrRd",
-    reversed: currentDataSpec?.reversed || false,
+    colorScheme,
+    reversed,
     currentFilter,
-    breaksSchema: currentDataSpec?.manualBreaks ? {
+    breaksSchema: manualBreaks ? {
       type: "manual",
-      breaks: currentDataSpec.manualBreaks
+      breaks: manualBreaks
     } : {
       type: "quantile",
-      nBins: currentDataSpec?.nBins || 5
+      nBins
     }
   })
   

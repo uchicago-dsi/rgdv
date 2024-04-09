@@ -33,6 +33,8 @@ const yostCols: Array<ColumnConfig> = ["Yost_Overall_Quintile", "Yost_State_Quin
   name: col,
   column: col,
   description: `Yost Segregation factor for ${col}`,
+  colorScheme: "schemeOranges",
+  reversed: true,
 }))
 
 const DollarStoreHhiConfig: DataConfig = {
@@ -82,27 +84,15 @@ const SdohData: DataConfig = {
   filename: "data/sdoh.parquet",
   name: "Segregation Factors",
   id: "GEOID",
-  columns: sdohCols,
+  columns: [...sdohCols, ...yostCols],
   eager: true,
   attribution: "Data source: NIH NCI.",
   colorScheme: "schemeBlues",
   nBins: 5,
 }
 
-const YostData: DataConfig = {
-  filename: "data/sdoh.parquet",
-  name: "Yost Quintile Factors",
-  id: "GEOID",
-  columns: yostCols,
-  eager: true,
-  attribution: "Data source: NIH NCI.",
-  colorScheme: "schemeOranges",
-  reversed: true,
-  nBins: 5,
-}
 
 export const defaultData = GravityDollar.filename
 export const defaultYear = 2020
 export default [GravityDollar, GravityNoDollar, DollarStoreHhiConfig, SdohData, 
-  // YostData
 ]

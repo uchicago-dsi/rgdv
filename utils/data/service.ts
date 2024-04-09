@@ -97,6 +97,22 @@ export class DataService {
       return []
     }
   }
+
+  async getUniqueValues(column: string | number, table: string, idCol: string, filter?: string): Promise<Array<number>> {
+    let query = `SELECT DISTINCT "${column}" FROM ${this.getFromQueryString(table)}`
+    if (filter) {
+      query += ` WHERE "${idCol}" LIKE '${filter}%';`
+    } else {
+      query += ";"
+    }
+    const result = await this.runQuery(query)
+    if (!result || result.length === 0) {
+      console.error(`No results for quantile query: ${query}`)
+      return []
+    }
+    // @ts-ignore
+    return Object.values(result[0]) as Array<number>
+  }
   async getQuantiles(column: string | number, table: string, n: number, idCol: string, filter?: string): Promise<Array<number>> {
     // breakpoints to use for quantile breaks
     // eg. n=5 - 0.2, 0.4, 0.6, 0.8 - 4 breaks
@@ -126,7 +142,8 @@ export class DataService {
     column: string | number,
     table: string,
     n: number,
-    filter?: string
+    filter?: string,
+    range?: "continuous" | "categorical"
   ) {
     // @ts-ignore
     const d3Colors = d3[colorScheme]?.[n]
@@ -145,16 +162,31 @@ export class DataService {
     if (reversed) {
       rgbColors.reverse()
     }
-    const quantiles = await this.getQuantiles(column, table, n, idColumn, filter)
-    let query = `
+    const values = range === 'categorical'
+      ? await this.getUniqueValues(column, table, idColumn, filter) 
+      : await this.getQuantiles(column, table, n, idColumn, filter)
+
+    let query = ``
+    if (!range || range === "continuous") {
+      query += `
       SELECT "${column}", "${idColumn}",
       CASE 
-        ${quantiles.map((q, i) => `WHEN "${column}" < ${q} THEN [${rgbColors[i]}]`).join("\n")}
+        ${values.map((q, i) => `WHEN "${column}" < ${q} THEN [${rgbColors[i]}]`).join("\n")}
+        WHEN "${column}" IS NULL THEN [120,120,120,0]
+        ELSE [${rgbColors[rgbColors.length - 1]}]
+        END as color
+        FROM ${this.getFromQueryString(table)}
+    `} else { 
+      query += `
+      SELECT "${column}", "${idColumn}",
+      CASE 
+        ${values.map((q, i) => `WHEN "${column}" = ${q} THEN [${rgbColors[i]}]`).join("\n")}
         WHEN "${column}" IS NULL THEN [120,120,120,0]
         ELSE [${rgbColors[rgbColors.length - 1]}]
         END as color
         FROM ${this.getFromQueryString(table)}
     `
+    }
     if (filter) {
       query += ` WHERE "${idColumn}" LIKE '${filter}%';`
     } else {
@@ -169,7 +201,7 @@ export class DataService {
     }
     return {
       colorMap,
-      breaks: quantiles,
+      breaks: values,
       colors: rgbColors,
     }
   }
@@ -186,7 +218,9 @@ export class DataService {
       if (!c) {
         continue
       }
-
+      if (!c.columns?.length) {
+        continue
+      }
       const query = `SELECT "${c.columns.map(spec => spec.column).join('","')}" FROM ${this.getFromQueryString(c.filename)} WHERE "${c.id}" = '${id}'`
       const result = await this.runQuery(query, true)
       data.push(result[0])

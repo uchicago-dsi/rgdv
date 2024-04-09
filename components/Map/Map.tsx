@@ -1,24 +1,22 @@
 "use client"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
 import { setCurrentColumn, setCurrentData, setCurrentFilter, setTooltipInfo, setYear } from "utils/state/map"
-import { Provider, useSelector } from "react-redux"
+import { Provider } from "react-redux"
 import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
 import GlMap, { NavigationControl, useControl } from "react-map-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { MVTLayer } from "@deck.gl/geo-layers/typed"
-import { GeoJsonLayer, ScatterplotLayer} from "@deck.gl/layers/typed"
+import { GeoJsonLayer, ScatterplotLayer } from "@deck.gl/layers/typed"
 import DropdownMenuDemo from "components/Dropdown/Dropdown"
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { useDataService } from "utils/hooks/useDataService"
 import { ScaleControl } from "react-map-gl"
 import "./styles.css"
 import config from "utils/data/config"
 import { SelectMenu } from "components/Select/Select"
+import { CheckboxIcon } from "@radix-ui/react-icons"
 import * as Select from "@radix-ui/react-select"
-import { CheckIcon } from "@radix-ui/react-icons"
 import { DataService } from "utils/data/service"
-import { Button } from "components/Button/Button"
 import CountyFilterSelector from "components/CountyFilterSelector"
 import { zeroPopTracts } from "utils/zeroPopTracts"
 
@@ -156,8 +154,8 @@ export const Map = () => {
         })
       }
       const res = await fetch(`/api/stores/${clickedGeo.geoid}`)
-      const data = await res.json() as any
-      console.log('data', data)
+      const data = (await res.json()) as any
+      console.log("data", data)
       setClickedGeo((prev: any) => ({
         geoid: prev.geoid,
         geometry: data.geometry,
@@ -186,7 +184,7 @@ export const Map = () => {
   const layers = [
     new GeoJsonLayer({
       // @ts-ignore
-      data: JSON.parse(clickedGeo?.geometry || '[]'),
+      data: JSON.parse(clickedGeo?.geometry || "[]"),
       filled: true,
       stroked: true,
       pickable: false,
@@ -198,7 +196,7 @@ export const Map = () => {
       data: clickedGeo?.centroid ? [clickedGeo.centroid] : [],
       getRadius: 5,
       radiusUnits: "pixels",
-      getPosition: (d: [number,number]) => [d[1],d[0]],
+      getPosition: (d: [number, number]) => [d[1], d[0]],
       getFillColor: [0, 0, 255, 255],
       pickable: false,
     }),
@@ -213,8 +211,8 @@ export const Map = () => {
         getFillColor: [isReady, currentColumnSpec?.column, currentDataSpec?.filename, colorFunc],
       },
       onClick: (info: any) => {
-        console.log(info)
-        setClickedGeo({geoid:info.object?.properties?.GEOID})
+        console.log(info?.object?.properties?.GEOID)
+        setClickedGeo({ geoid: info.object?.properties?.GEOID })
       },
       onHover: (info: any) => {
         const isZeroPop = zeroPopTracts.indexOf(info.object?.properties?.GEOID) !== -1
@@ -237,9 +235,14 @@ export const Map = () => {
 
   // ACTIONS
   const dispatch = useAppDispatch()
-  const handleYearChange = (year: number) => dispatch(setYear(year))
   const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col))
-  const handleChangeData = (data: string) => dispatch(setCurrentData(data))
+  const handleChangeData = (dataName: string) => {
+    const data = config.find((c) => c.name === dataName)
+    if (!data) {
+      return
+    }
+    dispatch(setCurrentData(data.filename))
+  }
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
 
   return (
@@ -254,7 +257,7 @@ export const Map = () => {
           </p>
         </div>
       </div>
-      <div className="absolute left-4 top-4 z-50 max-w-[50vw]">
+      <div className="absolute left-4 top-4 z-30 max-w-[50vw]">
         <DropdownMenuDemo>
           <div className="max-w-[100vw] p-4">
             <p>Choose Data</p>
@@ -264,18 +267,25 @@ export const Map = () => {
                 maxWidth: "30vw",
               }}
             >
-                {config.map((c, i) => (
-                  <Button
-                    key={i}
-                    onClick={() => handleChangeData(c.filename)}
-                    size="sm"
-                    className="mr-2"
-                    intent={c.filename == currentDataSpec?.filename ? "primary" : "secondary"}
-                  >
-                    {c.name}
-                  </Button>
-                ))}
-              </div>
+              {!!currentDataSpec?.name && (
+                <SelectMenu
+                  title="Filter by state"
+                  value={currentDataSpec?.name || ""}
+                  onValueChange={(e) => handleChangeData(e)}
+                >
+                  <>
+                    {config.map((c, i) => (
+                      <Select.Item className="SelectItem" value={c.name} key={i}>
+                        <Select.ItemText>{c.name || "Choose a State"}</Select.ItemText>
+                        <Select.ItemIndicator className="SelectItemIndicator">
+                          <CheckboxIcon />
+                        </Select.ItemIndicator>
+                      </Select.Item>
+                    ))}
+                  </>
+                </SelectMenu>
+              )}
+            </div>
             <hr className="my-2" />
             <h3>Columns / Years</h3>
 
@@ -284,18 +294,25 @@ export const Map = () => {
                 maxWidth: "30vw",
               }}
             >
-                {currentDataSpec?.columns.map((c, i) => (
-                  <Button
-                    key={i}
-                    onClick={() => handleSetColumn(c.column)}
-                    size="sm"
-                    className="mr-2"
-                    intent={c.column == currentColumnSpec?.column ? "primary" : "secondary"}
-                  >
-                    {c.column}
-                  </Button>
-                ))}
-              </div>
+              {!!currentDataSpec?.columns && (
+                <SelectMenu
+                  title="Filter by state"
+                  value={(currentColumnSpec?.column as string) || ""}
+                  onValueChange={(e) => handleSetColumn(e)}
+                >
+                  <>
+                    {currentDataSpec?.columns.map((c, i) => (
+                      <Select.Item className="SelectItem" value={c.column as string} key={i}>
+                        <Select.ItemText>{c.column || "Choose a State"}</Select.ItemText>
+                        <Select.ItemIndicator className="SelectItemIndicator">
+                          <CheckboxIcon />
+                        </Select.ItemIndicator>
+                      </Select.Item>
+                    ))}
+                  </>
+                </SelectMenu>
+              )}
+            </div>
             {/* text input */}
             <hr className="my-2" />
             <h3>Filter</h3>
