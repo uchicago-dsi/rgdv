@@ -1,8 +1,6 @@
 import React from "react"
 import path from "path"
 import { getSummaryStats } from "utils/data/summaryStats"
-import fs from "fs"
-import { getContentDirs } from "utils/contentDirs"
 
 type CountyRouteProps = {
   params: {
@@ -40,7 +38,6 @@ type CountyDataMap = Map<CountyDataKeys, CountyDataValues>
 const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
   const county = params.county
   const countyDataPath = path.join(process.cwd(), "public", "data", `county_summary_stats.msgpack`)
-  getContentDirs()
   
   const countyStats = await getSummaryStats<CountyDataMap>(countyDataPath, county)
 
