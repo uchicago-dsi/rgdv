@@ -26,13 +26,13 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
     // log dirs in current dirxx
     const dirs = fs.readdirSync(path.join(process.cwd()))
     console.log('dirs', dirs)
-    if ("public" in dirs) {
+    if (dirs.includes('public')) {
       const publicDirs = fs.readdirSync(path.join(process.cwd(), 'public'))
       console.log('publicDirs', publicDirs)
-      if ("content" in publicDirs) {
+      if (publicDirs.includes('content')) {
         const contentDirs = fs.readdirSync(path.join(process.cwd(), 'public', 'content'))
         console.log('contentDirs', contentDirs)
-        if (contentType in contentDirs) {
+        if (contentDirs.includes(contentType)) {
           const typeDirs = fs.readdirSync(path.join(process.cwd(), 'public', 'content', contentType))
           console.log('typeDirs', typeDirs)
         }
