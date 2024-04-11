@@ -1,9 +1,9 @@
-import { compile } from '@mdx-js/mdx'
 import { client } from 'tina/__generated__/client'
 import fs from 'fs'
 import path, { parse } from 'path'
 import matter from 'gray-matter';
 import { parseMDX } from "@tinacms/mdx";
+import { getContentDirs } from 'utils/contentDirs';
 
 const DEV = process.env.NODE_ENV === 'development'
 
@@ -22,6 +22,7 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
     const r = await client.queries[contentType]({ relativePath })
     return r
   } else {
+    getContentDirs()
     const filepath = path.join(process.cwd(), 'content', contentType, relativePath)
     const mdxContent = fs.readFileSync(filepath, 'utf-8')
     const frontMatter = matter(mdxContent)
