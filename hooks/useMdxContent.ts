@@ -23,8 +23,21 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
     return r
   } else {
     const filepath = path.join(process.cwd(), 'public', 'content', contentType, relativePath)
-    // log dirs in current dir
+    // log dirs in current dirxx
     const dirs = fs.readdirSync(path.join(process.cwd()))
+    console.log('dirs', dirs)
+    if ("public" in dirs) {
+      const publicDirs = fs.readdirSync(path.join(process.cwd(), 'public'))
+      console.log('publicDirs', publicDirs)
+      if ("content" in publicDirs) {
+        const contentDirs = fs.readdirSync(path.join(process.cwd(), 'public', 'content'))
+        console.log('contentDirs', contentDirs)
+        if (contentType in contentDirs) {
+          const typeDirs = fs.readdirSync(path.join(process.cwd(), 'public', 'content', contentType))
+          console.log('typeDirs', typeDirs)
+        }
+      }
+    }
     const mdxContent = fs.readFileSync(filepath, 'utf-8')
     const frontMatter = matter(mdxContent)
     const data: any = {
