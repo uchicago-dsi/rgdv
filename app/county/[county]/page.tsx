@@ -42,8 +42,13 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
   const contentPath = path.join(process.cwd(), "content", `page`)
   console.log(contentPath)
   // fs read files in contentPath
-  const files = fs.readdirSync(contentPath)
-  console.log(files)
+  try {
+    const files = fs.readdirSync(contentPath)
+    console.log(files)
+  } catch (error) {
+    console.log(error)
+  }
+  
   const countyStats = await getSummaryStats<CountyDataMap>(countyDataPath, county)
 
   return (
