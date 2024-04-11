@@ -2,6 +2,7 @@ import React from "react"
 import path from "path"
 import { getSummaryStats } from "utils/data/summaryStats"
 import fs from "fs"
+import { getContentDirs } from "utils/contentDirs"
 
 type CountyRouteProps = {
   params: {
@@ -39,20 +40,21 @@ type CountyDataMap = Map<CountyDataKeys, CountyDataValues>
 const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
   const county = params.county
   const countyDataPath = path.join(process.cwd(), "public", "data", `county_summary_stats.msgpack`)
-  const contentPaths = [
-    path.join(process.cwd(), "content", 'nav'),
-    path.join(process.cwd(), "content", 'page'),
-    path.join(process.cwd(), "content", 'posts'),
-  ]
-  // fs read files in contentPath
-  try {
-    contentPaths.forEach(contentPath => {
-      const files = fs.readdirSync(contentPath)
-      console.log(files)
-    })
-  } catch (error) {
-    console.log(error)
-  }
+  getContentDirs()
+  // const contentPaths = [
+  //   path.join(process.cwd(), "content", 'nav'),
+  //   path.join(process.cwd(), "content", 'page'),
+  //   path.join(process.cwd(), "content", 'posts'),
+  // ]
+  // // fs read files in contentPath
+  // try {
+  //   contentPaths.forEach(contentPath => {
+  //     const files = fs.readdirSync(contentPath)
+  //     console.log(files)
+  //   })
+  // } catch (error) {
+  //   console.log(error)
+  // }
   
   const countyStats = await getSummaryStats<CountyDataMap>(countyDataPath, county)
 

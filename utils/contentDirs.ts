@@ -4,3 +4,6 @@ export const contentDirs = [
   path.join(process.cwd(), "content", "nav"),
   path.join(process.cwd(), "content", "posts")
 ]
+export const getContentDirs = () => {
+  return contentDirs
+}
