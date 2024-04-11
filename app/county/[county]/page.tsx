@@ -40,9 +40,9 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
   const county = params.county
   const countyDataPath = path.join(process.cwd(), "public", "data", `county_summary_stats.msgpack`)
   const contentPaths = [
-    path.join(process.cwd(), "nav", `page`),
-    path.join(process.cwd(), "content", `page`),
-    path.join(process.cwd(), "public", `page`),
+    path.join(process.cwd(), "content", 'nav'),
+    path.join(process.cwd(), "content", 'page'),
+    path.join(process.cwd(), "content", 'posts'),
   ]
   // fs read files in contentPath
   try {
