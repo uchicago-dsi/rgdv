@@ -5,7 +5,7 @@ import { defineConfig } from "tinacms";
 var page_default = {
   label: "Page Content",
   name: "page",
-  path: "content/page",
+  path: "public/content/page",
   format: "mdx",
   fields: [
     {
@@ -61,7 +61,7 @@ var page_default = {
 var post_default = {
   label: "Blog Posts",
   name: "post",
-  path: "content/post",
+  path: "public/content/post",
   fields: [
     {
       type: "string",
@@ -89,7 +89,7 @@ var post_default = {
 var nav_default = {
   label: "Navigation",
   name: "nav",
-  path: "content/nav",
+  path: "public/content/nav",
   format: "mdx",
   create: true,
   fields: [

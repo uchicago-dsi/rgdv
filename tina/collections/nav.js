@@ -4,7 +4,7 @@
 export default {
   label: "Navigation",
   name: "nav",
-  path: "content/nav",
+  path: "public/content/nav",
   format: "mdx",
   create: true,
   fields: [

@@ -22,11 +22,9 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
     const r = await client.queries[contentType]({ relativePath })
     return r
   } else {
-    const filepath = path.join(process.cwd(), 'content', contentType, relativePath)
-    console.log(filepath)
+    const filepath = path.join(process.cwd(), 'public', 'content', contentType, relativePath)
     // log dirs in current dir
     const dirs = fs.readdirSync(path.join(process.cwd()))
-    console.log(dirs)
     const mdxContent = fs.readFileSync(filepath, 'utf-8')
     const frontMatter = matter(mdxContent)
     const data: any = {
