@@ -22,22 +22,22 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
     const r = await client.queries[contentType]({ relativePath })
     return r
   } else {
-    const filepath = path.join(process.cwd(), 'public', 'content', contentType, relativePath)
+    const filepath = path.join(process.cwd(), 'content', contentType, relativePath)
     // log dirs in current dirxx
     const dirs = fs.readdirSync(path.join(process.cwd()))
     console.log('dirs', dirs)
-    if (dirs.includes('public')) {
-      const publicDirs = fs.readdirSync(path.join(process.cwd(), 'public'))
-      console.log('publicDirs', publicDirs)
-      if (publicDirs.includes('content')) {
-        const contentDirs = fs.readdirSync(path.join(process.cwd(), 'public', 'content'))
-        console.log('contentDirs', contentDirs)
-        if (contentDirs.includes(contentType)) {
-          const typeDirs = fs.readdirSync(path.join(process.cwd(), 'public', 'content', contentType))
-          console.log('typeDirs', typeDirs)
-        }
-      }
-    }
+    // if (dirs.includes('public')) {
+    //   const publicDirs = fs.readdirSync(path.join(process.cwd(), 'public'))
+    //   console.log('publicDirs', publicDirs)
+    //   if (publicDirs.includes('content')) {
+    //     const contentDirs = fs.readdirSync(path.join(process.cwd(), 'public', 'content'))
+    //     console.log('contentDirs', contentDirs)
+    //     if (contentDirs.includes(contentType)) {
+    //       const typeDirs = fs.readdirSync(path.join(process.cwd(), 'public', 'content', contentType))
+    //       console.log('typeDirs', typeDirs)
+    //     }
+    //   }
+    // }
     const mdxContent = fs.readFileSync(filepath, 'utf-8')
     const frontMatter = matter(mdxContent)
     const data: any = {

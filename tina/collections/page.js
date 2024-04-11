@@ -4,7 +4,7 @@
 export default {
   label: "Page Content",
   name: "page",
-  path: "public/content/page",
+  path: "content/page",
   format: "mdx",
   fields: [
     {

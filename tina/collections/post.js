@@ -4,7 +4,7 @@
 export default {
   label: "Blog Posts",
   name: "post",
-  path: "public/content/post",
+  path: "content/post",
   fields: [
     {
       type: "string",
