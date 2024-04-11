@@ -39,10 +39,11 @@ type CountyDataMap = Map<CountyDataKeys, CountyDataValues>
 const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
   const county = params.county
   const countyDataPath = path.join(process.cwd(), "public", "data", `county_summary_stats.msgpack`)
-  const contentPath = path.join(process.cwd(), "public", "content", `page`)
+  const contentPath = path.join(process.cwd(), "content", `page`)
   console.log(contentPath)
   // fs read files in contentPath
   const files = fs.readdirSync(contentPath)
+  console.log(files)
   const countyStats = await getSummaryStats<CountyDataMap>(countyDataPath, county)
 
   return (
