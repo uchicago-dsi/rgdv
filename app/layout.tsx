@@ -1,6 +1,6 @@
 import Nav from "components/Nav"
 import "styles/tailwind.css"
-import { Libre_Baskerville, Antonio } from 'next/font/google'
+import { Antonio, Libre_Baskerville } from 'next/font/google'
  
 const antonio = Antonio({
   variable: '--font-antonio',
