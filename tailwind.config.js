@@ -24,7 +24,10 @@ module.exports = {
         ...blackA,
         ...mauve,
         ...violet,
-        canvas: '#F7EEC1',
+        canvas: {
+          100:'#F7EEC1',
+          500: '#FDFBEF'
+        },
         primary: {
           50: "#eff6ff",
           100: "#dbeafe",
@@ -39,8 +42,25 @@ module.exports = {
         },
       },
       fontFamily: {
+        primary: [
+          "var(--font-antonio)",
+          "ui-sans-serif",
+          "system-ui",
+          "-apple-system",
+          "system-ui",
+          "Segoe UI",
+          "Roboto",
+          "Helvetica Neue",
+          "Arial",
+          "Noto Sans",
+          "sans-serif",
+          "Apple Color Emoji",
+          "Segoe UI Emoji",
+          "Segoe UI Symbol",
+          "Noto Color Emoji",
+        ],
         body: [
-          "Inter",
+          "var(--font-libre-baskerville)",
           "ui-sans-serif",
           "system-ui",
           "-apple-system",
@@ -57,7 +77,7 @@ module.exports = {
           "Noto Color Emoji",
         ],
         sans: [
-          "Inter",
+          "var(--font-antonio)",
           "ui-sans-serif",
           "system-ui",
           "-apple-system",
