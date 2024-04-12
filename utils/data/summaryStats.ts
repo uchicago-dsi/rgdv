@@ -1,5 +1,6 @@
 import { UnpackrStream } from "msgpackr"
 import fs from "fs"
+import { ok } from "assert"
 
 export const getSummaryStats = async <T extends any>(filepath: string, id: string) => {
   try {
@@ -10,13 +11,22 @@ export const getSummaryStats = async <T extends any>(filepath: string, id: strin
     for await (const data of unpackr) {
       const d = data.get(id)
       if (d) {
-        return d as T
+        return {
+          ok: true,
+          result: d as T
+        }
       }
     }
-    return new Map()
+    return {
+      ok: false,
+      error: `No data found for id "${id}"`
+    }
   } catch (error) {
     console.log("Error getting messagepack data")
     console.log(error)
-    return new Map()
+    return {
+      ok: false,
+      error: error
+    }
   }
 }
