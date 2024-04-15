@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo } from "react"
-import { DataService } from "utils/data/service"
+import { ds } from "utils/data/service"
 import { mapSlice } from "utils/state/map"
 import { useAppDispatch, useAppSelector } from "utils/state/store"
 import { useMapColor } from "./useD3Color"
 import config from "utils/data/config"
 
-const ds = new DataService()
 
 export const useDataService = () => {
   const dispatch = useAppDispatch()
