@@ -24,9 +24,14 @@ module.exports = {
         ...blackA,
         ...mauve,
         ...violet,
-        canvas: {
-          100:'#F7EEC1',
-          500: '#FDFBEF'
+        theme: {
+          navy: {
+            500: "#00152c"
+          },
+          canvas: {
+            100:'#F7EEC1',
+            500: '#FDFBEF'
+          },
         },
         primary: {
           50: "#eff6ff",
