@@ -244,6 +244,30 @@ export class DataService {
     this.tooltipResults[id] = mappedTooltipContent
   }
 
+  async getTimeseries(
+    id: string
+  ) {
+    if (this.tooltipResults[id]) {
+      return this.tooltipResults[id]
+    }
+    let data: any[] = []
+    for (let i = 0; i < this.config.length; i++) {
+      const c = this.config[i]
+      if (!c) {
+        continue
+      }
+      if (!c.columns?.length) {
+        continue
+      }
+      const query = `SELECT * FROM ${this.getFromQueryString(c.filename)} WHERE "${c.id}" = '${id}'`
+      console.log(query)
+      const result = await this.runQuery(query, true)
+      data.push(JSON.parse(JSON.stringify(result)))
+    }
+    console.log(data)
+    return data
+  }
+
   setCompleteCallback(cb: (s: string) => void) {
     this.completeCallback = cb
     this.complete.forEach(cb)

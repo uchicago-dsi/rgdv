@@ -7,6 +7,7 @@ import PercentileLineChart from "components/PercentileLineChart"
 import { getMdxContent } from "hooks/useMdxContent"
 import { getContentDirs } from "utils/contentDirs"
 import { getSummaryStats } from "utils/data/summaryStats"
+import TimeseriesChart from "components/TimeseriesChart"
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 
 const operators = [
@@ -168,6 +169,9 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
                 })}
               </ul>
             </div>
+          </div>
+          <div className="w-full h-[100vh] bg-white shadow-xl p-8 my-8">
+            <TimeseriesChart id={county} />
           </div>
         </>
       )}

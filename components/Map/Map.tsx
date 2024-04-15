@@ -232,7 +232,7 @@ export const Map: React.FC<MapProps> = ({
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
 
   useEffect(() => {
-    if (dispatch && initialFilter) {
+    if (initialFilter) {
       dispatch(setCurrentFilter(initialFilter))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
