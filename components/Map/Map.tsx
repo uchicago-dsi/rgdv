@@ -120,14 +120,18 @@ const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
   )
 }
 
-export default function MapOuter() {
+export type MapProps = {
+  initialFilter?: string
+}
+
+const MapOuter: React.FC<MapProps> = (props) => {
   return (
     <Provider store={store}>
-      <Map />
+      <Map {...props}/>
     </Provider>
   )
 }
-
+export default MapOuter
 // Viewport settings
 const INITIAL_VIEW_STATE = {
   longitude: -98.6,
@@ -138,32 +142,14 @@ const INITIAL_VIEW_STATE = {
 }
 
 const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
-export const Map = () => {
+export const Map: React.FC<MapProps> = ({
+  initialFilter
+}) => {
   const [clickedGeo, setClickedGeo] = useState<any>({
     geoid: null,
     geometry: null,
     centroid: null,
   })
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!clickedGeo) {
-        setClickedGeo({
-          geoid: null,
-          geometry: null,
-          centroid: null,
-        })
-      }
-      const res = await fetch(`/api/stores/${clickedGeo.geoid}`)
-      const data = (await res.json()) as any
-      console.log("data", data)
-      setClickedGeo((prev: any) => ({
-        geoid: prev.geoid,
-        geometry: data.geometry,
-        centroid: data.pop_centroid,
-      }))
-    }
-    fetchData()
-  }, [clickedGeo.geoid])
 
   const { isReady, data, testfn, colorFunc, colors, ds, breaks, currentColumnSpec, currentDataSpec, currentFilter } =
     useDataService()
@@ -245,8 +231,35 @@ export const Map = () => {
   }
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
 
+  useEffect(() => {
+    if (initialFilter) {
+      dispatch(setCurrentFilter(initialFilter))
+    }
+  },[initialFilter])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!clickedGeo) {
+        setClickedGeo({
+          geoid: null,
+          geometry: null,
+          centroid: null,
+        })
+      }
+      const res = await fetch(`/api/stores/${clickedGeo.geoid}`)
+      const data = (await res.json()) as any
+      console.log("data", data)
+      setClickedGeo((prev: any) => ({
+        geoid: prev.geoid,
+        geometry: data.geometry,
+        centroid: data.pop_centroid,
+      }))
+    }
+    fetchData()
+  }, [clickedGeo.geoid])
+
   return (
-    <div style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}>
+    <div className="w-[100vw] h-[100vh] max-w-full max-h-full relative top-0 left-0">
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
         <div className="ColorLegend">
           <h3>{currentColumnSpec?.name}</h3>
