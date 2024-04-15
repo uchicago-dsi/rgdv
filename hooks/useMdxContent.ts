@@ -4,6 +4,7 @@ import path, { parse } from 'path'
 import matter from 'gray-matter';
 import { parseMDX } from "@tinacms/mdx";
 import { getContentDirs } from 'utils/contentDirs';
+import { collections } from "tina/collections/collections"
 
 const DEV = process.env.NODE_ENV === 'development'
 
@@ -17,6 +18,7 @@ const parseRich = (mdxContent: string) => {
   }, (f: any) => f)
 }
 
+
 export const getMdxContent = async <T extends any>(contentType: keyof typeof client.queries, relativePath: string)=> {
   if (DEV) {
     const r = await client.queries[contentType]({ relativePath })
@@ -24,45 +26,43 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
   } else {
     getContentDirs()
     const filepath = path.join(process.cwd(), 'content', contentType, relativePath)
+    // @ts-ignore
+    const schema = collections[contentType]
     const mdxContent = fs.readFileSync(filepath, 'utf-8')
     const frontMatter = matter(mdxContent)
+    const fmData = frontMatter.data
+
     const data: any = {
+      parsed: true,
       [contentType]: {
         id: `content/${contentType}/${relativePath}`,
         __typename: contentType,
-        body: parseRich(frontMatter.content)
+        body: parseRich(frontMatter.content),
+        ...fmData
       }
     }
+    parseRichRecursive(data[contentType], schema)
 
-    const fmData = frontMatter.data
-    const dataKeys = Object.keys(fmData)
-    for (let i = 0; i < dataKeys.length; i++) {
-      const key = dataKeys[i]!
-      const value = fmData[key]
-      if (Array.isArray(value)) {
-        data[contentType][key] = []
-        for (let j = 0; j < value.length; j++) {
-          const v = value[j] as any
-          const content = parseRich(v.body)
-          const valueOut = {
-            ...v,
-            body: content
-          }
-          data[contentType][key].push(valueOut)
-        }
-      } else if (typeof value === 'object'){
-        data[contentType][key] = {
-          ...value,
-          body: parseRich(value.body)
-        }
-      } else {
-        data[contentType][key] = value
-      }
-    }
     return {
       data
     } as {
       data: T
     }
   }
+}
+
+const parseRichRecursive = (data: any, schema: any) => {
+  const keys = Object.keys(data)
+  keys.forEach(key => {
+    const keySchema = schema.fields.find((f: any) => f.name === key)
+    if (!keySchema) return
+    if (keySchema.type === 'rich-text') {
+      data[key] = parseRich(data[key])
+    } else if (keySchema.list && keySchema.type === 'object') {
+      data[key].forEach((d: any) => parseRichRecursive(d, keySchema))
+    } else if (keySchema.type === 'object') {
+      parseRichRecursive(data[key], keySchema)
+    }
+  })
+
 }
