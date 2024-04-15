@@ -7,7 +7,7 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
 
   return (
     <main className="flex flex-col">
-      <div className="relative h-[100vh] w-full" id="main-hero">
+      <div className="text-theme-canvas-100 relative h-[100vh] w-full" id="main-hero">
         <div className="">
           <Image
             src="/images/hero.png"
@@ -20,12 +20,12 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
           />
         </div>
 
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00152c] to-[#00152c]"></div>
-        <div className="absolute inset-x-0 bottom-0 h-[30vh] bg-[#00152c]"></div>
-        <div className="text-canvas flex h-full flex-col justify-end p-4">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-theme-navy-500 to-theme-navy-500"></div>
+        <div className="absolute inset-x-0 bottom-0 h-[30vh] bg-theme-navy-500"></div>
+        <div className="text-theme-canvas-500 flex h-full flex-col justify-end p-4">
           <div className="z-20 grid grid-flow-col grid-rows-2">
             <div>
-              <h1 className="text-9xl font-bold">Feeding Fairness</h1>
+              <h1 className="text-9xl font-bold" style={{WebkitTextStroke: "2px #00152c"}}>Feeding <span className="text-theme-navy-500 block" style={{WebkitTextStroke: "2px white"}}>Fairness</span></h1>
             </div>
             <div>
               <h2 className="text-3xl font-bold">
@@ -46,7 +46,7 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
           </div>
         </div>
       </div>
-      <div className="text-canvas border-top-1 h-[50vh] bg-[#00152c] p-4">
+      <div className="text-theme-canvas-500 border-top-1 h-[50vh] bg-[#00152c] p-4">
         <hr />
         {/* 4 div flex layout equal widths */}
         {/* reports, trends, toolkit, about */}
