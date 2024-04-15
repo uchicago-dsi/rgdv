@@ -259,8 +259,7 @@ export class DataService {
       if (!c.columns?.length) {
         continue
       }
-      const query = `SELECT * FROM ${this.getFromQueryString(c.filename)} WHERE "${c.id}" = '${id}'`
-      console.log(query)
+      const query = `SELECT * FROM ${this.getFromQueryString(c.filename)} WHERE "${c.id}" LIKE '${id}%'`
       const result = await this.runQuery(query, true)
       data.push(JSON.parse(JSON.stringify(result)))
     }
