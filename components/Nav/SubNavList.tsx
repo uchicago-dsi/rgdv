@@ -9,7 +9,7 @@ export const SubNavList: React.FC<{ title: string; subLinks: Array<LinkSpec> }> 
       <DropdownMenu.Trigger asChild>
         <button className="group flex cursor-pointer items-center outline-none" aria-label="Customise options">
           {title}
-          <ChevronDownIcon className="h-4 w-4" />
+          <ChevronDownIcon className="size-4" />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>

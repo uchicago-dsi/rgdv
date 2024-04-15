@@ -1,8 +1,8 @@
 "use client"
 import React from "react"
+import { useTina } from "tinacms/dist/react"
 import { Renderer } from "./Renderer"
 import { HomeProps } from "./types"
-import { useTina } from "tinacms/dist/react"
 
 export const HomeClient: React.FC<HomeProps> = ({ pageInfo }) => {
   const z = useTina({

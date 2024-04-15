@@ -1,7 +1,6 @@
-import React from "react"
+import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons"
 import * as Select from "@radix-ui/react-select"
-import classnames from "classnames"
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons"
+import React from "react"
 import "./styles.css"
 
 type SelectProps = {

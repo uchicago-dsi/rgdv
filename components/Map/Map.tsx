@@ -1,23 +1,23 @@
 "use client"
-import { store, useAppDispatch, useAppSelector } from "utils/state/store"
-import { setCurrentColumn, setCurrentData, setCurrentFilter, setTooltipInfo, setYear } from "utils/state/map"
-import { Provider } from "react-redux"
-import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
-import GlMap, { NavigationControl, useControl } from "react-map-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
-import React, { useEffect, useRef, useState } from "react"
 import { MVTLayer } from "@deck.gl/geo-layers/typed"
 import { GeoJsonLayer, ScatterplotLayer } from "@deck.gl/layers/typed"
-import DropdownMenuDemo from "components/Dropdown/Dropdown"
-import { useDataService } from "utils/hooks/useDataService"
-import { ScaleControl } from "react-map-gl"
+import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
 import "./styles.css"
-import config from "utils/data/config"
-import { SelectMenu } from "components/Select/Select"
 import { CheckboxIcon } from "@radix-ui/react-icons"
 import * as Select from "@radix-ui/react-select"
-import { DataService } from "utils/data/service"
+import React, { useEffect, useRef, useState } from "react"
+import { ScaleControl } from "react-map-gl"
+import GlMap, { NavigationControl, useControl } from "react-map-gl"
+import { Provider } from "react-redux"
 import CountyFilterSelector from "components/CountyFilterSelector"
+import DropdownMenuDemo from "components/Dropdown/Dropdown"
+import { SelectMenu } from "components/Select/Select"
+import config from "utils/data/config"
+import { DataService } from "utils/data/service"
+import { useDataService } from "utils/hooks/useDataService"
+import { setCurrentColumn, setCurrentData, setCurrentFilter, setTooltipInfo } from "utils/state/map"
+import { store, useAppDispatch, useAppSelector } from "utils/state/store"
 import { zeroPopTracts } from "utils/zeroPopTracts"
 
 const formatNumber = (n: number) => {
@@ -66,11 +66,11 @@ const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
       if (!id) {
         return
       }
-      const tooltipData = await dataService.getTooltipValues(id)
+      // const tooltipData = await dataService.getTooltipValues(id)
       setUpdateTrigger((v) => (v + 1) % 100)
     }
     main()
-  }, [id])
+  }, [id, dataService])
 
   if (!x || !y) {
     return null
@@ -78,7 +78,7 @@ const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
 
   return (
     <div
-      className="padding-4 pointer-events-none fixed z-[1001] rounded-md border border-gray-200 bg-white bg-opacity-90 p-2 shadow-md"
+      className="padding-4 pointer-events-none fixed z-[1001] rounded-md border border-gray-200 bg-white/90 p-2 shadow-md"
       style={{
         left: x + 10,
         top: y + 10,
@@ -141,7 +141,7 @@ const INITIAL_VIEW_STATE = {
   bearing: 0,
 }
 
-const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
+// const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
 export const Map: React.FC<MapProps> = ({
   initialFilter
 }) => {
@@ -151,7 +151,7 @@ export const Map: React.FC<MapProps> = ({
     centroid: null,
   })
 
-  const { isReady, data, testfn, colorFunc, colors, ds, breaks, currentColumnSpec, currentDataSpec, currentFilter } =
+  const { isReady, colorFunc, colors, ds, breaks, currentColumnSpec, currentDataSpec, currentFilter } =
     useDataService()
   const getElementColor = (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
     if (!isReady) {
@@ -217,7 +217,7 @@ export const Map: React.FC<MapProps> = ({
     }),
   ]
   const mapRef = useRef(null)
-  const year = useAppSelector((state) => state.map.year)
+  // const year = useAppSelector((state) => state.map.year)
 
   // ACTIONS
   const dispatch = useAppDispatch()
@@ -232,10 +232,10 @@ export const Map: React.FC<MapProps> = ({
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
 
   useEffect(() => {
-    if (initialFilter) {
+    if (dispatch && initialFilter) {
       dispatch(setCurrentFilter(initialFilter))
     }
-  },[initialFilter])
+  },[dispatch, initialFilter])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -256,6 +256,7 @@ export const Map: React.FC<MapProps> = ({
       }))
     }
     fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clickedGeo.geoid])
 
   return (

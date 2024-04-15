@@ -1,12 +1,12 @@
-import React from "react"
-import path from "path"
-import { getSummaryStats } from "utils/data/summaryStats"
-import { getContentDirs } from "utils/contentDirs"
-import PercentileLineChart from "components/PercentileLineChart"
 import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import dynamic from "next/dynamic"
-import { getMdxContent } from "hooks/useMdxContent"
+import React from "react"
 import { TinaMarkdown, TinaMarkdownContent } from "tinacms/dist/rich-text"
+import path from "path"
+import PercentileLineChart from "components/PercentileLineChart"
+import { getMdxContent } from "hooks/useMdxContent"
+import { getContentDirs } from "utils/contentDirs"
+import { getSummaryStats } from "utils/data/summaryStats"
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 
 const operators = [
@@ -79,7 +79,7 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
           <div className="grid gap-8 lg:grid-cols-2">
             <div>
               <a href="/county" className="align-center flex items-center pb-2 text-sm text-gray-600">
-                <ArrowLeftIcon className="mr-2 inline h-4 w-4" />
+                <ArrowLeftIcon className="mr-2 inline size-4" />
                 Back to counties
               </a>
               <div className="prose max-w-none">
@@ -158,7 +158,7 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
                       }
                       const parsed = JSON.parse(stringified) as TinaMarkdownContent[]
                       content = (
-                        <li className="mb-4 ml-4">
+                        <li className="mb-4 ml-4" key={i}>
                           <TinaMarkdown content={parsed} />
                         </li>
                       )

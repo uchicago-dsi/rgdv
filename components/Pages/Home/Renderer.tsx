@@ -1,10 +1,8 @@
 import Image from "next/image"
 import { HomeProps } from "./types"
-import { TinaMarkdown } from "tinacms/dist/rich-text"
 
-export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
-  const sections = pageInfo.data.page.sections || []
-
+export const Renderer: React.FC<HomeProps> = () => {
+  // const sections = pageInfo.data.page.sections || []
   return (
     <main className="flex flex-col">
       <div className="text-theme-canvas-100 relative h-[100vh] w-full" id="main-hero">

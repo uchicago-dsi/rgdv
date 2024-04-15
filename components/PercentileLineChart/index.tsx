@@ -1,10 +1,10 @@
 "use client"
-import React from "react"
 import { Group } from "@visx/group"
-import { Line, Polygon } from "@visx/shape"
-import { scaleLinear } from "@visx/scale"
-import { interpolateRgb } from "d3-interpolate"
 import { useParentSize } from "@visx/responsive"
+import { scaleLinear } from "@visx/scale"
+import { Line, Polygon } from "@visx/shape"
+import { interpolateRgb } from "d3-interpolate"
+import React from "react"
 
 export type GradientLineProps = {
   value: number

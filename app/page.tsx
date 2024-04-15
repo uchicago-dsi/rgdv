@@ -4,7 +4,7 @@ import { getMdxContent } from "hooks/useMdxContent";
 export const metadata = {
   title: "Feeding Fairness"
 }
-type HomePageContent = {
+export type HomePageContent = {
   sections: Array<{
     title: string,
     body: string
