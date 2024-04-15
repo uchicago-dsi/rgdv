@@ -66,11 +66,11 @@ const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
       if (!id) {
         return
       }
-      // const tooltipData = await dataService.getTooltipValues(id)
+      await dataService.getTooltipValues(id)
       setUpdateTrigger((v) => (v + 1) % 100)
     }
     main()
-  }, [id, dataService])
+  }, [dataService, id])
 
   if (!x || !y) {
     return null
@@ -235,7 +235,8 @@ export const Map: React.FC<MapProps> = ({
     if (dispatch && initialFilter) {
       dispatch(setCurrentFilter(initialFilter))
     }
-  },[dispatch, initialFilter])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[initialFilter])
 
   useEffect(() => {
     const fetchData = async () => {
