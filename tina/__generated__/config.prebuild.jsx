@@ -172,7 +172,7 @@ var nav_default = {
 var stats_default = {
   label: "Reports",
   name: "statistics",
-  path: "content/stats",
+  path: "content/statistics",
   format: "mdx",
   fields: [
     {
