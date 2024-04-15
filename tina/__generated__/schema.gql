@@ -59,12 +59,15 @@ type Query {
   postConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: PostFilter): PostConnection!
   nav(relativePath: String): Nav!
   navConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: NavFilter): NavConnection!
+  statistics(relativePath: String): Statistics!
+  statisticsConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: StatisticsFilter): StatisticsConnection!
 }
 
 input DocumentFilter {
   page: PageFilter
   post: PostFilter
   nav: NavFilter
+  statistics: StatisticsFilter
 }
 
 type DocumentConnectionEdges {
@@ -90,7 +93,7 @@ type Collection {
   documents(before: String, after: String, first: Float, last: Float, sort: String, filter: DocumentFilter, folder: String): DocumentConnection!
 }
 
-union DocumentNode = Page | Post | Nav | Folder
+union DocumentNode = Page | Post | Nav | Statistics | Folder
 
 type PageSections {
   title: String
@@ -209,6 +212,62 @@ type NavConnection implements Connection {
   edges: [NavConnectionEdges]
 }
 
+type StatisticsStatTemplates {
+  body: JSON
+  threshold: Float
+}
+
+type StatisticsStat {
+  title: String
+  column: String
+  templates: [StatisticsStatTemplates]
+}
+
+type Statistics implements Node & Document {
+  body: JSON
+  stat: [StatisticsStat]
+  id: ID!
+  _sys: SystemInfo!
+  _values: JSON!
+}
+
+input NumberFilter {
+  lt: Float
+  lte: Float
+  gte: Float
+  gt: Float
+  eq: Float
+  exists: Boolean
+  in: [Float]
+}
+
+input StatisticsStatTemplatesFilter {
+  body: RichTextFilter
+  threshold: NumberFilter
+}
+
+input StatisticsStatFilter {
+  title: StringFilter
+  column: StringFilter
+  templates: StatisticsStatTemplatesFilter
+}
+
+input StatisticsFilter {
+  body: RichTextFilter
+  stat: StatisticsStatFilter
+}
+
+type StatisticsConnectionEdges {
+  cursor: String!
+  node: Statistics
+}
+
+type StatisticsConnection implements Connection {
+  pageInfo: PageInfo!
+  totalCount: Float!
+  edges: [StatisticsConnectionEdges]
+}
+
 type Mutation {
   addPendingDocument(collection: String!, relativePath: String!, template: String): DocumentNode!
   updateDocument(collection: String, relativePath: String!, params: DocumentUpdateMutation!): DocumentNode!
@@ -220,12 +279,15 @@ type Mutation {
   createPost(relativePath: String!, params: PostMutation!): Post!
   updateNav(relativePath: String!, params: NavMutation!): Nav!
   createNav(relativePath: String!, params: NavMutation!): Nav!
+  updateStatistics(relativePath: String!, params: StatisticsMutation!): Statistics!
+  createStatistics(relativePath: String!, params: StatisticsMutation!): Statistics!
 }
 
 input DocumentUpdateMutation {
   page: PageMutation
   post: PostMutation
   nav: NavMutation
+  statistics: StatisticsMutation
   relativePath: String
 }
 
@@ -233,6 +295,7 @@ input DocumentMutation {
   page: PageMutation
   post: PostMutation
   nav: NavMutation
+  statistics: StatisticsMutation
 }
 
 input PageSectionsMutation {
@@ -264,6 +327,22 @@ input NavLinksMutation {
 input NavMutation {
   title: String
   links: [NavLinksMutation]
+}
+
+input StatisticsStatTemplatesMutation {
+  body: JSON
+  threshold: Float
+}
+
+input StatisticsStatMutation {
+  title: String
+  column: String
+  templates: [StatisticsStatTemplatesMutation]
+}
+
+input StatisticsMutation {
+  body: JSON
+  stat: [StatisticsStatMutation]
 }
 
 schema {

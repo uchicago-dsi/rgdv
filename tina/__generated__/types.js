@@ -39,6 +39,22 @@ export const NavPartsFragmentDoc = gql`
   }
 }
     `;
+export const StatisticsPartsFragmentDoc = gql`
+    fragment StatisticsParts on Statistics {
+  __typename
+  body
+  stat {
+    __typename
+    title
+    column
+    templates {
+      __typename
+      body
+      threshold
+    }
+  }
+}
+    `;
 export const PageDocument = gql`
     query page($relativePath: String!) {
   page(relativePath: $relativePath) {
@@ -204,6 +220,61 @@ export const NavConnectionDocument = gql`
   }
 }
     ${NavPartsFragmentDoc}`;
+export const StatisticsDocument = gql`
+    query statistics($relativePath: String!) {
+  statistics(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ...StatisticsParts
+  }
+}
+    ${StatisticsPartsFragmentDoc}`;
+export const StatisticsConnectionDocument = gql`
+    query statisticsConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: StatisticsFilter) {
+  statisticsConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+        ...StatisticsParts
+      }
+    }
+  }
+}
+    ${StatisticsPartsFragmentDoc}`;
 export function getSdk(requester) {
   return {
     page(variables, options) {
@@ -223,6 +294,12 @@ export function getSdk(requester) {
     },
     navConnection(variables, options) {
       return requester(NavConnectionDocument, variables, options);
+    },
+    statistics(variables, options) {
+      return requester(StatisticsDocument, variables, options);
+    },
+    statisticsConnection(variables, options) {
+      return requester(StatisticsConnectionDocument, variables, options);
     }
   };
 }

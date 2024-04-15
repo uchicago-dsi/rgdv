@@ -168,6 +168,95 @@ var nav_default = {
   }
 };
 
+// tina/collections/stats.js
+var stats_default = {
+  label: "Reports",
+  name: "statistics",
+  path: "content/stats",
+  format: "mdx",
+  fields: [
+    {
+      name: "body",
+      label: "Description",
+      type: "rich-text",
+      isBody: true
+    },
+    // list of "sections"
+    // with section title
+    // and rich-text body
+    {
+      name: "stat",
+      label: "Stat",
+      type: "object",
+      list: true,
+      ui: {
+        itemProps: (item) => {
+          return { label: item?.title };
+        },
+        router: ({ document }) => {
+          if (document._sys.filename === "home") {
+            return `/`;
+          }
+          return void 0;
+        }
+      },
+      fields: [
+        {
+          name: "title",
+          label: "Title",
+          type: "string"
+        },
+        {
+          name: "column",
+          label: "Data Column",
+          type: "string"
+        },
+        {
+          name: "templates",
+          label: "Templates",
+          type: "object",
+          list: true,
+          ui: {
+            itemProps: (item) => {
+              return { label: item?.threshold };
+            },
+            router: ({ document }) => {
+              if (document._sys.filename === "home") {
+                return `/`;
+              }
+              return void 0;
+            }
+          },
+          fields: [
+            {
+              name: "body",
+              label: "Body",
+              type: "rich-text",
+              description: "Use double percent signs to denote a column (eg. My stat is %%column%%)."
+            },
+            {
+              name: "threshold",
+              label: "Threshold",
+              type: "number",
+              max: 100,
+              min: 0,
+              description: "The threshold of the statistic as a percentile. Reports will check each threshold in order, and if the value"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  ui: {
+    router: ({ document }) => {
+      if (document._sys.filename === "home") {
+        return `/`;
+      }
+      return void 0;
+    }
+  }
+};
+
 // tina/config.js
 var config = defineConfig({
   clientId: "",
@@ -194,7 +283,7 @@ var config = defineConfig({
     // within the public folder
   },
   schema: {
-    collections: [page_default, post_default, nav_default]
+    collections: [page_default, post_default, nav_default, stats_default]
   }
 });
 var config_default = config;
