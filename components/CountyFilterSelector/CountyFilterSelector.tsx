@@ -5,7 +5,7 @@ import * as Select from "@radix-ui/react-select"
 import { CheckboxIcon } from "@radix-ui/react-icons"
 import CountyList from "./county_list.json"
 
-export const CountyFilterSelector: React.FC<CountyFilterSelectorProps> = ({ handleSetFilter, currentFilter }) => {
+export const CountyFilterSelector: React.FC<CountyFilterSelectorProps> = ({ handleSetFilter, currentFilter, size}) => {
   const filterState = currentFilter?.length ? currentFilter.slice(0, 2) : ""
   const currentData = currentFilter?.length ? CountyList.find((state) => state.statefp === filterState) : ({} as any)
   const currentState = currentData?.state || "Choose a State"
