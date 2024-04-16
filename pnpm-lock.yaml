@@ -170,6 +170,9 @@ dependencies:
   '@visx/visx':
     specifier: ^3.10.2
     version: 3.10.2(@react-spring/web@9.7.3)(react-dom@18.2.0)(react@18.2.0)
+  '@visx/xychart':
+    specifier: ^3.10.2
+    version: 3.10.2(@react-spring/web@9.7.3)(react-dom@18.2.0)(react@18.2.0)
   apache-arrow:
     specifier: ^15.0.2
     version: 15.0.2

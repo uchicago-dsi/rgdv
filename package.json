@@ -78,6 +78,7 @@
     "@visx/scale": "^3.5.0",
     "@visx/shape": "^3.5.0",
     "@visx/visx": "^3.10.2",
+    "@visx/xychart": "^3.10.2",
     "apache-arrow": "^15.0.2",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
