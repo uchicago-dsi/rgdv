@@ -10,19 +10,17 @@ import { getSummaryStats } from "utils/data/summaryStats"
 import TimeseriesChart from "components/TimeseriesChart"
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 
-const operators = [
-  '-', '+', '*', '/'
-] as const
+const operators = ["-", "+", "*", "/"] as const
 
-const handleOperator = (operator: typeof operators[number], value: number, value2: number) => {
+const handleOperator = (operator: (typeof operators)[number], value: number, value2: number) => {
   switch (operator) {
-    case '-':
+    case "-":
       return value - value2
-    case '+':
+    case "+":
       return value + value2
-    case '*':
+    case "*":
       return value * value2
-    case '/':
+    case "/":
       return value / value2
   }
 }
@@ -53,21 +51,28 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
   getContentDirs()
   const county = params.county
   const countyDataPath = path.join(process.cwd(), "public", "data", `county_summary_stats.msgpack`)
-  const [countyStats, generalStatText] = await Promise.all([
+  const countyDemoPath = path.join(process.cwd(), "public", "data", `demography_county.msgpack`)
+  const [countyStats, countyDemography, generalStatText] = await Promise.all([
     getSummaryStats<CountyDataMap>(countyDataPath, county),
+    getSummaryStats<CountyDataMap>(countyDemoPath, county),
     getMdxContent("statistics", "county.mdx"),
   ])
+  console.log()
   // @ts-ignore
   const stats = generalStatText?.data?.statistics?.stat
 
-  const data = countyStats.result!
+  const data = {
+    ...Object.fromEntries(countyStats.result!),
+    ...Object.fromEntries(countyDemography.result!),
+  }
+  // @ts-ignore
   const [foodAccess, marketPower, racialEquity] = [
     // @ts-ignore
-    parseInt(data.get("gravity_2021_percentile")),
+    parseInt(data["gravity_2021_percentile"]),
     // @ts-ignore
-    100 - data.get("hhi_2021_percentile"),
+    100 - data["hhi_2021_percentile"],
     // @ts-ignore
-    100 - data.get("segregation_2021_percentile"),
+    100 - data["segregation_2021_percentile"],
   ]
   return (
     <div className="min-h-[100vh] bg-theme-canvas-500 p-4">
@@ -125,7 +130,7 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
               <ul className="list-disc">
                 {stats.map((stat: any, i: number) => {
                   let content = null
-                  const value = data.get(stat.column)
+                  const value = data[stat.column]
                   if (!value) return null
                   stat.templates.forEach((template: any) => {
                     if (!template.threshold || value >= template.threshold) {
@@ -135,7 +140,7 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
                       if (matches) {
                         matches.forEach((match) => {
                           const key = match.replace(/%/g, "")
-                          if (key.includes("|")){
+                          if (key.includes("|")) {
                             const parts = key.split("|").map((part) => {
                               if (!isNaN(+part)) {
                                 return +part
@@ -143,7 +148,7 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
                               if (operators.includes(part)) {
                                 return part
                               }
-                              const value = data.get(part as any)
+                              const value = data[part] as any
                               return value || null
                             })
                             const [value1, operator, value2] = parts
@@ -152,7 +157,7 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
                             const result = handleOperator(operator, value1, value2)
                             stringified = stringified.replace(match, `${result}`)
                           } else {
-                            const value = data.get(key as any)
+                            const value = data[key] as any
                             value && (stringified = stringified.replace(match, `${value}`))
                           }
                         })
@@ -170,7 +175,7 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
               </ul>
             </div>
           </div>
-          <div className="w-full h-[100vh] bg-white shadow-xl p-8 my-8">
+          <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl">
             <TimeseriesChart id={county} />
           </div>
         </>
