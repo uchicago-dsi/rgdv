@@ -5,6 +5,26 @@ import { getDuckDb, runQuery } from "utils/duckdb"
 import * as d3 from "d3"
 import tinycolor from "tinycolor2"
 
+// 2000 to 2021
+const fullYears = new Array(22).fill(0).map((_, i) => 2000 + i)
+const timeseriesQueries = {
+  "data/gravity_no_dollar_pivoted.parquet": {
+    query: `SELECT
+    median("2000") as "2000",
+    median("2010") as "2010",
+    median("2020") as "2020",
+  from "data/gravity_dollar_pivoted.parquet" `,
+    name: "Gravity (No Dollar Stores)",
+  },
+
+  "data/concentration_metrics_wide.parquet": {
+    query: `SELECT
+    ${fullYears.map((y) => `median("${y}") as "${y}"`).join(",\n")}
+    from "data/concentration_metrics_wide.parquet" `,
+    name: "Concentration Metrics (No Dollar Stores)",
+  },
+}
+
 export class DataService {
   config: DataConfig[]
   data: Record<string, Record<string, Record<string | number, number>>> = {}
@@ -84,7 +104,7 @@ export class DataService {
     await this.initDb()
     try {
       const conn = freshConn ? await this.db!.connect() : this.conn!
-      const r =  await runQuery({
+      const r = await runQuery({
         conn,
         query,
       })
@@ -98,7 +118,12 @@ export class DataService {
     }
   }
 
-  async getUniqueValues(column: string | number, table: string, idCol: string, filter?: string): Promise<Array<number>> {
+  async getUniqueValues(
+    column: string | number,
+    table: string,
+    idCol: string,
+    filter?: string
+  ): Promise<Array<number>> {
     let query = `SELECT DISTINCT "${column}" FROM ${this.getFromQueryString(table)}`
     if (filter) {
       query += ` WHERE "${idCol}" LIKE '${filter}%';`
@@ -113,7 +138,13 @@ export class DataService {
     // @ts-ignore
     return Object.values(result[0]) as Array<number>
   }
-  async getQuantiles(column: string | number, table: string, n: number, idCol: string, filter?: string): Promise<Array<number>> {
+  async getQuantiles(
+    column: string | number,
+    table: string,
+    n: number,
+    idCol: string,
+    filter?: string
+  ): Promise<Array<number>> {
     // breakpoints to use for quantile breaks
     // eg. n=5 - 0.2, 0.4, 0.6, 0.8 - 4 breaks
     // eg. n=4 - 0.25, 0.5, 0.75 - 3 breaks
@@ -162,9 +193,10 @@ export class DataService {
     if (reversed) {
       rgbColors.reverse()
     }
-    const values = range === 'categorical'
-      ? await this.getUniqueValues(column, table, idColumn, filter) 
-      : await this.getQuantiles(column, table, n, idColumn, filter)
+    const values =
+      range === "categorical"
+        ? await this.getUniqueValues(column, table, idColumn, filter)
+        : await this.getQuantiles(column, table, n, idColumn, filter)
 
     let query = ``
     if (!range || range === "continuous") {
@@ -176,7 +208,8 @@ export class DataService {
         ELSE [${rgbColors[rgbColors.length - 1]}]
         END as color
         FROM ${this.getFromQueryString(table)}
-    `} else { 
+    `
+    } else {
       query += `
       SELECT "${column}", "${idColumn}",
       CASE 
@@ -206,9 +239,7 @@ export class DataService {
     }
   }
 
-  async getTooltipValues(
-    id: string
-  ) {
+  async getTooltipValues(id: string) {
     if (this.tooltipResults[id]) {
       return this.tooltipResults[id]
     }
@@ -221,13 +252,15 @@ export class DataService {
       if (!c.columns?.length) {
         continue
       }
-      const query = `SELECT "${c.columns.map(spec => spec.column).join('","')}" FROM ${this.getFromQueryString(c.filename)} WHERE "${c.id}" = '${id}'`
+      const query = `SELECT "${c.columns.map((spec) => spec.column).join('","')}" FROM ${this.getFromQueryString(
+        c.filename
+      )} WHERE "${c.id}" = '${id}'`
       const result = await this.runQuery(query, true)
       data.push(result[0])
     }
-    const mappedTooltipContent = this.config.map((c,i) => {
+    const mappedTooltipContent = this.config.map((c, i) => {
       const dataOutput = {
-      header: c.name,
+        header: c.name,
       }
       if (!data[i]) {
         return dataOutput
@@ -244,27 +277,40 @@ export class DataService {
     this.tooltipResults[id] = mappedTooltipContent
   }
 
-  async getTimeseries(
-    id: string
-  ) {
+  async getTimeseries(id: string) {
     if (this.tooltipResults[id]) {
       return this.tooltipResults[id]
     }
-    let data: any[] = []
+    let data: any = {}
+
     for (let i = 0; i < this.config.length; i++) {
       const c = this.config[i]
-      if (!c) {
+      // @ts-ignore
+      const timeseriesConfig = timeseriesQueries[c.filename]
+      if (!c || !timeseriesConfig) {
         continue
       }
-      if (!c.columns?.length) {
-        continue
-      }
-      const query = `SELECT * FROM ${this.getFromQueryString(c.filename)} WHERE "${c.id}" LIKE '${id}%'`
+      const query = `${timeseriesConfig["query"]} WHERE "${c.id}" LIKE '${id}%'`
       const result = await this.runQuery(query, true)
-      data.push(JSON.parse(JSON.stringify(result)))
+      const resultData = JSON.parse(JSON.stringify(result[0]))
+      data[c.name] = resultData
     }
-    console.log(data)
-    return data
+    const outData: Record<number, Record<string | number, string | number>> = {}
+    const datasets = Object.keys(data)
+    for (const dataset of datasets) {
+      const currentData = data[dataset]
+      for (const year of fullYears) {
+        if (!outData[year]) {
+          outData[year] = {
+            year,
+          }
+        }
+        if (currentData[year]) {
+          outData[year]![dataset] = currentData[year]
+        }
+      }
+    }
+    return Object.values(outData)
   }
 
   setCompleteCallback(cb: (s: string) => void) {
