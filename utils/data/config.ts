@@ -37,9 +37,19 @@ const yostCols: Array<ColumnConfig> = ["Yost_Overall_Quintile", "Yost_State_Quin
   reversed: true,
 }))
 
+const HhiConfig: DataConfig = {
+  filename: "data/concentration_metrics_wide.parquet",
+  name: "Concentration Metrics (Dollar Stores)",
+  id: "GEOID",
+  columns: hhiColumns,
+  eager: true,
+  attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
+  colorScheme: "schemeYlOrRd",
+  nBins: 6,
+} 
 const DollarStoreHhiConfig: DataConfig = {
   filename: "data/concentration_metrics_wide_ds.parquet",
-  name: "Concentration Metrics",
+  name: "Concentration Metrics (No Dollar Stores)",
   id: "GEOID",
   columns: hhiColumns,
   eager: true,
@@ -94,5 +104,5 @@ const SdohData: DataConfig = {
 
 export const defaultData = GravityDollar.filename
 export const defaultYear = 2020
-export default [GravityDollar, GravityNoDollar, DollarStoreHhiConfig, SdohData, 
+export default [GravityDollar, GravityNoDollar, HhiConfig, DollarStoreHhiConfig, SdohData, 
 ]
