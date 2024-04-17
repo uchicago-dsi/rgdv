@@ -1,8 +1,8 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { getTimeseriesChartProps } from "./types";
-import { ds } from "utils/data/service";
 import LineChart from "components/LineChart";
+import { ds } from "utils/data/service";
+import { getTimeseriesChartProps } from "./types";
 
 const TimeseriesChart: React.FC<getTimeseriesChartProps> = ({ id }) => {
   const [data, setData] = useState<any[]>([]);

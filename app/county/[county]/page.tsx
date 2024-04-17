@@ -4,12 +4,12 @@ import React from "react"
 import { TinaMarkdown, TinaMarkdownContent } from "tinacms/dist/rich-text"
 import path from "path"
 import PercentileLineChart from "components/PercentileLineChart"
-import { getMdxContent } from "hooks/useMdxContent"
-import { getContentDirs } from "utils/contentDirs"
-import { getSummaryStats } from "utils/data/summaryStats"
 import TimeseriesChart from "components/TimeseriesChart"
 import Tooltip from "components/Tooltip"
-import { formatMarkdownTemplate, getThresholdValue } from "utils/data/formatDataTemplate"
+import { getMdxContent } from "hooks/useMdxContent"
+import { getContentDirs } from "utils/contentDirs"
+import { getThresholdValue } from "utils/data/formatDataTemplate"
+import { getSummaryStats } from "utils/data/summaryStats"
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 
 type CountyRouteProps = {

@@ -1,9 +1,9 @@
 "use client"
+import { InfoCircledIcon } from "@radix-ui/react-icons"
 import * as RadixTooltip from "@radix-ui/react-tooltip"
 import React from "react"
 import { twMerge } from "tailwind-merge"
 import { tooltipArrow, tooltipContent, TooltipProps } from "./types"
-import { InfoCircledIcon } from "@radix-ui/react-icons"
 export function Tooltip({
   explainer,
   open,

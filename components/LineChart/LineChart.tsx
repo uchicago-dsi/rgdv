@@ -1,6 +1,6 @@
-import { Axis, LineSeries, Tooltip, XYChart } from "@visx/xychart"
-import { scaleLinear, scaleTime } from "@visx/scale"
 import { withParentSize } from "@visx/responsive"
+import { scaleLinear, scaleTime } from "@visx/scale"
+import { Axis, LineSeries, Tooltip, XYChart } from "@visx/xychart"
 import React from "react"
 import { DataRecord, ResponsiveXYChartProps } from "./types"
 const getMinMax = (data: DataRecord[], keys: string[]) => {
