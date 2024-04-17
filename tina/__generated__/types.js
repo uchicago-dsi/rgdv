@@ -47,11 +47,24 @@ export const StatisticsPartsFragmentDoc = gql`
     __typename
     title
     column
+    tooltip
     templates {
       __typename
       body
       threshold
     }
+  }
+  overview {
+    __typename
+    title
+    column
+    tooltip
+    templates {
+      __typename
+      body
+      threshold
+    }
+    measure
   }
 }
     `;

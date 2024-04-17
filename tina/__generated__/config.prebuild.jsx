@@ -169,6 +169,73 @@ var nav_default = {
 };
 
 // tina/collections/stats.js
+var thresholdStatList = {
+  name: "thresholdStat",
+  label: "Tthreshold Stat",
+  type: "object",
+  list: true,
+  ui: {
+    itemProps: (item) => {
+      return { label: item?.title };
+    },
+    router: ({ document }) => {
+      if (document._sys.filename === "home") {
+        return `/`;
+      }
+      return void 0;
+    }
+  },
+  fields: [
+    {
+      name: "title",
+      label: "Title",
+      type: "string"
+    },
+    {
+      name: "column",
+      label: "Data Column",
+      type: "string"
+    },
+    {
+      name: "tooltip",
+      label: "Tooltip",
+      type: "rich-text"
+    },
+    {
+      name: "templates",
+      label: "Templates",
+      type: "object",
+      list: true,
+      ui: {
+        itemProps: (item) => {
+          return { label: item?.threshold };
+        },
+        router: ({ document }) => {
+          if (document._sys.filename === "home") {
+            return `/`;
+          }
+          return void 0;
+        }
+      },
+      fields: [
+        {
+          name: "body",
+          label: "Body",
+          type: "rich-text",
+          description: "Use double percent signs to denote a column (eg. My stat is %%column%%)."
+        },
+        {
+          name: "threshold",
+          label: "Threshold",
+          type: "number",
+          max: 100,
+          min: 0,
+          description: "The threshold of the statistic as a percentile. Reports will check each threshold in order, and if the value"
+        }
+      ]
+    }
+  ]
+};
 var stats_default = {
   label: "Reports",
   name: "statistics",
@@ -185,64 +252,20 @@ var stats_default = {
     // with section title
     // and rich-text body
     {
-      name: "stat",
-      label: "Stat",
-      type: "object",
-      list: true,
-      ui: {
-        itemProps: (item) => {
-          return { label: item?.title };
-        },
-        router: ({ document }) => {
-          if (document._sys.filename === "home") {
-            return `/`;
-          }
-          return void 0;
-        }
-      },
+      ...thresholdStatList,
+      label: "Stat Block",
+      name: "stat"
+    },
+    {
+      ...thresholdStatList,
+      label: "Overview",
+      name: "overview",
       fields: [
+        ...thresholdStatList.fields,
         {
-          name: "title",
-          label: "Title",
+          label: "Measure",
+          name: "measure",
           type: "string"
-        },
-        {
-          name: "column",
-          label: "Data Column",
-          type: "string"
-        },
-        {
-          name: "templates",
-          label: "Templates",
-          type: "object",
-          list: true,
-          ui: {
-            itemProps: (item) => {
-              return { label: item?.threshold };
-            },
-            router: ({ document }) => {
-              if (document._sys.filename === "home") {
-                return `/`;
-              }
-              return void 0;
-            }
-          },
-          fields: [
-            {
-              name: "body",
-              label: "Body",
-              type: "rich-text",
-              description: "Use double percent signs to denote a column (eg. My stat is %%column%%)."
-            },
-            {
-              name: "threshold",
-              label: "Threshold",
-              type: "number",
-              max: 100,
-              min: 0,
-              description: "The threshold of the statistic as a percentile. Reports will check each threshold in order, and if the value"
-            }
-          ]
         }
       ]
     }

@@ -9,7 +9,7 @@ import { getContentDirs } from "utils/contentDirs"
 import { getSummaryStats } from "utils/data/summaryStats"
 import TimeseriesChart from "components/TimeseriesChart"
 import Tooltip from "components/Tooltip"
-import { formatMarkdownTemplate } from "utils/data/formatDataTemplate"
+import { formatMarkdownTemplate, getThresholdValue } from "utils/data/formatDataTemplate"
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 
 type CountyRouteProps = {
@@ -66,16 +66,20 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
   // dynamic routes to use mdx content
   getContentDirs()
   const county = params.county
+
   const countyDataPath = path.join(process.cwd(), "public", "data", `county_summary_stats.msgpack`)
   const countyDemoPath = path.join(process.cwd(), "public", "data", `demography_county.msgpack`)
+
   const [countyStats, countyDemography, generalStatText] = await Promise.all([
     getSummaryStats<CountyData>(countyDataPath, county),
     getSummaryStats<CountyDemogData>(countyDemoPath, county),
     getMdxContent("statistics", "county.mdx"),
   ])
+
   if (!countyStats.ok || !countyDemography.ok) {
     return <div>Sorry, we couldn&apos;t find data for that county.</div>
   }
+
   // @ts-ignore
   const stats = generalStatText?.data?.statistics?.stat
   const data = {
@@ -83,13 +87,26 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
     ...countyDemography.result,
   } as CountyData & CountyDemogData
 
+  // @ts-ignore
+  const foodAccesstemplate = generalStatText?.data?.statistics?.overview?.find((f) => f.measure === "gravity")
+  // @ts-ignore
+  const marketPowerTemplate = generalStatText?.data?.statistics?.overview?.find((f) => f.measure === "hhi")
+  // @ts-ignore
+  const racialEquityTemplate = generalStatText?.data?.statistics?.overview?.find((f) => f.measure === "segregation")
+
   const countyName = data.NAME.toLowerCase().includes("county") ? data.NAME : `${data.NAME} County`
+
   // @ts-ignore
   const [foodAccess, marketPower, racialEquity] = [
-    data["gravity_2021_percentile"],
-    100 - data["hhi_2021_percentile"],
-    100 - data["segregation_2021_percentile"],
+    data[foodAccesstemplate.column as keyof typeof data],
+    100 - +data[marketPowerTemplate.column as keyof typeof data],
+    100 - +data[racialEquityTemplate.column as keyof typeof data],
   ]
+
+  const foodAccessText = getThresholdValue(foodAccess, data, foodAccesstemplate)
+  const marketPowerText = getThresholdValue(marketPower, data, marketPowerTemplate)
+  const racialEquityText = getThresholdValue(racialEquity, data, racialEquityTemplate)
+
   return (
     <div className="min-h-[100vh] bg-theme-canvas-500 p-4">
       {/* grid two equal columns
@@ -110,35 +127,26 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
         </div>
         <div>
           <div className="relative grid gap-8 lg:grid-cols-3">
-            <div className="border-solid border-r-neutral-500 lg:border-r-2 lg:pr-8">
-              {/* flex row div */}
-              <div className="flex items-center">
-                <h3 className="font-weight-900 font-sans text-xl">FOOD ACCESS</h3>
-                <Tooltip
-                  explainer={<p>Food access reflects the amount of grocery supply available relative to people living in a given area. A</p>}
-                  side="bottom"
-                  size="sm"
-                  withArrow
-                />
-              </div>
-              <h4 className="font-serif text-6xl">{foodAccess}</h4>
-              <PercentileLineChart value={foodAccess} />
-              <p className="font-serif">This county has food access better than {foodAccess}% of all counties.</p>
-            </div>
-            <div className="border-solid border-r-neutral-500 lg:border-r-2 lg:pr-8">
-              <h3 className="font-weight-900 font-sans text-xl">MARKET POWER</h3>
-              <h4 className="font-serif text-6xl">{marketPower}</h4>
-              <PercentileLineChart value={marketPower} />
-              <p className="font-serif">This county has market power better than {marketPower}% of all counties.</p>
-            </div>
-            <div className="lg:mr-8">
-              <h3 className="font-weight-900 font-sans text-xl">RACIAL EQUITY</h3>
-              <h4 className="font-serif text-6xl">{racialEquity}</h4>
-              <PercentileLineChart value={racialEquity} />
-              <p className="font-serif">
-                Black and White residents are more segregated than {100 - racialEquity}% of counties.
-              </p>
-            </div>
+            <DataLockup
+              title={foodAccesstemplate.title}
+              tooltip={foodAccesstemplate.tooltip}
+              value={+foodAccess}
+              description={foodAccessText}
+              border
+            />
+            <DataLockup
+              title={marketPowerTemplate.title}
+              tooltip={marketPowerTemplate.tooltip}
+              value={marketPower}
+              description={marketPowerText}
+              border
+            />
+            <DataLockup
+              title={racialEquityTemplate.title}
+              tooltip={racialEquityTemplate.tooltip}
+              value={racialEquity}
+              description={racialEquityText}
+            />
           </div>
         </div>
       </div>
@@ -146,24 +154,36 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
         <div className="relative h-[50vh] overflow-hidden rounded-md shadow-xl">
           <Map initialFilter={county} />
         </div>
-        <div className="rounded-md bg-white p-4 shadow-xl">
+        <div className="prose max-w-full rounded-md bg-white p-4 shadow-xl">
           <ul className="list-disc">
-            {stats.map((stat: { column: keyof typeof data; templates: any[] }, i: number) => {
-              let content = null
-              const value = data[stat.column]
-              if (!value) return null
-              stat.templates.forEach((template: any) => {
-                if (!template.threshold || value >= template.threshold) {
-                  const parsed = formatMarkdownTemplate(template.body, data)
-                  content = (
-                    <li className="mb-4 ml-4" key={i}>
-                      <TinaMarkdown content={parsed} />
-                    </li>
-                  )
+            {stats.map(
+              (
+                stat: { column: keyof typeof data; templates: any[]; title: string; tooltip: TinaMarkdownContent },
+                i: number
+              ) => {
+                const value = data[stat.column]
+                if (value === undefined) {
+                  return null
                 }
-              })
-              return content
-            })}
+                const parsed = getThresholdValue(value, data, stat)
+                if (!parsed) {
+                  return null
+                }
+                return (
+                  <li className="mb-4 ml-4" key={i}>
+                    <p>
+                      <b>
+                        {stat.title}
+                        <Tooltip explainer={<TinaMarkdown content={stat.tooltip} />} side="right" size="sm" withArrow />
+                      </b>
+                    </p>
+                    <div className="inline">
+                      <TinaMarkdown content={parsed} />
+                    </div>
+                  </li>
+                )
+              }
+            )}
           </ul>
         </div>
       </div>
@@ -175,3 +195,24 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
 }
 
 export default CountyPage
+
+const DataLockup: React.FC<{
+  title: string
+  tooltip: TinaMarkdownContent
+  value: number
+  description: TinaMarkdownContent[] | null
+  border?: boolean
+}> = ({ title, tooltip, value, description, border }) => {
+  return (
+    <div className={`${border ? "border-solid border-r-neutral-500 lg:border-r-2" : ""} lg:pr-8`}>
+      {/* flex row div */}
+      <div className="flex items-center">
+        <h3 className="font-weight-900 font-sans text-xl">{title}</h3>
+        <Tooltip explainer={<TinaMarkdown content={tooltip} />} side="bottom" size="sm" withArrow />
+      </div>
+      <h4 className="font-serif text-6xl">{value}</h4>
+      <PercentileLineChart value={value} />
+      {description ? <TinaMarkdown content={description} /> : null}
+    </div>
+  )
+}

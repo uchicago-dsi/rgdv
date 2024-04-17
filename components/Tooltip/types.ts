@@ -12,6 +12,8 @@ export const tooltipContent = cva([], {
         "border-black",
         "font-serif", 
         "max-w-[80vw]",
+        "w-72",
+        "prose",
         "text-black"],
     },
     size: {

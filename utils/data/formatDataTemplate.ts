@@ -2,6 +2,11 @@ import { TinaMarkdownContent } from "tinacms/dist/rich-text"
 
 const operators = ["-", "+", "*", "/"] as const
 
+const formatter = new Intl.NumberFormat('en-US', { 
+  maximumSignificantDigits: 1, 
+  notation: 'compact' 
+})
+
 const handleOperator = (operator: (typeof operators)[number], value: number, value2: number) => {
   switch (operator) {
     case "-":
@@ -36,10 +41,10 @@ export const formatDataTemplate = <T extends Record<string, any>>(_template: str
         })
         const [value1, operator, value2] = parts
         if (!value1 || !value2 || !operator) return
-        const result = handleOperator(operator, value1, value2)
+        const result = formatter.format(handleOperator(operator, value1, value2))
         template = template.replace(match, `${result}`)
       } else {
-        const value = data[key] as any
+        const value = isNaN(data[key]) ? data[key] as any : formatter.format(data[key] as any)
         value && (template = template.replace(match, `${value}`))
       }
     })
@@ -51,4 +56,18 @@ export const formatMarkdownTemplate = <T extends Record<string, any>>(body: obje
   const template = JSON.stringify(body)
   const formatted = formatDataTemplate(template, data)
   return JSON.parse(formatted) as TinaMarkdownContent[]
+}
+
+export const getThresholdValue = (value: number | string, data: any, stat: any) => {
+  let content = null
+  if (value === undefined) return null
+  const templates = stat.templates
+  for (let i = 0; i < templates.length; i++) {
+    const template = templates[i]
+    if (!template.threshold || value >= template.threshold) {
+      content = formatMarkdownTemplate(template.body, data)
+      break
+    }
+  }
+  return content
 }

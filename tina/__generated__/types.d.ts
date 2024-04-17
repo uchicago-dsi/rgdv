@@ -357,13 +357,30 @@ export type StatisticsStat = {
   __typename?: 'StatisticsStat';
   title?: Maybe<Scalars['String']['output']>;
   column?: Maybe<Scalars['String']['output']>;
+  tooltip?: Maybe<Scalars['JSON']['output']>;
   templates?: Maybe<Array<Maybe<StatisticsStatTemplates>>>;
+};
+
+export type StatisticsOverviewTemplates = {
+  __typename?: 'StatisticsOverviewTemplates';
+  body?: Maybe<Scalars['JSON']['output']>;
+  threshold?: Maybe<Scalars['Float']['output']>;
+};
+
+export type StatisticsOverview = {
+  __typename?: 'StatisticsOverview';
+  title?: Maybe<Scalars['String']['output']>;
+  column?: Maybe<Scalars['String']['output']>;
+  tooltip?: Maybe<Scalars['JSON']['output']>;
+  templates?: Maybe<Array<Maybe<StatisticsOverviewTemplates>>>;
+  measure?: Maybe<Scalars['String']['output']>;
 };
 
 export type Statistics = Node & Document & {
   __typename?: 'Statistics';
   body?: Maybe<Scalars['JSON']['output']>;
   stat?: Maybe<Array<Maybe<StatisticsStat>>>;
+  overview?: Maybe<Array<Maybe<StatisticsOverview>>>;
   id: Scalars['ID']['output'];
   _sys: SystemInfo;
   _values: Scalars['JSON']['output'];
@@ -387,12 +404,27 @@ export type StatisticsStatTemplatesFilter = {
 export type StatisticsStatFilter = {
   title?: InputMaybe<StringFilter>;
   column?: InputMaybe<StringFilter>;
+  tooltip?: InputMaybe<RichTextFilter>;
   templates?: InputMaybe<StatisticsStatTemplatesFilter>;
+};
+
+export type StatisticsOverviewTemplatesFilter = {
+  body?: InputMaybe<RichTextFilter>;
+  threshold?: InputMaybe<NumberFilter>;
+};
+
+export type StatisticsOverviewFilter = {
+  title?: InputMaybe<StringFilter>;
+  column?: InputMaybe<StringFilter>;
+  tooltip?: InputMaybe<RichTextFilter>;
+  templates?: InputMaybe<StatisticsOverviewTemplatesFilter>;
+  measure?: InputMaybe<StringFilter>;
 };
 
 export type StatisticsFilter = {
   body?: InputMaybe<RichTextFilter>;
   stat?: InputMaybe<StatisticsStatFilter>;
+  overview?: InputMaybe<StatisticsOverviewFilter>;
 };
 
 export type StatisticsConnectionEdges = {
@@ -553,12 +585,27 @@ export type StatisticsStatTemplatesMutation = {
 export type StatisticsStatMutation = {
   title?: InputMaybe<Scalars['String']['input']>;
   column?: InputMaybe<Scalars['String']['input']>;
+  tooltip?: InputMaybe<Scalars['JSON']['input']>;
   templates?: InputMaybe<Array<InputMaybe<StatisticsStatTemplatesMutation>>>;
+};
+
+export type StatisticsOverviewTemplatesMutation = {
+  body?: InputMaybe<Scalars['JSON']['input']>;
+  threshold?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type StatisticsOverviewMutation = {
+  title?: InputMaybe<Scalars['String']['input']>;
+  column?: InputMaybe<Scalars['String']['input']>;
+  tooltip?: InputMaybe<Scalars['JSON']['input']>;
+  templates?: InputMaybe<Array<InputMaybe<StatisticsOverviewTemplatesMutation>>>;
+  measure?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type StatisticsMutation = {
   body?: InputMaybe<Scalars['JSON']['input']>;
   stat?: InputMaybe<Array<InputMaybe<StatisticsStatMutation>>>;
+  overview?: InputMaybe<Array<InputMaybe<StatisticsOverviewMutation>>>;
 };
 
 export type PagePartsFragment = { __typename: 'Page', body?: any | null, sections?: Array<{ __typename: 'PageSections', title?: string | null, body?: any | null } | null> | null };
@@ -567,7 +614,7 @@ export type PostPartsFragment = { __typename: 'Post', title?: string | null, bod
 
 export type NavPartsFragment = { __typename: 'Nav', title?: string | null, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null };
 
-export type StatisticsPartsFragment = { __typename: 'Statistics', body?: any | null, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null };
+export type StatisticsPartsFragment = { __typename: 'Statistics', body?: any | null, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null, overview?: Array<{ __typename: 'StatisticsOverview', title?: string | null, column?: string | null, tooltip?: any | null, measure?: string | null, templates?: Array<{ __typename: 'StatisticsOverviewTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null };
 
 export type PageQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -631,7 +678,7 @@ export type StatisticsQueryVariables = Exact<{
 }>;
 
 
-export type StatisticsQuery = { __typename?: 'Query', statistics: { __typename: 'Statistics', id: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null } };
+export type StatisticsQuery = { __typename?: 'Query', statistics: { __typename: 'Statistics', id: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null, overview?: Array<{ __typename: 'StatisticsOverview', title?: string | null, column?: string | null, tooltip?: any | null, measure?: string | null, templates?: Array<{ __typename: 'StatisticsOverviewTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null } };
 
 export type StatisticsConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -643,7 +690,7 @@ export type StatisticsConnectionQueryVariables = Exact<{
 }>;
 
 
-export type StatisticsConnectionQuery = { __typename?: 'Query', statisticsConnection: { __typename?: 'StatisticsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'StatisticsConnectionEdges', cursor: string, node?: { __typename: 'Statistics', id: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null } | null } | null> | null } };
+export type StatisticsConnectionQuery = { __typename?: 'Query', statisticsConnection: { __typename?: 'StatisticsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'StatisticsConnectionEdges', cursor: string, node?: { __typename: 'Statistics', id: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null, overview?: Array<{ __typename: 'StatisticsOverview', title?: string | null, column?: string | null, tooltip?: any | null, measure?: string | null, templates?: Array<{ __typename: 'StatisticsOverviewTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null } | null } | null> | null } };
 
 export const PagePartsFragmentDoc = gql`
     fragment PageParts on Page {
@@ -687,11 +734,24 @@ export const StatisticsPartsFragmentDoc = gql`
     __typename
     title
     column
+    tooltip
     templates {
       __typename
       body
       threshold
     }
+  }
+  overview {
+    __typename
+    title
+    column
+    tooltip
+    templates {
+      __typename
+      body
+      threshold
+    }
+    measure
   }
 }
     `;

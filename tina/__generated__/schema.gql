@@ -220,12 +220,27 @@ type StatisticsStatTemplates {
 type StatisticsStat {
   title: String
   column: String
+  tooltip: JSON
   templates: [StatisticsStatTemplates]
+}
+
+type StatisticsOverviewTemplates {
+  body: JSON
+  threshold: Float
+}
+
+type StatisticsOverview {
+  title: String
+  column: String
+  tooltip: JSON
+  templates: [StatisticsOverviewTemplates]
+  measure: String
 }
 
 type Statistics implements Node & Document {
   body: JSON
   stat: [StatisticsStat]
+  overview: [StatisticsOverview]
   id: ID!
   _sys: SystemInfo!
   _values: JSON!
@@ -249,12 +264,27 @@ input StatisticsStatTemplatesFilter {
 input StatisticsStatFilter {
   title: StringFilter
   column: StringFilter
+  tooltip: RichTextFilter
   templates: StatisticsStatTemplatesFilter
+}
+
+input StatisticsOverviewTemplatesFilter {
+  body: RichTextFilter
+  threshold: NumberFilter
+}
+
+input StatisticsOverviewFilter {
+  title: StringFilter
+  column: StringFilter
+  tooltip: RichTextFilter
+  templates: StatisticsOverviewTemplatesFilter
+  measure: StringFilter
 }
 
 input StatisticsFilter {
   body: RichTextFilter
   stat: StatisticsStatFilter
+  overview: StatisticsOverviewFilter
 }
 
 type StatisticsConnectionEdges {
@@ -337,12 +367,27 @@ input StatisticsStatTemplatesMutation {
 input StatisticsStatMutation {
   title: String
   column: String
+  tooltip: JSON
   templates: [StatisticsStatTemplatesMutation]
+}
+
+input StatisticsOverviewTemplatesMutation {
+  body: JSON
+  threshold: Float
+}
+
+input StatisticsOverviewMutation {
+  title: String
+  column: String
+  tooltip: JSON
+  templates: [StatisticsOverviewTemplatesMutation]
+  measure: String
 }
 
 input StatisticsMutation {
   body: JSON
   stat: [StatisticsStatMutation]
+  overview: [StatisticsOverviewMutation]
 }
 
 schema {

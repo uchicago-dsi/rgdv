@@ -36,10 +36,23 @@ fragment StatisticsParts on Statistics {
     __typename
     title
     column
+    tooltip
     templates {
       __typename
       body
       threshold
     }
+  }
+  overview {
+    __typename
+    title
+    column
+    tooltip
+    templates {
+      __typename
+      body
+      threshold
+    }
+    measure
   }
 }
