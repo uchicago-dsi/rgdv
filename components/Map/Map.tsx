@@ -54,7 +54,7 @@ const BreakText: React.FC<{ breaks: number[]; index: number; colors: number[][] 
   )
 }
 
-const Tooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
+const MapTooltip: React.FC<{ dataService: DataService }> = ({ dataService }) => {
   const tooltip = useAppSelector((state) => state.map.tooltip)
   const { x, y, id } = tooltip || {}
   // @ts-ignore
@@ -127,7 +127,7 @@ export type MapProps = {
 const MapOuter: React.FC<MapProps> = (props) => {
   return (
     <Provider store={store}>
-      <Map {...props}/>
+      <Map {...props} />
     </Provider>
   )
 }
@@ -142,17 +142,14 @@ const INITIAL_VIEW_STATE = {
 }
 
 // const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
-export const Map: React.FC<MapProps> = ({
-  initialFilter
-}) => {
+export const Map: React.FC<MapProps> = ({ initialFilter }) => {
   const [clickedGeo, setClickedGeo] = useState<any>({
     geoid: null,
     geometry: null,
     centroid: null,
   })
 
-  const { isReady, colorFunc, colors, ds, breaks, currentColumnSpec, currentDataSpec, currentFilter } =
-    useDataService()
+  const { isReady, colorFunc, colors, ds, breaks, currentColumnSpec, currentDataSpec, currentFilter } = useDataService()
   const getElementColor = (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
     if (!isReady) {
       return [120, 120, 120, 120]
@@ -236,7 +233,7 @@ export const Map: React.FC<MapProps> = ({
       dispatch(setCurrentFilter(initialFilter))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[initialFilter])
+  }, [initialFilter])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -261,7 +258,7 @@ export const Map: React.FC<MapProps> = ({
   }, [clickedGeo.geoid])
 
   return (
-    <div className="w-[100vw] h-[100vh] max-w-full max-h-full relative top-0 left-0">
+    <div className="relative left-0 top-0 h-[100vh] max-h-full w-[100vw] max-w-full">
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
         <div className="ColorLegend">
           <h3>{currentColumnSpec?.name}</h3>
@@ -335,7 +332,7 @@ export const Map: React.FC<MapProps> = ({
           </div>
         </DropdownMenuDemo>
       </div>
-      <Tooltip dataService={ds} />
+      <MapTooltip dataService={ds} />
       <GlMap
         // hash={true}
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
