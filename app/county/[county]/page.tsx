@@ -74,7 +74,7 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
     getMdxContent("statistics", "county.mdx"),
   ])
   if (!countyStats.ok || !countyDemography.ok) {
-    return <div>Sorry, we couldn't find data for that county.</div>
+    return <div>Sorry, we couldn&apos;t find data for that county.</div>
   }
   // @ts-ignore
   const stats = generalStatText?.data?.statistics?.stat
@@ -103,9 +103,9 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
           <div className="prose max-w-none">
             <h2 className="mb-0 text-sm font-light">COUNTY REPORT</h2>
             <h1>{countyName}</h1>
-            <p>
+            {/* <p>
               <TinaMarkdown content={generalStatText.data.statistics.body} />
-            </p>
+            </p> */}
           </div>
         </div>
         <div>
