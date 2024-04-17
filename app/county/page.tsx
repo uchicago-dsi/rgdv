@@ -14,8 +14,7 @@ const CountyPage: React.FC = () => {
       setFilter(e)
     }
   }
-  
-  console.log(filter)
+
   return (
     <div className="bg-canvas-500 align-center flex min-h-[100vh] items-center justify-center p-8">
       <div className="bg-white p-8 shadow-xl">
