@@ -8,22 +8,9 @@ import { getMdxContent } from "hooks/useMdxContent"
 import { getContentDirs } from "utils/contentDirs"
 import { getSummaryStats } from "utils/data/summaryStats"
 import TimeseriesChart from "components/TimeseriesChart"
+import Tooltip from "components/Tooltip"
+import { formatMarkdownTemplate } from "utils/data/formatDataTemplate"
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
-
-const operators = ["-", "+", "*", "/"] as const
-
-const handleOperator = (operator: (typeof operators)[number], value: number, value2: number) => {
-  switch (operator) {
-    case "-":
-      return value - value2
-    case "+":
-      return value + value2
-    case "*":
-      return value * value2
-    case "/":
-      return value / value2
-  }
-}
 
 type CountyRouteProps = {
   params: {
@@ -31,20 +18,49 @@ type CountyRouteProps = {
   }
 }
 
-type CountyDataKeys = [
-  "county",
-  "gravity_2021",
-  "gravity_2021_percentile",
-  "gravity_2021_state_percentile",
-  "hhi_2021",
-  "hhi_2021_percentile",
-  "hhi_2021_state_percentile",
-  "segregation_2021",
-  "segregation_2021_percentile",
-  "segregation_2021_state_percentile",
-]
-type CountyDataValues = [string, number, number, number, number, number, number, number, number, number]
-type CountyDataMap = Map<CountyDataKeys, CountyDataValues>
+type CountyData = {
+  county: string
+  gravity_2021: number
+  gravity_2021_percentile: number
+  gravity_2021_state_percentile: number
+  hhi_2021: number
+  hhi_2021_percentile: number
+  hhi_2021_state_percentile: number
+  segregation_2021: number
+  segregation_2021_percentile: number
+  segregation_2021_state_percentile: number
+}
+
+type CountyDemogData = {
+  GEOID: string
+  NAME: string
+  TOTAL_POPULATION: number
+  "NH WHITE ALONE": number
+  "NH BLACK ALONE": number
+  "NH AMERICAN INDIAN ALONE": number
+  "NH ASIAN ALONE": number
+  "NH PACIFIC ISLANDER ALONE": number
+  "NH SOME OTHER RACE": number
+  "NH TWO OR MORE": number
+  "NH TWO OR MORE INCLUDING SOME OTHER": number
+  "NH TWO OR MORE EXCLUDING SOME OTHER": number
+  "HISPANIC OR LATINO": number
+  "PCT NH WHITE": number
+  "PCT NH BLACK": number
+  "PCT NH AMERICAN INDIAN": number
+  "PCT NH ASIAN": number
+  "PCT NH PACIFIC ISLANDER": number
+  "PCT NH SOME OTHER": number
+  "PCT NH TWO OR MORE": number
+  "PCT NH TWO OR MORE INCLUDING SOME OTHER": number
+  "PCT NH TWO OR MORE EXCLUDING SOME OTHER": number
+  "PCT HISPANIC OR LATINO": number
+  MEDIAN_AGE: number
+  POVERTY_RATE: number
+  MEDIAN_HOUSEHOLD_INCOME: number
+  "NO HEALTHCARE TOTAL": number
+  PCT_NO_HEALTHCARE: number
+}
 
 const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
   // dynamic routes to use mdx content
@@ -53,133 +69,107 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
   const countyDataPath = path.join(process.cwd(), "public", "data", `county_summary_stats.msgpack`)
   const countyDemoPath = path.join(process.cwd(), "public", "data", `demography_county.msgpack`)
   const [countyStats, countyDemography, generalStatText] = await Promise.all([
-    getSummaryStats<CountyDataMap>(countyDataPath, county),
-    getSummaryStats<CountyDataMap>(countyDemoPath, county),
+    getSummaryStats<CountyData>(countyDataPath, county),
+    getSummaryStats<CountyDemogData>(countyDemoPath, county),
     getMdxContent("statistics", "county.mdx"),
   ])
-  console.log()
-  // @ts-ignore
-  const stats = generalStatText?.data?.statistics?.stat
-
-  const data = {
-    ...Object.fromEntries(countyStats.result!),
-    ...Object.fromEntries(countyDemography.result!),
+  if (!countyStats.ok || !countyDemography.ok) {
+    return <div>Sorry, we couldn't find data for that county.</div>
   }
   // @ts-ignore
+  const stats = generalStatText?.data?.statistics?.stat
+  const data = {
+    ...countyStats.result,
+    ...countyDemography.result,
+  } as CountyData & CountyDemogData
+
+  const countyName = data.NAME.toLowerCase().includes("county") ? data.NAME : `${data.NAME} County`
+  // @ts-ignore
   const [foodAccess, marketPower, racialEquity] = [
-    // @ts-ignore
-    parseInt(data["gravity_2021_percentile"]),
-    // @ts-ignore
+    data["gravity_2021_percentile"],
     100 - data["hhi_2021_percentile"],
-    // @ts-ignore
     100 - data["segregation_2021_percentile"],
   ]
   return (
     <div className="min-h-[100vh] bg-theme-canvas-500 p-4">
-      {countyStats.ok === false ? (
-        <div>County not found</div>
-      ) : (
-        <>
-          {/* grid two equal columns
+      {/* grid two equal columns
         collapse on mobile */}
-          <div className="grid gap-8 lg:grid-cols-2">
-            <div>
-              <a href="/county" className="align-center flex items-center pb-2 text-sm text-gray-600">
-                <ArrowLeftIcon className="mr-2 inline size-4" />
-                Back to counties
-              </a>
-              <div className="prose max-w-none">
-                <h2 className="font-light">COUNTY REPORT</h2>
-                <h1>{county}</h1>
-                <p>
-                  Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit
-                  amet Lorem ipsum dolor sit amet{" "}
-                </p>
+      <div className="grid gap-8 lg:grid-cols-2">
+        <div>
+          <a href="/county" className="align-center mb-4 flex items-center pb-2 text-sm text-gray-600">
+            <ArrowLeftIcon className="mr-2 inline size-4" />
+            Back to counties
+          </a>
+          <div className="prose max-w-none">
+            <h2 className="mb-0 text-sm font-light">COUNTY REPORT</h2>
+            <h1>{countyName}</h1>
+            <p>
+              <TinaMarkdown content={generalStatText.data.statistics.body} />
+            </p>
+          </div>
+        </div>
+        <div>
+          <div className="relative grid gap-8 lg:grid-cols-3">
+            <div className="border-solid border-r-neutral-500 lg:border-r-2 lg:pr-8">
+              {/* flex row div */}
+              <div className="flex items-center">
+                <h3 className="font-weight-900 font-sans text-xl">FOOD ACCESS</h3>
+                <Tooltip
+                  explainer={<p>Food access reflects the amount of grocery supply available relative to people living in a given area. A</p>}
+                  side="bottom"
+                  size="sm"
+                  withArrow
+                />
               </div>
+              <h4 className="font-serif text-6xl">{foodAccess}</h4>
+              <PercentileLineChart value={foodAccess} />
+              <p className="font-serif">This county has food access better than {foodAccess}% of all counties.</p>
             </div>
-            <div>
-              <div className="relative grid gap-8 lg:grid-cols-3">
-                <div className="border-solid border-r-neutral-500 lg:border-r-2 lg:pr-8">
-                  <h3 className="font-weight-900 font-sans text-xl">FOOD ACCESS</h3>
-                  <h4 className="font-serif text-6xl">{foodAccess}</h4>
-                  <PercentileLineChart value={foodAccess} />
-                  <p className="font-serif">This county has food access better than {foodAccess}% of all counties.</p>
-                </div>
-                <div className="border-solid border-r-neutral-500 lg:border-r-2 lg:pr-8">
-                  <h3 className="font-weight-900 font-sans text-xl">MARKET POWER</h3>
-                  <h4 className="font-serif text-6xl">{marketPower}</h4>
-                  <PercentileLineChart value={marketPower} />
-                  <p className="font-serif">This county has market power better than {marketPower}% of all counties.</p>
-                </div>
-                <div className="lg:mr-8">
-                  <h3 className="font-weight-900 font-sans text-xl">RACIAL EQUITY</h3>
-                  <h4 className="font-serif text-6xl">{racialEquity}</h4>
-                  <PercentileLineChart value={racialEquity} />
-                  <p className="font-serif">
-                    Black and White residents are more segregated than {100 - racialEquity}% of counties.
-                  </p>
-                </div>
-              </div>
+            <div className="border-solid border-r-neutral-500 lg:border-r-2 lg:pr-8">
+              <h3 className="font-weight-900 font-sans text-xl">MARKET POWER</h3>
+              <h4 className="font-serif text-6xl">{marketPower}</h4>
+              <PercentileLineChart value={marketPower} />
+              <p className="font-serif">This county has market power better than {marketPower}% of all counties.</p>
+            </div>
+            <div className="lg:mr-8">
+              <h3 className="font-weight-900 font-sans text-xl">RACIAL EQUITY</h3>
+              <h4 className="font-serif text-6xl">{racialEquity}</h4>
+              <PercentileLineChart value={racialEquity} />
+              <p className="font-serif">
+                Black and White residents are more segregated than {100 - racialEquity}% of counties.
+              </p>
             </div>
           </div>
-          <div className="mt-8 grid gap-8 lg:grid-cols-2">
-            <div className="relative h-[50vh] overflow-hidden rounded-md shadow-xl">
-              <Map initialFilter={county} />
-            </div>
-            <div className="rounded-md bg-white p-4 shadow-xl">
-              <ul className="list-disc">
-                {stats.map((stat: any, i: number) => {
-                  let content = null
-                  const value = data[stat.column]
-                  if (!value) return null
-                  stat.templates.forEach((template: any) => {
-                    if (!template.threshold || value >= template.threshold) {
-                      let stringified = JSON.stringify(template.body)
-                      // find all %%string%%
-                      const matches = stringified.match(/%%(.*?)%%/g)
-                      if (matches) {
-                        matches.forEach((match) => {
-                          const key = match.replace(/%/g, "")
-                          if (key.includes("|")) {
-                            const parts = key.split("|").map((part) => {
-                              if (!isNaN(+part)) {
-                                return +part
-                              }
-                              if (operators.includes(part)) {
-                                return part
-                              }
-                              const value = data[part] as any
-                              return value || null
-                            })
-                            const [value1, operator, value2] = parts
-                            if (!value1 || !value2 || !operator) return
-                            // @ts-ignore
-                            const result = handleOperator(operator, value1, value2)
-                            stringified = stringified.replace(match, `${result}`)
-                          } else {
-                            const value = data[key] as any
-                            value && (stringified = stringified.replace(match, `${value}`))
-                          }
-                        })
-                      }
-                      const parsed = JSON.parse(stringified) as TinaMarkdownContent[]
-                      content = (
-                        <li className="mb-4 ml-4" key={i}>
-                          <TinaMarkdown content={parsed} />
-                        </li>
-                      )
-                    }
-                  })
-                  return content
-                })}
-              </ul>
-            </div>
-          </div>
-          <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl">
-            <TimeseriesChart id={county} />
-          </div>
-        </>
-      )}
+        </div>
+      </div>
+      <div className="mt-8 grid gap-8 lg:grid-cols-2">
+        <div className="relative h-[50vh] overflow-hidden rounded-md shadow-xl">
+          <Map initialFilter={county} />
+        </div>
+        <div className="rounded-md bg-white p-4 shadow-xl">
+          <ul className="list-disc">
+            {stats.map((stat: { column: keyof typeof data; templates: any[] }, i: number) => {
+              let content = null
+              const value = data[stat.column]
+              if (!value) return null
+              stat.templates.forEach((template: any) => {
+                if (!template.threshold || value >= template.threshold) {
+                  const parsed = formatMarkdownTemplate(template.body, data)
+                  content = (
+                    <li className="mb-4 ml-4" key={i}>
+                      <TinaMarkdown content={parsed} />
+                    </li>
+                  )
+                }
+              })
+              return content
+            })}
+          </ul>
+        </div>
+      </div>
+      <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl">
+        <TimeseriesChart id={county} />
+      </div>
     </div>
   )
 }

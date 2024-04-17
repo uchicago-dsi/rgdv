@@ -1,8 +1,7 @@
 import { UnpackrStream } from "msgpackr"
 import fs from "fs"
-import { ok } from "assert"
 
-export const getSummaryStats = async <T extends any>(filepath: string, id: string) => {
+export const getSummaryStats = async <T extends Record<string, unknown>>(filepath: string, id: string) => {
   try {
     const stream = fs.createReadStream(filepath)
     const unpackr = new UnpackrStream()
@@ -13,7 +12,7 @@ export const getSummaryStats = async <T extends any>(filepath: string, id: strin
       if (d) {
         return {
           ok: true,
-          result: d as T
+          result: Object.fromEntries(d) as T
         }
       }
     }
