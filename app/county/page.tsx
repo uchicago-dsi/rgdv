@@ -10,10 +10,12 @@ const CountyPage: React.FC = () => {
     //`${number}${number}` | `${number}${number}${number}${number}${number}`
     if (e.length === 5) {
       router.push(`/county/${e}`)
-    } else {
+    } else if (e.length === 2) {
       setFilter(e)
     }
   }
+  
+  console.log(filter)
   return (
     <div className="bg-canvas-500 align-center flex min-h-[100vh] items-center justify-center p-8">
       <div className="bg-white p-8 shadow-xl">
