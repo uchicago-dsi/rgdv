@@ -1,8 +1,44 @@
-import { Axis, LineSeries,  Tooltip, XYChart } from "@visx/xychart"
+import { Axis, LineSeries, Tooltip, XYChart } from "@visx/xychart"
 import { scaleLinear, scaleTime } from "@visx/scale"
 import { withParentSize } from "@visx/responsive"
 import React from "react"
 import { DataRecord, ResponsiveXYChartProps } from "./types"
+const getMinMax = (data: DataRecord[], keys: string[]) => {
+  const minMax: Record<string, { min: number; max: number }> = {}
+
+  keys.forEach((key) => {
+    minMax[key] = {
+      min: Math.pow(10, 12),
+      max: Math.pow(10, 12) * -1,
+    }
+  })
+  for (let i = 0; i < data.length; i++) {
+    const row = data[i]
+    if (!row) {
+      continue
+    }
+    for (const key of keys) {
+      if (!row[key]) {
+        continue
+      }
+      const currKey = minMax[key]!
+
+      if (!currKey) {
+        minMax[key] = {
+          min: row[key],
+          max: row[key],
+        }
+      }
+      if (row[key] < currKey.min) {
+        currKey.min = row[key]
+      }
+      if (row[key] > currKey.max) {
+        currKey.max = row[key]
+      }
+    }
+  }
+  return minMax
+}
 
 const ResponsiveXYChart = withParentSize<ResponsiveXYChartProps>(
   ({ parentWidth, parentHeight, data, dataKey, yearKey }) => {
@@ -14,21 +50,22 @@ const ResponsiveXYChart = withParentSize<ResponsiveXYChartProps>(
         [yearKey]: new Date(`${d[yearKey]}`),
       }
     })
+    const minMax = getMinMax(parsedData, [yearKey, dataKey])
     // Scales for the chart
     const dateScale = scaleTime({
       // @ts-ignore
-      domain: [Math.min(...parsedData.map((d) => d[yearKey])), Math.max(...parsedData.map((d) => d[yearKey]))],
+      domain: [minMax[yearKey].min, minMax[yearKey].max],
     })
-
     const valueScale = scaleLinear({
-      domain: [0, Math.max(...parsedData.map((d) => +d[dataKey]))], // Ensure conversion to number
+      // @ts-ignore
+      domain: [minMax[dataKey].min, minMax[dataKey].max],
       nice: true,
     })
 
     return (
       <XYChart
         xScale={{ type: "time", scale: dateScale }}
-        yScale={{ type: "linear", scale: valueScale }}
+        yScale={{ type: "linear", scale: valueScale}}
         width={parentWidth}
         height={Math.max(parentHeight, 300)} // Ensure the chart has a minimum height
         margin={margin}
@@ -41,12 +78,14 @@ const ResponsiveXYChart = withParentSize<ResponsiveXYChartProps>(
         />
         <Axis
           orientation="bottom"
+          tickFormat={(d) => d.getFullYear()}
+        />
+        <Axis orientation="left" 
+          numTicks={5}
           tickFormat={(d) => {
-            console.log(d)
-            return d.getFullYear()
+            return d
           }}
         />
-        <Axis orientation="left" />
         <Tooltip
           showVerticalCrosshair
           showSeriesGlyphs
@@ -55,7 +94,7 @@ const ResponsiveXYChart = withParentSize<ResponsiveXYChartProps>(
           renderTooltip={({ tooltipData }) => (
             <div>
               {/* @ts-ignore */}
-              <div>{`Date: ${tooltipData?.nearestDatum?.datum?.[yearKey]?.getFullYear()+1}`}</div>
+              <div>{`Date: ${tooltipData?.nearestDatum?.datum?.[yearKey]?.getFullYear() + 1}`}</div>
               {/* @ts-ignore */}
               <div>{`${dataKey}: ${tooltipData?.nearestDatum?.datum?.[dataKey]}`}</div>
             </div>
