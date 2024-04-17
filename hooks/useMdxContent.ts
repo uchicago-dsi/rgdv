@@ -18,6 +18,7 @@ const parseRich = (mdxContent: string) => {
   }, (f: any) => f)
 }
 
+const parseCache: any = {}
 
 export const getMdxContent = async <T extends any>(contentType: keyof typeof client.queries, relativePath: string)=> {
   if (DEV) {
@@ -26,25 +27,25 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
   } else {
     getContentDirs()
     const filepath = path.join(process.cwd(), 'content', contentType, relativePath)
-    // @ts-ignore
-    const schema = collections[contentType]
-    const mdxContent = fs.readFileSync(filepath, 'utf-8')
-    const frontMatter = matter(mdxContent)
-    const fmData = frontMatter.data
+    if (!parseCache[filepath]) {
+      // @ts-ignore
+      const schema = collections[contentType]
+      const mdxContent = fs.readFileSync(filepath, 'utf-8')
+      const frontMatter = matter(mdxContent)
+      const fmData = frontMatter.data
 
-    const data: any = {
-      parsed: true,
-      [contentType]: {
-        id: `content/${contentType}/${relativePath}`,
-        __typename: contentType,
-        body: parseRich(frontMatter.content),
-        ...fmData
+      parseCache[filepath] = {
+        [contentType]: {
+          id: `content/${contentType}/${relativePath}`,
+          __typename: contentType,
+          body: parseRich(frontMatter.content),
+          ...fmData
+        }
       }
+      parseRichRecursive(parseCache[filepath][contentType], schema)
     }
-    parseRichRecursive(data[contentType], schema)
-
     return {
-      data
+      data: parseCache[filepath] as T
     } as {
       data: T
     }
