@@ -46,7 +46,7 @@ const HhiConfig: DataConfig = {
   attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
   colorScheme: "schemeYlOrRd",
   nBins: 6,
-} 
+}
 const DollarStoreHhiConfig: DataConfig = {
   filename: "data/concentration_metrics_wide_ds.parquet",
   name: "Concentration Metrics (No Dollar Stores)",
@@ -101,8 +101,43 @@ const SdohData: DataConfig = {
   nBins: 5,
 }
 
+const DemogData: DataConfig = {
+  filename: "data/demography_tract.parquet",
+  name: "Demographic Data",
+  id: "GEOID",
+  columns: [
+    {
+      name: "Total Population",
+      column: "TOTAL_POPULATION",
+      description: "Total population",
+    },
+    {
+      name: "Median Household Income",
+      column: "MEDIAN_HOUSEHOLD_INCOME",
+      description: "Median household income",
+    },
+    {
+      name: "Poverty Rate",
+      column: "POVERTY_RATE",
+      description: "Poverty rate",
+    },
+    {
+      name: "No Healthcare (Percent)",
+      column: "PCT_NO_HEALTHCARE",
+      description: "Percentage of population without healthcare",
+    },
+    {
+      name: "Percent Black or African American",
+      column: "NH BLACK ALONE",
+      description: "Percentage of population that is Black or African American",
+    },
+  ],
+  eager: true,
+  attribution: "Data source: US Census Bureau. ACS 2021 5 year estimates",
+  colorScheme: "schemeBlues",
+  nBins: 7,
+}
 
 export const defaultData = GravityDollar.filename
 export const defaultYear = 2020
-export default [GravityDollar, GravityNoDollar, HhiConfig, DollarStoreHhiConfig, SdohData, 
-]
+export default [GravityDollar, GravityNoDollar, HhiConfig, DollarStoreHhiConfig, SdohData, DemogData]
