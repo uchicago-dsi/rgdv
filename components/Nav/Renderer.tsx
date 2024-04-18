@@ -7,10 +7,12 @@ export const NavRenderer: React.FC<NavProps> = ({ navInfo }) => {
   // right aligned list of items
   // render subLinks as dropdown
   return (
-    <div className="sticky top-0 p-4 bg-white/85 text-neutral-950 z-50 mt-0 shadow-md">
-      <div className="flex justify-between items-center">
-        <span className="prose">
-          <h1>{navInfo.data.nav.title}</h1>
+    <div className="sticky top-0 z-50 mt-0 bg-white/85 p-4 text-neutral-950 shadow-md">
+      <div className="flex items-center justify-between">
+        <span className="font-display prose m-0 p-0">
+          <a href="/" className="m-0 p-0 line-height-0 no-underline">
+            <h1 className="m-0 p-0">{navInfo.data.nav.title}</h1>
+          </a>
         </span>
         <ul className="flex justify-end">
           {links.map((link, li) => {
