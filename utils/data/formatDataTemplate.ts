@@ -3,7 +3,7 @@ import { TinaMarkdownContent } from "tinacms/dist/rich-text"
 const operators = ["-", "+", "*", "/"] as const
 
 const formatter = new Intl.NumberFormat('en-US', { 
-  maximumSignificantDigits: 1, 
+  maximumSignificantDigits: 3, 
   notation: 'compact' 
 })
 
