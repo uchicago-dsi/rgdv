@@ -6,6 +6,7 @@ import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
 import "./styles.css"
 import { CheckboxIcon } from "@radix-ui/react-icons"
 import * as Select from "@radix-ui/react-select"
+import { useRouter } from "next/navigation"
 import React, { useEffect, useRef, useState } from "react"
 import { ScaleControl } from "react-map-gl"
 import GlMap, { NavigationControl, useControl } from "react-map-gl"
@@ -143,6 +144,7 @@ const INITIAL_VIEW_STATE = {
 
 // const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
 export const Map: React.FC<MapProps> = ({ initialFilter }) => {
+  const router = useRouter()
   const [clickedGeo, setClickedGeo] = useState<any>({
     geoid: null,
     geometry: null,
@@ -193,9 +195,12 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       updateTriggers: {
         getFillColor: [isReady, currentColumnSpec?.column, currentDataSpec?.filename, colorFunc],
       },
-      onClick: (info: any) => {
-        console.log(info?.object?.properties?.GEOID)
-        setClickedGeo({ geoid: info.object?.properties?.GEOID })
+      onClick: (info, event) => {
+        if (event?.srcEvent?.altKey) {
+          router.push(`/tract/${info.object?.properties?.GEOID}`)
+        } else {
+          setClickedGeo({ geoid: info.object?.properties?.GEOID })
+        }
       },
       onHover: (info: any) => {
         const isZeroPop = zeroPopTracts.indexOf(info.object?.properties?.GEOID) !== -1
