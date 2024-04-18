@@ -1,0 +1,136 @@
+---
+tooltip:
+  - title: Food Access
+    body: >
+      Food access reflects the amount of grocery supply available relative to
+      people living in a given area.
+stat:
+  - title: Median Food Access (Gravity)
+    column: gravity_2021
+    tooltip: "Food access reflects the amount of grocery supply available relative to people living in a given area. This measure is calculated using a gravity model, which estimates access to services based on the number of service providers, the number of people in a given area, and how close they are together.\n\nThis score reflects the median tract value in the state. The score is relative to the rest of the United States, where one hundred (100) is the best food access and zero (0) is the worst food access.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    templates:
+      - body: >
+          The gravity value for ... state is %%gravity\_2021%%.
+
+
+          That means that %%100|-|gravity\_2021\_percentile%%% of all counties
+          have better food access.
+  - title: Median Market Concentration (HHI)
+    column: hhi_2021
+    tooltip: "Market concentration is a measure of diversity in the marketplace. It looks at how dominant single grocery stores are in an area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThis score reflects the median tract value for the state. The score is relative to the rest of the United States, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    templates:
+      - body: >
+          The HHI index for %%NAME%% is %%hhi\_2021%%, where 1 is total monopoly
+          and 0 is a perfectly distributed market. This measure means that you
+          have 1 in %%1|/|hhi\_2021%% chance of guessing where someone shops.
+  - title: Median Segregation
+    column: segregation_2021
+    tooltip: "ICE (Indicators of Concentration at the Extremes) is a measure that looks at how concentrated and how separate populations live within an area. In this case, the ICE metric reflects how segregated black or african american and white people tend to be in the state.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    templates:
+      - body: >
+          The median ICE value in the state for black or african american and
+          white segregation is %%segregation\_2021%%. 
+
+
+          This means %%NAME%% is among the
+          %%100|-|segregation\_2021\_percentile%%% most segregated counties
+          nationally, and %%100|-|segregation\_2021\_state\_percentile%%% within
+          the state.
+  - title: Median Household Income (2021 Dollars)
+    column: MEDIAN_HOUSEHOLD_INCOME
+    tooltip: >
+      The median household income from the American Community Survey (ACS) 2021
+      5-year estimates.
+    templates:
+      - body: |
+          $%%MEDIAN\_HOUSEHOLD\_INCOME%%
+  - title: Poverty Rate
+    column: POVERTY_RATE
+    tooltip: >
+      A percentage of the number of people with income below the poverty limit
+      divided by the total population. Measured from 2016 to 2021 in the
+      American Community Survey 2021 5-year estimates.
+    templates:
+      - body: |
+          %%100|\*|POVERTY\_RATE%%%
+  - title: Median Age
+    column: MEDIAN_AGE
+    tooltip: |
+      Median age of a person in %%NAME%%.
+    templates:
+      - body: |
+          %%MEDIAN\_AGE%% years old.
+  - title: People without health insurance
+    column: NO HEALTHCARE TOTAL
+    tooltip: >
+      People who report having no health insurance. Measured by the American
+      Community Survey (ACS) 2021 5-year estimates.
+    templates:
+      - body: |
+          %%NO HEALTHCARE TOTAL%%
+  - title: Population
+    column: TOTAL_POPULATION
+    tooltip: >
+      Population race/ethnicity groups are created by the US Census and
+      published in the American Community Survey. This data is from the 2021
+      data release of 5-year estimates, meaning that the data reflects an
+      estimate from 2016-2021.
+    templates:
+      - body: |
+          %%NAME%% has %%TOTAL\_POPULATION%% residents.
+
+          * Non-hispanic White: %%100|\*|PCT NH WHITE%%%
+          * Non-hispanic Black: %%100|\*|PCT NH BLACK%%%
+          * Hispanic or Latinx: %%100|\*|PCT HISPANIC OR LATINO%%%
+          * Non-hispanic American Indian: %%100|\*|PCT NH AMERICAN INDIAN%%%
+          * Non-hispanic Asian: %%100|\*|PCT NH ASIAN%%%
+          * Non-hispanic Pacific Islander: %%100|\*|PCT NH PACIFIC ISLANDER%%%
+          * Non-hispanic Some Another race: %%%100|\*|PCT NH SOME OTHER%%%
+          * Non-hispanic Two or more races: %%100|\*|PCT NH TWO OR MORE%%%
+overview:
+  - title: Racial Equity
+    column: segregation_2021_percentile
+    tooltip: "Racial equity is reflects segregation in the state. It uses a measure called ICE (Indicators of Concentration at the Extremes), which looks at how concentrated and how separate populations live within an area. In this case, the ICE metric reflects how segregated black or african american and white people tend to be in the state.\n\nThis score reflects the median tract value for the state. The score is relative to the rest of the United States, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    templates:
+      - body: >
+          %%NAME%% has segregation among the
+          %%100|-|segregation\_2021\_percentile%%% most segregated counties.
+    measure: segregation
+  - title: Market Power
+    column: hhi_2021_percentile
+    tooltip: "Market power is a measure of diversity in the marketplace. It looks at how dominant single grocery stores are in an area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThis score reflects the median tract value for the state. The score is relative to the rest of the United States, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    templates:
+      - body: >
+          This state has market power better than
+          %%100|-|hhi\_2021\_percentile%%% of all counties.
+    measure: hhi
+  - title: Food Access
+    column: gravity_2021_percentile
+    tooltip: >
+      Food access reflects the amount of grocery supply available relative to
+      people living in a given area. This measure is calculated using a gravity
+      model, which estimates access to services based on the number of service
+      providers, the number of people in a given area, and how close they are
+      together.
+
+
+      This score reflects the median tract value in the state. The score is
+      relative to the rest of the United States, where one hundred (100) is the
+      best food access and zero (0) is the worst food access.
+
+
+      For more information on how this measure is calculated, read our
+      [methodology](/about#methodology).
+    templates:
+      - body: "The access people have to buy groceries. %%NAME%% is in the top\_%%100|-|gravity\\_2021\\_percentile%%% of all counties.\n"
+        threshold: 75
+      - body: >
+          The access people have to buy groceries. %%NAME%% has better food
+          access than %%100|-|gravity\_2021\_percentile%%% of counties.
+        threshold: 25
+      - body: "The access people have to buy groceries. %%NAME%% is in the bottom\_%%gravity\\_2021\\_percentile%% of all counties.\n"
+        threshold: 0
+    measure: gravity
+---
+
+\--
