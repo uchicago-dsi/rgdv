@@ -10,26 +10,24 @@ stat:
     tooltip: "Food access reflects the amount of grocery supply available relative to people living in a given area. This measure is calculated using a gravity model, which estimates access to services based on the number of service providers, the number of people in a given area, and how close they are together.\n\nThis score reflects the median tract value in the county. The score is relative to the rest of the United States, where one hundred (100) is the best food access and zero (0) is the worst food access.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
     templates:
       - body: >
-          The gravity value for %%county%% county is %%gravity\_2021%%.
-
-
-          That means that %%100|-|gravity\_2021\_percentile%%% of all counties
-          have better food access.
+          %%NAME%% has food access better than %%gravity\_2021\_percentile%%% of
+          all counties.
   - title: Median Market Concentration (HHI)
     column: hhi_2021
     tooltip: "Market concentration is a measure of diversity in the marketplace. It looks at how dominant single grocery stores are in an area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThis score reflects the median tract value for the county. The score is relative to the rest of the United States, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
     templates:
       - body: >
           The HHI index for %%NAME%% is %%hhi\_2021%%, where 1 is total monopoly
-          and 0 is a perfectly distributed market. This measure means that you
-          have 1 in %%1|/|hhi\_2021%% chance of guessing where someone shops.
+          and 0 is a perfectly distributed market. This measure means that if
+          you had to guess where someone buys their groceries, you would have 1
+          in %%1|/|hhi\_2021%% chance of guessing correctly.
   - title: Median Segregation
     column: segregation_2021
     tooltip: "ICE (Indicators of Concentration at the Extremes) is a measure that looks at how concentrated and how separate populations live within an area. In this case, the ICE metric reflects how segregated black or african american and white people tend to be in the county.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
     templates:
       - body: >
           The median ICE value in the county for black or african american and
-          white segregation is %%segregation\_2021%%. 
+          white segregation is %%segregation\_2021%%.
 
 
           This means %%NAME%% is among the

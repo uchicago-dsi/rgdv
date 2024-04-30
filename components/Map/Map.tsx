@@ -14,8 +14,8 @@ import { Provider } from "react-redux"
 import CountyFilterSelector from "components/CountyFilterSelector"
 import DropdownMenuDemo from "components/Dropdown/Dropdown"
 import { SelectMenu } from "components/Select/Select"
-import config from "utils/data/config"
-import { DataService } from "utils/data/service"
+import {dataConfig} from "utils/data/config"
+import { DataService } from "utils/data/service/service"
 import { useDataService } from "utils/hooks/useDataService"
 import { setCurrentColumn, setCurrentData, setCurrentFilter, setTooltipInfo } from "utils/state/map"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
@@ -151,7 +151,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
     centroid: null,
   })
 
-  const { isReady, colorFunc, colors, ds, breaks, currentColumnSpec, currentDataSpec, currentFilter } = useDataService()
+  const { isReady, colorFunc, colors, ds, breaks, currentColumnSpec, currentColumnGroup, filter, isBivariate } = useDataService()
   const getElementColor = (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
     if (!isReady) {
       return [120, 120, 120, 120]
@@ -193,7 +193,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       getFillColor: getElementColor,
       autoHighlight: true,
       updateTriggers: {
-        getFillColor: [isReady, currentColumnSpec?.column, currentDataSpec?.filename, colorFunc],
+        getFillColor: [isReady, currentColumnSpec?.column, colorFunc],
       },
       onClick: (info, event) => {
         if (event?.srcEvent?.altKey) {
@@ -204,7 +204,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       },
       onHover: (info: any) => {
         const isZeroPop = zeroPopTracts.indexOf(info.object?.properties?.GEOID) !== -1
-        const isFiltered = currentFilter && info.object?.properties?.GEOID?.startsWith(currentFilter) === false
+        const isFiltered = filter && info.object?.properties?.GEOID?.startsWith(filter) === false
         if (info?.x && info?.y && info?.object && !isFiltered && !isZeroPop) {
           dispatch(setTooltipInfo({ x: info.x, y: info.y, id: info.object?.properties?.GEOID }))
         } else {
@@ -224,13 +224,13 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
   // ACTIONS
   const dispatch = useAppDispatch()
   const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col))
-  const handleChangeData = (dataName: string) => {
-    const data = config.find((c) => c.name === dataName)
-    if (!data) {
-      return
-    }
-    dispatch(setCurrentData(data.filename))
-  }
+  // const handleChangeData = (dataName: string) => {
+  //   const data = config.find((c) => c.name === dataName)
+  //   if (!data) {
+  //     return
+  //   }
+  //   dispatch(setCurrentData(data.filename))
+  // }
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
 
   useEffect(() => {
@@ -270,7 +270,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
           {!!(colors?.length && breaks?.length) &&
             colors.map((_, i) => <BreakText key={i} colors={colors} breaks={breaks} index={i} />)}
           <p style={{ maxWidth: "35ch", fontSize: "0.75rem" }}>
-            <i>{currentDataSpec?.attribution}</i>
+            {/* <i>{currentDataSpec?.attribution}</i> */}
           </p>
         </div>
       </div>
@@ -284,7 +284,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
                 maxWidth: "30vw",
               }}
             >
-              {!!currentDataSpec?.name && (
+              {/* {!!currentDataSpec?.name && (
                 <SelectMenu
                   title="Filter by state"
                   value={currentDataSpec?.name || ""}
@@ -301,7 +301,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
                     ))}
                   </>
                 </SelectMenu>
-              )}
+              )} */}
             </div>
             <hr className="my-2" />
             <h3>Columns / Years</h3>
@@ -311,7 +311,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
                 maxWidth: "30vw",
               }}
             >
-              {!!currentDataSpec?.columns && (
+              {/* {!!currentDataSpec?.columns && (
                 <SelectMenu
                   title="Filter by state"
                   value={(currentColumnSpec?.column as string) || ""}
@@ -328,12 +328,12 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
                     ))}
                   </>
                 </SelectMenu>
-              )}
+              )} */}
             </div>
             {/* text input */}
             <hr className="my-2" />
             <h3>Filter</h3>
-            <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={currentFilter} />
+            <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
           </div>
         </DropdownMenuDemo>
       </div>
