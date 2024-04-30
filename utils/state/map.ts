@@ -1,16 +1,17 @@
 "use client"
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import config, { defaultData, defaultYear } from 'utils/data/config'
-import { DataService } from 'utils/data/service'
+import { columnGroups, defaultColumn, defaultColumnGroup, defaultYear } from 'utils/data/config'
+import { DataService } from 'utils/data/service/service'
 
 export interface MapState {
   year: number
   breaks: Array<number>
   colors: Array<Array<number>>
   completeData: Array<string>
-  currentData: string,
+  // currentData: string,
   currentColumn: string | number,
+  currentColumnGroup: keyof typeof columnGroups,
   idFilter?: string,
   tooltip: {
     x: number,
@@ -26,8 +27,10 @@ const initialState: MapState = {
     255, 255, 255, 0
   ]],
   completeData: [],
-  currentData: defaultData,
-  currentColumn: defaultYear,
+  // currentData: defaultData,
+
+  currentColumn: defaultColumn,
+  currentColumnGroup: defaultColumnGroup,
   tooltip: null,
   idFilter: undefined
 }
@@ -49,14 +52,17 @@ export const mapSlice = createSlice({
       state.completeData.push(action.payload)
     },
     setCurrentData: (state, action: PayloadAction<string>) => {
-      state.currentData = action.payload
-      const dataConfig = config.find(c => c.filename === action.payload)
-      if (!dataConfig?.columns?.[0]) {
-        return
-      }
-      if (state.currentColumn === '' || !dataConfig?.columns.find(c => c.column === state.currentColumn)) {
-        state.currentColumn = dataConfig.columns[0].column
-      }
+      // state.currentData = action.payload
+      // const dataConfig = config.find(c => c.filename === action.payload)
+      // if (!dataConfig?.columns?.[0]) {
+      //   return
+      // }
+      // if (state.currentColumn === '' || !dataConfig?.columns.find(c => c.column === state.currentColumn)) {
+      //   state.currentColumn = dataConfig.columns[0].column
+      // }
+    },
+    setCurrentColumnGroup: (state, action: PayloadAction<keyof typeof columnGroups>) => {
+      
     },
     setCurrentColumn: (state, action: PayloadAction<string|number>) => {
       state.currentColumn = action.payload
