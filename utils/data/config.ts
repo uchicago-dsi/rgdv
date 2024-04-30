@@ -1,143 +1,219 @@
-import { DataConfig, ColumnConfig } from "./config.types"
+import { DataConfig, ColumnConfig, ColumnGroups, Columns } from "./config.types"
 
 const years = [2000, 2010, 2020]
 
-const hhiColumns: Array<ColumnConfig> = years.map((year) => ({
-  name: `Concentration Index ${year} (No Dollar Stores)`,
-  column: year,
-  description: `Herfindahl-Hirschman Index for ${year}`,
-}))
+const generateHhiConfig = (year: number) =>
+  ({
+    name: `Concentration Index ${year} (No Dollar Stores)`,
+    column: year,
+    bivariate: false,
+    idColumn: "GEOID",
+    table: "data/concentration_metrics_wide.parquet",
+    description: `Herfindahl-Hirschman Index for ${year}`,
+  }) as ColumnConfig
 
-const gravityColumns: Array<ColumnConfig> = years.map((year) => ({
-  name: `Gravity ${year}`,
-  column: year,
-  description: `Gravity for ${year}`,
-}))
+const generateGravityConfig = (year: number, dollar_stores: boolean) =>
+  ({
+    name: `Gravity ${year}`,
+    column: year,
+    bivariate: false,
+    table: "data/gravity_no_dollar_pivoted.parquet",
+    idColumn: "GEOID",
+    description: `Gravity for ${year}`,
+  }) as ColumnConfig
 
-const sdohCols: Array<ColumnConfig> = [
-  // 'LQ_White_Alone', 'LQ_Black_Alone', 'LQ_API_Alone', 'LQ_Hispanic',
-  // 'LQ_NH_White_Alone',
-  "ICE_Black_Alone_White_Alone",
-  // 'ICE_API_Alone_White_Alone',
-  "ICE_Hispanic_NH_White_Alone",
-  // 'Lex_Is_Black_Alone_White_Alone', 'Lex_Is_API_Alone_White_Alone',
-  // 'Lex_Is_Hispanic_NH_White_Alone', 'LIS_White_Alone', 'LIS_Black_Alone',
-  // 'LIS_API_Alone', 'LIS_Hispanic', 'LIS_NH_White_Alone'
-].map((col) => ({
-  name: col,
-  column: col,
-  description: `Segregation factor for ${col}`,
-}))
+export const columnsDict: Columns = {
+  "Concentration Index 2000 (No Dollar Stores)": generateHhiConfig(2000),
+  "Concentration Index 2010 (No Dollar Stores)": generateHhiConfig(2010),
+  "Concentration Index 2020 (No Dollar Stores)": generateHhiConfig(2020),
+  "Gravity 2000": generateGravityConfig(2000, false),
+  "Gravity 2010": generateGravityConfig(2010, false),
+  "Gravity 2020": generateGravityConfig(2020, false),
+  "Gravity 2000 (With Dollar Stores)": generateGravityConfig(2000, true),
+  "Gravity 2010 (With Dollar Stores)": generateGravityConfig(2010, true),
+  "Gravity 2020 (With Dollar Stores)": generateGravityConfig(2020, true),
+  "Segregation Factor ICE Black Alone White Alone": {
+    name: "Segregation Factor ICE Hispanic NH White Alone",
+    bivariate: false,
+    table: "data/sdoh.parquet",
+    idColumn: "GEOID",
+    column: "ICE_Black_Alone_White_Alone",
+    description: `Segregation ICE Black Alone White Alone`,
+  },
+  "Segregation Factor ICE Hispanic NH White Alone": {
+    name: "Segregation Factor ICE Hispanic NH White Alone",
+    bivariate: false,
+    table: "data/sdoh.parquet",
+    idColumn: "GEOID",
+    column: "ICE_Hispanic_NH_White_Alone",
+    description: `Segregation ICE Hispanic NH White Alone`,
+  },
+  "Yost Overall Quintile": {
+    name: "Yost Overall Quintile",
+    bivariate: false,
+    table: "data/sdoh.parquet",
+    idColumn: "GEOID",
+    column: "Yost_Overall_Quintile",
+    description: `Yost Segregation factor for Overall Quintile`,
+    colorScheme: "schemeOranges",
+    reversed: true,
+  },
+  "Yost State Quintile": {
+    name: "Yost State Quintile",
+    bivariate: false,
+    table: "data/sdoh.parquet",
+    idColumn: "GEOID",
+    column: "Yost_State_Quintile",
+    description: `Yost Segregation factor for State Quintile`,
+    colorScheme: "schemeOranges",
+    reversed: true,
+  },
+  "Total Population": {
+    name: "Total Population",
+    column: "TOTAL_POPULATION",
+    description: "Total population",
+    table: "data/demography_tract.parquet",
+    idColumn: "GEOID",
+    bivariate: false,
+  },
+  "Median Household Income": {
+    name: "Median Household Income",
+    column: "MEDIAN_HOUSEHOLD_INCOME",
+    description: "Median household income",
+    table: "data/demography_tract.parquet",
+    idColumn: "GEOID",
+    bivariate: false,
+  },
+  "Poverty Rate": {
+    name: "Poverty Rate",
+    column: "POVERTY_RATE",
+    description: "Poverty rate",
+    table: "data/demography_tract.parquet",
+    idColumn: "GEOID",
+    bivariate: false,
+  },
+  "No Healthcare (Percent)": {
+    name: "No Healthcare (Percent)",
+    column: "PCT_NO_HEALTHCARE",
+    description: "Percentage of population without healthcare",
+    table: "data/demography_tract.parquet",
+    idColumn: "GEOID",
+    bivariate: false,
+  },
+  "Percent Black or African American": {
+    name: "Percent Black or African American",
+    column: "NH BLACK ALONE",
+    description: "Percentage of population that is Black or African American",
+    table: "data/demography_tract.parquet",
+    idColumn: "GEOID",
+    bivariate: false,
+  },
+  "Concentration & Food Access - Bivariate 2020": {
+    name: "Concentration & Food Access - 2020",
+    bivariate: true,
+    column: ["2020", "2020"],
+    idColumns: ["GEOID", "GEOID"],
+    tables: ["data/concentration_metrics_wide.parquet", "data/gravity_no_dollar_pivoted.parquet"],
+    description: "Bivariate",
+  },
+} as const
 
-const yostCols: Array<ColumnConfig> = ["Yost_Overall_Quintile", "Yost_State_Quintile"].map((col) => ({
-  name: col,
-  column: col,
-  description: `Yost Segregation factor for ${col}`,
-  colorScheme: "schemeOranges",
-  reversed: true,
-}))
+export const dataConfig: DataConfig = {
+  "data/concentration_metrics_wide_ds.parquet": {
+    filename: "data/concentration_metrics_wide_ds.parquet",
+    name: "Concentration Metrics (No Dollar Stores)",
+    id: "GEOID",
+    columns: [""],
+    eager: true,
+    attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
+  },
+  "data/concentration_metrics_wide.parquet": {
+    filename: "data/concentration_metrics_wide.parquet",
+    name: "Concentration Metrics (Dollar Stores)",
+    id: "GEOID",
+    columns: [],
+    eager: true,
+    attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
+  },
+  "data/gravity_no_dollar_pivoted.parquet": {
+    filename: "data/gravity_no_dollar_pivoted.parquet",
+    name: "Gravity (No Dollar Stores)",
+    id: "GEOID",
+    columns: [],
+    eager: true,
+    attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
+  },
+  "data/gravity_dollar_pivoted.parquet": {
+    name: "Gravity (With Dollar Stores)",
+    filename: "data/gravity_dollar_pivoted.parquet",
+    id: "GEOID",
+    columns: [],
+    eager: true,
+    attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
+  },
+  "data/sdoh.parquet": {
+    filename: "data/sdoh.parquet",
+    name: "Segregation Factors",
+    id: "GEOID",
+    columns: [],
+    eager: true,
+    attribution: "Data source: NIH NCI.",
+  },
+  "data/demography_tract.parquet": {
+    filename: "data/demography_tract.parquet",
+    name: "Demographic Data",
+    id: "GEOID",
+    columns: [],
+    eager: true,
+    attribution: "Data source: US Census Bureau. ACS 2021 5 year estimates",
+  },
+} as const
 
-const HhiConfig: DataConfig = {
-  filename: "data/concentration_metrics_wide.parquet",
-  name: "Concentration Metrics (Dollar Stores)",
-  id: "GEOID",
-  columns: hhiColumns,
-  eager: true,
-  attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
-  colorScheme: "schemeYlOrRd",
-  nBins: 6,
-}
-const DollarStoreHhiConfig: DataConfig = {
-  filename: "data/concentration_metrics_wide_ds.parquet",
-  name: "Concentration Metrics (No Dollar Stores)",
-  id: "GEOID",
-  columns: hhiColumns,
-  eager: true,
-  attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
-  colorScheme: "schemeYlOrRd",
-  nBins: 6,
-}
 
-const GravityNoDollar: DataConfig = {
-  filename: "data/gravity_no_dollar_pivoted.parquet",
-  name: "Gravity (No Dollar Stores)",
-  id: "GEOID",
-  columns: gravityColumns,
-  eager: true,
-  attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
-  colorScheme: "schemeRdYlGn",
-  nBins: 9,
-}
+export const columnGroups: ColumnGroups<typeof columnsDict> = {
+  "Concentration Metrics": {
+    description: "Concentration Metrics",
+    columns: ["Concentration Index 2000 (No Dollar Stores)", "Concentration Index 2010 (No Dollar Stores)", "Concentration Index 2020 (No Dollar Stores)"],
+  },
+  Gravity: {
+    description: "Gravity",
+    columns: [
+      "Gravity 2000",
+      "Gravity 2010",
+      "Gravity 2020",
+      "Gravity 2000 (With Dollar Stores)",
+      "Gravity 2010 (With Dollar Stores)",
+      "Gravity 2020 (With Dollar Stores)",
+    
+    ],
+  },
+  "Segregation Factors": {
+    description: "Segregation Factors",
+    columns: [
+      "Segregation Factor ICE Black Alone White Alone",
+      "Segregation Factor ICE Hispanic NH White Alone",
+      "Yost Overall Quintile",
+      "Yost State Quintile",
+    ],
+  },
+  "Demographic Data": {
+    description: "Demographic Data",
+    columns: [
+      "Total Population",
+      "Median Household Income",
+      "Poverty Rate",
+      "No Healthcare (Percent)",
+      "Percent Black or African American",
+    ],
+  },
+  Bivariate: {
+    description: "Bivariate",
+    columns: [
+      "Concentration & Food Access - Bivariate 2020",
+    ],
+  },
+} as const
 
-const GravityDollar: DataConfig = {
-  name: "Gravity (With Dollar Stores)",
-  filename: "data/gravity_dollar_pivoted.parquet",
-  id: "GEOID",
-  columns: gravityColumns,
-  eager: true,
-  attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
-  colorScheme: "schemeRdYlGn",
-  nBins: 9,
-  // manualBreaks: [
-  //   2,
-  //   3,
-  //   4,
-  //   5,
-  //   6,
-  //   7,
-  //   8,
-  //   9
-  // ]
-}
-
-const SdohData: DataConfig = {
-  filename: "data/sdoh.parquet",
-  name: "Segregation Factors",
-  id: "GEOID",
-  columns: [...sdohCols, ...yostCols],
-  eager: true,
-  attribution: "Data source: NIH NCI.",
-  colorScheme: "schemeBlues",
-  nBins: 5,
-}
-
-const DemogData: DataConfig = {
-  filename: "data/demography_tract.parquet",
-  name: "Demographic Data",
-  id: "GEOID",
-  columns: [
-    {
-      name: "Total Population",
-      column: "TOTAL_POPULATION",
-      description: "Total population",
-    },
-    {
-      name: "Median Household Income",
-      column: "MEDIAN_HOUSEHOLD_INCOME",
-      description: "Median household income",
-    },
-    {
-      name: "Poverty Rate",
-      column: "POVERTY_RATE",
-      description: "Poverty rate",
-    },
-    {
-      name: "No Healthcare (Percent)",
-      column: "PCT_NO_HEALTHCARE",
-      description: "Percentage of population without healthcare",
-    },
-    {
-      name: "Percent Black or African American",
-      column: "NH BLACK ALONE",
-      description: "Percentage of population that is Black or African American",
-    },
-  ],
-  eager: true,
-  attribution: "Data source: US Census Bureau. ACS 2021 5 year estimates",
-  colorScheme: "schemeBlues",
-  nBins: 7,
-}
-
-export const defaultData = GravityDollar.filename
+export const defaultColumn: keyof typeof columnsDict = "Gravity 2020"
+export const defaultColumnGroup: keyof typeof columnGroups = Object.entries(columnGroups).find(([k, v]) => v.columns.includes(defaultColumn))![0]
 export const defaultYear = 2020
-export default [GravityDollar, GravityNoDollar, HhiConfig, DollarStoreHhiConfig, SdohData, DemogData]
