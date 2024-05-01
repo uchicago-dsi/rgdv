@@ -22,7 +22,7 @@ export type ColorHook = (props: {
       }
 }, isReady: boolean) => {
   colorFunc: (d: Record<any, any>) => Array<number>
-  breaks: number[]
+  breaks: number[] | number[][]
   colors: Array<Array<number>>
 }
 
@@ -32,6 +32,7 @@ export const useMapColor: ColorHook = (args,isReady) => {
     breaks: [],
     colors: [],
   })
+
   const updateTrigger = JSON.stringify({
     t: args.table,
     c: args.column,
@@ -40,6 +41,7 @@ export const useMapColor: ColorHook = (args,isReady) => {
     b: args.nbins,
     isReady
   })
+  console.log("UPDATE TRIGGER", updateTrigger)
 
   useEffect(() => {
     const main = async () => {

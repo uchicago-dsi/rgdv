@@ -19,6 +19,8 @@ const generateGravityConfig = (year: number, dollar_stores: boolean) =>
     bivariate: false,
     table: "data/gravity_no_dollar_pivoted.parquet",
     idColumn: "GEOID",
+    nBins: 9,
+    colorScheme: "schemeSpectral",
     description: `Gravity for ${year}`,
   }) as ColumnConfig
 
@@ -115,6 +117,7 @@ export const columnsDict: Columns = {
     idColumns: ["GEOID", "GEOID"],
     tables: ["data/concentration_metrics_wide.parquet", "data/gravity_no_dollar_pivoted.parquet"],
     description: "Bivariate",
+    colorScheme: "BuPu"
   },
 } as const
 

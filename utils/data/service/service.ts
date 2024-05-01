@@ -200,6 +200,8 @@ export class DataService {
       )
       return
     }
+    const cleanColumns = column.map((c) => typeof c === 'string' && c.startsWith('"') ? c : `"${c}"`)
+
     const colors = d3Bivariate[colorScheme]?.map((row: any) =>
       row.map((c: any) => {
         const tc = tinycolor(c).toRgb()
@@ -211,21 +213,22 @@ export class DataService {
     // eg quartiles = 0.25, 0.5, 0.75
     // for use less than value is that quantile
     const breaks = await Promise.all(
-      table.map((t, i) => this.getQuantiles(column[i]!, t, 3, idColumn[i]!, filter?.[i]))
+      table.map((t, i) => this.getQuantiles(cleanColumns[i]!, t, 3, idColumn[i]!, filter?.[i]))
     )
     let query = `SELECT t0.${idColumn[0]}, `
-    query += `${this.getQuantileCaseClause(`t0.${column[0]}`, breaks![0]!, "q0")}, `
-    query += `${this.getQuantileCaseClause(`t1.${column[1]}`, breaks![1]!, "q1")}, `
+    query += `${this.getQuantileCaseClause(`t0.${cleanColumns[0]}`, breaks![0]!, "q0")}, `
+    query += `${this.getQuantileCaseClause(`t1.${cleanColumns[1]}`, breaks![1]!, "q1")}, `
     query += `${this.getBivariateCaseClause(["q0", "q1"], colors)}`
     query += ` FROM ${this.getFromQueryString(table[0]!)} t0`
     query += ` JOIN ${this.getFromQueryString(table[1]!)} t1 ON t0.${idColumn[0]} = t1.${idColumn[1]}`
-    query += ""
+    // query += ";"
     const colorValues = await this.runQuery(query)
     const colorMap = {}
     for (let i = 0; i < colorValues.length; i++) {
       // @ts-expect-error
       colorMap[colorValues[i][idColumn[0]]] = colorValues[i].color.toJSON()
     }
+    debugger;
     return {
       colorMap,
       breaks: breaks,

@@ -1,5 +1,6 @@
 import * as d3 from "d3"
-import { d3Bivariate } from "./service/service"
+import { d3Bivariate } from "./service/types"
+
 export type DataRecord = {
   filename: string
   name: string
