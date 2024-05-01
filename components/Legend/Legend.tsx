@@ -4,7 +4,7 @@ import { LegendProps } from "./types"
 import { useEffect, useState } from "react"
 
 export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, breaks }) => {
-  const [legendtooltip, setLegendTooltip] = useState([])
+  const [legendtooltip, setLegendTooltip] = useState<number[]>([])
   const [legendClicked, setLegendClicked] = useState(false)
   const [clearLegendTimeout, setClearLegendTimeout] = useState<null | ReturnType<typeof setTimeout>>(null)
 
@@ -33,7 +33,6 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
             {colors.map((crow: number[][], i) => (
               <div key={i} className="flex flex-col">
                 {crow.map((c: number[], j: number) => (
-                  // @ts-ignore
                   <button
                     onClick={() => setLegendTooltip([i, j])}
                     className={`h-8 w-8 ${

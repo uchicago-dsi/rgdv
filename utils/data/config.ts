@@ -119,7 +119,7 @@ export const columnsDict = {
     idColumns: ["GEOID", "GEOID"],
     tables: ["data/concentration_metrics_wide.parquet", "data/gravity_no_dollar_pivoted.parquet"],
     description: "Bivariate",
-    colorScheme: "BuPu"
+    colorScheme: "BuPu",
   },
 } as const
 
@@ -174,11 +174,14 @@ export const dataConfig: DataConfig = {
   },
 } as const
 
-
 export const columnGroups: ColumnGroups<typeof columnsDict> = {
   "Market Concentration": {
     description: "Concentration Metrics",
-    columns: ["Concentration Index 2000 (No Dollar Stores)", "Concentration Index 2010 (No Dollar Stores)", "Concentration Index 2020 (No Dollar Stores)"],
+    columns: [
+      "Concentration Index 2000 (No Dollar Stores)",
+      "Concentration Index 2010 (No Dollar Stores)",
+      "Concentration Index 2020 (No Dollar Stores)",
+    ],
   },
   "Food Access": {
     description: "Gravity",
@@ -189,7 +192,6 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
       "Gravity 2000 (With Dollar Stores)",
       "Gravity 2010 (With Dollar Stores)",
       "Gravity 2020 (With Dollar Stores)",
-    
     ],
   },
   "Racial Equity": {
@@ -211,14 +213,70 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
       "Percent Black or African American",
     ],
   },
-  "Bivariate": {
+  Bivariate: {
     description: "Bivariate",
-    columns: [
-      "Concentration & Food Access - Bivariate 2020",
-    ],
+    columns: ["Concentration & Food Access - Bivariate 2020"],
   },
 } as const
 
 export const defaultColumn: keyof typeof columnsDict = "Concentration & Food Access - Bivariate 2020"
-export const defaultColumnGroup: keyof typeof columnGroups = Object.entries(columnGroups).find(([_k, v]) => v.columns.includes(defaultColumn))![0]
+export const tooltipConfig: Array<{
+  section?: string
+  columns: Array<{
+    col: keyof typeof columnsDict
+    label?: string
+    format?: string
+  }>
+}> = [
+  {
+    section: "Food Access",
+    columns: [
+      {
+        col: "Gravity 2020",
+        label: "2020",
+      },
+      {
+        col: "Gravity 2010",
+        label: "2010",
+      },
+      {
+        col: "Gravity 2000",
+        label: "2000",
+      },
+    ],
+  },
+  {
+    section: "Market Concentration",
+    columns: [
+      {
+        col: "Concentration Index 2020 (No Dollar Stores)",
+        label: "2020",
+      },
+      {
+        col: "Concentration Index 2010 (No Dollar Stores)",
+        label: "2010",
+      },
+      {
+        col: "Concentration Index 2000 (No Dollar Stores)",
+        label: "2000",
+      },
+    ],
+  },
+  {
+    section: "Racial Equity",
+    columns: [
+      {
+        col: "Segregation Factor ICE Black Alone White Alone",
+        label: "Segregation - Black Alone White Alone",
+      },
+      {
+        col: "Segregation Factor ICE Hispanic NH White Alone",
+        label: "Segregation - Hispanic NH White Alone",
+      },
+    ],
+  },
+]
+export const defaultColumnGroup: keyof typeof columnGroups = Object.entries(columnGroups).find(([_k, v]) =>
+  v.columns.includes(defaultColumn)
+)![0]
 export const defaultYear = 2020

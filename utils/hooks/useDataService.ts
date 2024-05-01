@@ -36,7 +36,7 @@ export const useDataService = () => {
   const nBins = isBivariate ? 3 : (currentColumnSpec?.nBins  || 5)
   const table = currentColumnSpec?.bivariate ? currentColumnSpec?.tables : currentColumnSpec.table
   const idColumn = currentColumnSpec?.bivariate ? currentColumnSpec?.idColumns : currentColumnSpec.idColumn
-  console.log('DATA SERVICE REVERSED', currentColumnSpec)
+
   const { colorFunc, breaks, colors } = useMapColor({
     bivariate: currentColumnSpec?.bivariate || false,
     table,

@@ -1,4 +1,4 @@
-import { dataConfig } from "../config"
+import { columnsDict, dataConfig, tooltipConfig } from "../config"
 import { DataConfig, DataRecord } from "../config.types"
 import { DuckDBDataProtocol, type AsyncDuckDB, type AsyncDuckDBConnection } from "@duckdb/duckdb-wasm"
 import { getDuckDb, runQuery } from "utils/duckdb"
@@ -353,41 +353,32 @@ export class DataService {
   }
 
   async getTooltipValues(id: string) {
-    // if (this.tooltipResults[id]) {
-    //   return this.tooltipResults[id]
-    // }
-    // let data: any[] = []
-    // for (let i = 0; i < this.config.length; i++) {
-    //   const c = this.config[i]
-    //   if (!c) {
-    //     continue
-    //   }
-    //   if (!c.columns?.length) {
-    //     continue
-    //   }
-    //   const query = `SELECT "${c.columns.map((spec) => spec.column).join('","')}" FROM ${this.getFromQueryString(
-    //     c.filename
-    //   )} WHERE "${c.id}" = '${id}'`
-    //   const result = await this.runQuery(query, true)
-    //   data.push(result[0])
-    // }
-    // const mappedTooltipContent = this.config.map((c, i) => {
-    //   const dataOutput = {
-    //     header: c.name,
-    //   }
-    //   if (!data[i]) {
-    //     return dataOutput
-    //   }
-    //   const columns = JSON.parse(JSON.stringify(data![i]))
-    //   if (columns) {
-    //     c.columns.forEach((col) => {
-    //       // @ts-ignore
-    //       dataOutput[col.name] = columns[col.column]
-    //     })
-    //   }
-    //   return dataOutput
-    // })
-    // this.tooltipResults[id] = mappedTooltipContent
+    if (this.tooltipResults[id]) {
+      return this.tooltipResults[id]
+    }
+    let data: any[] = []
+    for (const section of tooltipConfig) {
+      const sectionData: any = {
+        section: section.section,
+        columns: []
+      }
+      for (const column of section.columns) {
+        // @ts-ignore
+        const columnConfig = columnsDict[column.col]
+        const data = await this.runQuery(`
+          SELECT "${columnConfig.column}" as "${columnConfig.name}" FROM ${this.getFromQueryString(columnConfig.table)} WHERE "${columnConfig.idColumn}" LIKE '${id}%'
+        `)
+        sectionData.columns.push({
+          ...column,
+          // @ts-ignore 
+          data: data?.[0]?.[columnConfig.name]
+        })
+      }
+      data.push(sectionData)
+    }
+    this.tooltipResults[id] = data
+    console.log('id', data)
+
   }
 
   async getTimeseries(id: string) {
