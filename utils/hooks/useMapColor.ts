@@ -7,11 +7,11 @@ export type ColorHook = (props: {
   column: string | number | (string | number)[]
   colorScheme: string
   idColumn: string | string[]
-  nbins?: number
+  bivariate: true | false
+  nBins?: number
   reversed?: boolean
   filter?: string
-  bivariate: true | false
-  breaksSchema:
+  breaksSchema?:
     | {
         type: "manual"
         breaks: Array<number>
@@ -38,7 +38,7 @@ export const useMapColor: ColorHook = (args,isReady) => {
     c: args.column,
     cs: args.colorScheme,
     f: args.filter,
-    b: args.nbins,
+    b: args.nBins,
     isReady
   })
   console.log("UPDATE TRIGGER", updateTrigger)

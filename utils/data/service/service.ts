@@ -36,7 +36,7 @@ export class DataService {
   hasRunWasm: boolean = false
   dbStatus: "none" | "loading" | "loaded" | "error" = "none"
   db?: AsyncDuckDB
-  baseURL: string = window.location.origin
+  baseURL: string = window?.location?.origin || ''
   conn?: AsyncDuckDBConnection
   tooltipResults: any = {}
 

@@ -58,17 +58,24 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       if (typeof window === "undefined" || typeof document === "undefined") {
         return
       }
-      const windowHeight = window.innerHeight
-      // find height of #top-nav
-      const navHeight = document.getElementById("top-nav")?.clientHeight || 0
-      setContainerHeight(`${windowHeight - navHeight}px`)
+      try {
+        const windowHeight = window?.innerHeight
+        // find height of #top-nav
+        const navHeight = document?.getElementById("top-nav")?.clientHeight || 0
+        setContainerHeight(`${windowHeight - navHeight}px`)
+      } catch (e) {
+        console.error(e)
+      }
     }
-    
-    window.addEventListener("resize", handleResize)
+    if (typeof window !== "undefined") {
+      window?.addEventListener("resize", handleResize)
+    }
     handleResize()
-    
+
     return () => {
-      window.removeEventListener("resize", handleResize)
+      if (typeof window !== "undefined") {
+        window?.removeEventListener("resize", handleResize)
+      }
     }
   }, [])
 
@@ -188,13 +195,19 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
   }, [clickedGeo.geoid])
 
   return (
-    <div className="relative left-0 top-0 h-[100vh] max-h-full w-[100vw] max-w-full"
+    <div
+      className="relative left-0 top-0 h-[100vh] max-h-full w-[100vw] max-w-full"
       style={{
         height: containerHeight,
       }}
     >
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
-        <Legend title={currentColumnSpec.name} colors={colors} breaks={breaks as any} isBivariate={isBivariate as any} />
+        <Legend
+          title={currentColumnSpec.name}
+          colors={colors}
+          breaks={breaks as any}
+          isBivariate={isBivariate as any}
+        />
       </div>
       <div className="absolute left-4 top-4 z-30 max-w-[50vw]">
         <DropdownMenuDemo>
