@@ -193,7 +193,7 @@ export class DataService {
     return query
   }
 
-  async getBivariateColorValues({ idColumn, colorScheme, column, table, filter }: BivariateColorParamteres) {
+  async getBivariateColorValues({ idColumn, colorScheme, column, table, filter, reversed }: BivariateColorParamteres) {
     if (idColumn.length !== 2 || column.length !== 2 || table.length !== 2) {
       console.error(
         `Invalid Bivariate Color Values request: ${idColumn}, ${colorScheme}, ${column}, ${table}, ${filter}`
@@ -202,12 +202,24 @@ export class DataService {
     }
     const cleanColumns = column.map((c) => typeof c === 'string' && c.startsWith('"') ? c : `"${c}"`)
 
-    const colors = d3Bivariate[colorScheme]?.map((row: any) =>
+    const legendColors = d3Bivariate[colorScheme]?.map((row: any) =>
       row.map((c: any) => {
         const tc = tinycolor(c).toRgb()
         return [tc.r, tc.g, tc.b]
       })
     )
+    let colors = legendColors
+    if (reversed?.[1]) {
+      // colors = [
+      //   legendColors[2],
+      //   legendColors[1],
+      //   legendColors[0]
+      // ]
+      colors = legendColors.map((row: any) => row.slice().reverse())
+    }
+    // console.log("COLORS", colors)
+    // console.log("LEGEND COLORS", legendColors)
+    // console.log("REVERSED", reversed)
     // map breaks values
     // always 1 less than desired breaks
     // eg quartiles = 0.25, 0.5, 0.75
@@ -228,11 +240,10 @@ export class DataService {
       // @ts-expect-error
       colorMap[colorValues[i][idColumn[0]]] = colorValues[i].color.toJSON()
     }
-    debugger;
     return {
       colorMap,
       breaks: breaks,
-      colors,
+      colors: legendColors
     }
   }
 
@@ -331,9 +342,9 @@ export class DataService {
   ) {
     const bivariate = props.bivariate
     if (bivariate) {
-      const { idColumn, table, column, colorScheme, filter } = props as BivariateColorParamteres
+      const { idColumn, table, column, colorScheme, filter, reversed } = props as BivariateColorParamteres
       // @ts-ignore
-      return this.getBivariateColorValues({ idColumn, colorScheme, column, table, filter })
+      return this.getBivariateColorValues({ idColumn, colorScheme, column, table, filter, reversed })
     } else {
       const { idColumn, colorScheme, reversed, column, table, nBins, filter, range } = props as MonovariateColorParamteres
       // @ts-ignore

@@ -26,6 +26,7 @@ export type BivariateColorParamteres = {bivariate: true}&{
   colorScheme: keyof typeof d3Bivariate,
   column: (string | number)[],
   table: string[],
+  reversed?: boolean[],
   filter?: string
 }
 

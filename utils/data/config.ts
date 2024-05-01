@@ -24,7 +24,7 @@ const generateGravityConfig = (year: number, dollar_stores: boolean) =>
     description: `Gravity for ${year}`,
   }) as ColumnConfig
 
-export const columnsDict: Columns = {
+export const columnsDict = {
   "Concentration Index 2000 (No Dollar Stores)": generateHhiConfig(2000),
   "Concentration Index 2010 (No Dollar Stores)": generateHhiConfig(2010),
   "Concentration Index 2020 (No Dollar Stores)": generateHhiConfig(2020),
@@ -113,7 +113,9 @@ export const columnsDict: Columns = {
   "Concentration & Food Access - Bivariate 2020": {
     name: "Concentration & Food Access - 2020",
     bivariate: true,
+    reversed: [false, true],
     column: ["2020", "2020"],
+    columnLabels: ["Market Concentration", "Poor Food Access"],
     idColumns: ["GEOID", "GEOID"],
     tables: ["data/concentration_metrics_wide.parquet", "data/gravity_no_dollar_pivoted.parquet"],
     description: "Bivariate",
@@ -174,11 +176,11 @@ export const dataConfig: DataConfig = {
 
 
 export const columnGroups: ColumnGroups<typeof columnsDict> = {
-  "Concentration Metrics": {
+  "Market Concentration": {
     description: "Concentration Metrics",
     columns: ["Concentration Index 2000 (No Dollar Stores)", "Concentration Index 2010 (No Dollar Stores)", "Concentration Index 2020 (No Dollar Stores)"],
   },
-  Gravity: {
+  "Food Access": {
     description: "Gravity",
     columns: [
       "Gravity 2000",
@@ -190,7 +192,7 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
     
     ],
   },
-  "Segregation Factors": {
+  "Racial Equity": {
     description: "Segregation Factors",
     columns: [
       "Segregation Factor ICE Black Alone White Alone",
@@ -209,7 +211,7 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
       "Percent Black or African American",
     ],
   },
-  Bivariate: {
+  "Bivariate": {
     description: "Bivariate",
     columns: [
       "Concentration & Food Access - Bivariate 2020",
@@ -217,6 +219,6 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
   },
 } as const
 
-export const defaultColumn: keyof typeof columnsDict = "Gravity 2020"
-export const defaultColumnGroup: keyof typeof columnGroups = Object.entries(columnGroups).find(([k, v]) => v.columns.includes(defaultColumn))![0]
+export const defaultColumn: keyof typeof columnsDict = "Concentration & Food Access - Bivariate 2020"
+export const defaultColumnGroup: keyof typeof columnGroups = Object.entries(columnGroups).find(([_k, v]) => v.columns.includes(defaultColumn))![0]
 export const defaultYear = 2020

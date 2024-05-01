@@ -28,8 +28,10 @@ export interface BinsSchema extends BaseColumnSchema {
 
 export interface BivariateBinsSchema extends BaseColumnSchema {
   column: Array<string | number>
+  columnLabels?: Array<string>
   idColumns: Array<string>
   tables: Array<string>
+  reversed?: Array<boolean>
   colorScheme?: keyof typeof d3Bivariate
   manualBreaks?: Array<Array<number>>
 }

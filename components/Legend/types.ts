@@ -1,5 +1,7 @@
+import { ColumnConfig } from "utils/data/config.types"
+
 export type LegendProps = {
-  title: string
+  column: ColumnConfig
 } & (
   {
     isBivariate: true

@@ -9,7 +9,7 @@ export type ColorHook = (props: {
   idColumn: string | string[]
   bivariate: true | false
   nBins?: number
-  reversed?: boolean
+  reversed?: boolean | boolean[]
   filter?: string
   breaksSchema?:
     | {
@@ -39,6 +39,7 @@ export const useMapColor: ColorHook = (args,isReady) => {
     cs: args.colorScheme,
     f: args.filter,
     b: args.nBins,
+    r: args.reversed,
     isReady
   })
   console.log("UPDATE TRIGGER", updateTrigger)
@@ -48,6 +49,7 @@ export const useMapColor: ColorHook = (args,isReady) => {
       if (!isReady) {
         return
       }
+      console.log('args', args)
       const colorParams = args.bivariate
         ? (args as BivariateColorParamteres)
         : (args as unknown as MonovariateColorParamteres)

@@ -23,7 +23,6 @@ export const useDataService = () => {
   const currentColumn = useAppSelector((state) => state.map.currentColumn)
   const currentColumnGroup = useAppSelector((state) => state.map.currentColumnGroup)
   const currentColumnSpec = columnsDict[currentColumn]!
-
   if (!currentColumnSpec) {
     throw new Error(`Invalid column ${currentColumn}`)
   }
@@ -33,10 +32,11 @@ export const useDataService = () => {
   const column = currentColumnSpec.column
   const manualBreaks = isBivariate ? undefined : currentColumnSpec?.manualBreaks
   const colorScheme = currentColumnSpec?.colorScheme  || "schemeYlOrRd"
-  const reversed = isBivariate ? false : (currentColumnSpec?.reversed  || false)
+  const reversed = currentColumnSpec?.reversed  || false
   const nBins = isBivariate ? 3 : (currentColumnSpec?.nBins  || 5)
   const table = currentColumnSpec?.bivariate ? currentColumnSpec?.tables : currentColumnSpec.table
   const idColumn = currentColumnSpec?.bivariate ? currentColumnSpec?.idColumns : currentColumnSpec.idColumn
+  console.log('DATA SERVICE REVERSED', currentColumnSpec)
   const { colorFunc, breaks, colors } = useMapColor({
     bivariate: currentColumnSpec?.bivariate || false,
     table,

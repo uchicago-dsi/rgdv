@@ -14,9 +14,15 @@ import { Provider } from "react-redux"
 import CountyFilterSelector from "components/CountyFilterSelector"
 import DropdownMenuDemo from "components/Dropdown/Dropdown"
 import { SelectMenu } from "components/Select/Select"
-import { columnsDict, dataConfig } from "utils/data/config"
+import { columnGroups, columnsDict, dataConfig } from "utils/data/config"
 import { useDataService } from "utils/hooks/useDataService"
-import { setCurrentColumn, setCurrentData, setCurrentFilter, setTooltipInfo } from "utils/state/map"
+import {
+  setCurrentColumn,
+  setCurrentColumnGroup,
+  setCurrentData,
+  setCurrentFilter,
+  setTooltipInfo,
+} from "utils/state/map"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
 import { zeroPopTracts } from "utils/zeroPopTracts"
 import Legend from "components/Legend"
@@ -81,7 +87,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
 
   const { isReady, colorFunc, colors, ds, breaks, currentColumnSpec, currentColumnGroup, filter, isBivariate } =
     useDataService()
-
+  const availableColumns = columnGroups[currentColumnGroup]?.columns || []
   const getElementColor = (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
     if (!isReady) {
       return [120, 120, 120, 120]
@@ -155,14 +161,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
   // ACTIONS
   const dispatch = useAppDispatch()
   const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col))
-  // const handleChangeData = (dataName: string) => {
-  //   const data = config.find((c) => c.name === dataName)
-  //   if (!data) {
-  //     return
-  //   }
-  //   dispatch(setCurrentData(data.filename))
-  // }
-
+  const handleSetColumnGroup = (group: string) => dispatch(setCurrentColumnGroup(group))
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
 
   useEffect(() => {
@@ -203,7 +202,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
     >
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
         <Legend
-          title={currentColumnSpec.name}
+          column={currentColumnSpec}
           colors={colors}
           breaks={breaks as any}
           isBivariate={isBivariate as any}
@@ -212,34 +211,32 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       <div className="absolute left-4 top-4 z-30 max-w-[50vw]">
         <DropdownMenuDemo>
           <div className="max-w-[100vw] p-4">
-            <p>Choose Data</p>
+            <p>Choose a topic</p>
             <hr />
             <div
               style={{
                 maxWidth: "30vw",
               }}
             >
-              {/* {!!currentDataSpec?.name && (
-                <SelectMenu
-                  title="Filter by state"
-                  value={currentDataSpec?.name || ""}
-                  onValueChange={(e) => handleChangeData(e)}
-                >
-                  <>
-                    {config.map((c, i) => (
-                      <Select.Item className="SelectItem" value={c.name} key={i}>
-                        <Select.ItemText>{c.name || "Choose a State"}</Select.ItemText>
-                        <Select.ItemIndicator className="SelectItemIndicator">
-                          <CheckboxIcon />
-                        </Select.ItemIndicator>
-                      </Select.Item>
-                    ))}
-                  </>
-                </SelectMenu>
-              )} */}
+              <SelectMenu
+                title="Choose a topic"
+                value={currentColumnGroup || ""}
+                onValueChange={(e) => handleSetColumnGroup(e)}
+              >
+                <>
+                  {Object.keys(columnGroups).map((group, i) => (
+                    <Select.Item className="SelectItem" value={group} key={i}>
+                      <Select.ItemText>{group || "Choose a topic"}</Select.ItemText>
+                      <Select.ItemIndicator className="SelectItemIndicator">
+                        <CheckboxIcon />
+                      </Select.ItemIndicator>
+                    </Select.Item>
+                  ))}
+                </>
+              </SelectMenu>
             </div>
             <hr className="my-2" />
-            <h3>Columns / Years</h3>
+            <p>Available data</p>
 
             <div
               style={{
@@ -252,7 +249,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
                 onValueChange={(e) => handleSetColumn(e)}
               >
                 <>
-                  {Object.keys(columnsDict).map((c, i) => (
+                  {availableColumns.map((c, i) => (
                     <Select.Item className="SelectItem" value={c} key={i}>
                       <Select.ItemText>{c || "Variable"}</Select.ItemText>
                       <Select.ItemIndicator className="SelectItemIndicator">
@@ -265,7 +262,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
             </div>
             {/* text input */}
             <hr className="my-2" />
-            <h3>Filter</h3>
+            <p>Filter</p>
             <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
           </div>
         </DropdownMenuDemo>

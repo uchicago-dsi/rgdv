@@ -2,7 +2,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { columnGroups, defaultColumn, defaultColumnGroup, defaultYear } from "utils/data/config"
-import { DataService } from "utils/data/service/service"
 
 export interface MapState {
   year: number
@@ -82,7 +81,7 @@ export const mapSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setYear, setBreaks, setColors, setCurrentColumn, setTooltipInfo, setCurrentData, setCurrentFilter } =
+export const { setYear, setBreaks, setColors, setCurrentColumn, setTooltipInfo, setCurrentData, setCurrentFilter, setCurrentColumnGroup} =
   mapSlice.actions
 
 export default mapSlice.reducer
