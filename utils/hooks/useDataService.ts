@@ -22,41 +22,48 @@ export const useDataService = () => {
   }
   const currentColumn = useAppSelector((state) => state.map.currentColumn)
   const currentColumnGroup = useAppSelector((state) => state.map.currentColumnGroup)
+  // @ts-ignore
   const currentColumnSpec = columnsDict[currentColumn]!
   if (!currentColumnSpec) {
     throw new Error(`Invalid column ${currentColumn}`)
   }
   const currentData = currentColumnSpec?.bivariate ? currentColumnSpec.tables : currentColumnSpec.table
-  const isReady = Array.isArray(currentData) ? currentData.every(t => completeData.includes(t)) : completeData.includes(currentData)
+  const isReady = Array.isArray(currentData)
+  // @ts-ignore
+    ? currentData.every((t) => completeData.includes(t))
+    : completeData.includes(currentData)
   const isBivariate = currentColumnSpec?.bivariate || false
   const column = currentColumnSpec.column
   const manualBreaks = isBivariate ? undefined : currentColumnSpec?.manualBreaks
-  const colorScheme = currentColumnSpec?.colorScheme  || "schemeYlOrRd"
-  const reversed = currentColumnSpec?.reversed  || false
-  const nBins = isBivariate ? 3 : (currentColumnSpec?.nBins  || 5)
+  const colorScheme = currentColumnSpec?.colorScheme || "schemeYlOrRd"
+  const reversed = currentColumnSpec?.reversed || false
+  const nBins = isBivariate ? 3 : currentColumnSpec?.nBins || 5
   const table = currentColumnSpec?.bivariate ? currentColumnSpec?.tables : currentColumnSpec.table
   const idColumn = currentColumnSpec?.bivariate ? currentColumnSpec?.idColumns : currentColumnSpec.idColumn
 
-  const { colorFunc, breaks, colors } = useMapColor({
-    bivariate: currentColumnSpec?.bivariate || false,
-    table,
-    column,
-    idColumn,
-    // @ts-ignore
-    colorScheme,
-    reversed,
-    filter,
-    nBins,
-    // breaksSchema: manualBreaks ? {
-    //   type: "manual",
-    //   breaks: manualBreaks
-    // } : {
-    //   type: "quantile",
-    //   nBins
-    // }
-  }, isReady)
+  const { colorFunc, breaks, colors } = useMapColor(
+    {
+      bivariate: currentColumnSpec?.bivariate || false,
+      table,
+      column,
+      idColumn,
+      // @ts-ignore
+      colorScheme,
+      reversed,
+      filter,
+      nBins,
+      // breaksSchema: manualBreaks ? {
+      //   type: "manual",
+      //   breaks: manualBreaks
+      // } : {
+      //   type: "quantile",
+      //   nBins
+      // }
+    },
+    isReady
+  )
   // console.log(breaks, colors)
-  
+
   return {
     testfn: () => {},
     ds,
@@ -69,6 +76,6 @@ export const useDataService = () => {
     currentColumnGroup,
     filter,
     setCurrentData,
-    isBivariate
+    isBivariate,
   }
 }

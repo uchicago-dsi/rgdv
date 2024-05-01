@@ -255,7 +255,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
                       <Select.ItemIndicator className="SelectItemIndicator">
                         <CheckboxIcon />
                       </Select.ItemIndicator>
-                    </Select.Item>
+                    </Select.Item> 
                   ))}
                 </>
               </SelectMenu>

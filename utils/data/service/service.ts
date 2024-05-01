@@ -365,8 +365,8 @@ export class DataService {
       for (const column of section.columns) {
         // @ts-ignore
         const columnConfig = columnsDict[column.col]
-        const data = await this.runQuery(`
-          SELECT "${columnConfig.column}" as "${columnConfig.name}" FROM ${this.getFromQueryString(columnConfig.table)} WHERE "${columnConfig.idColumn}" LIKE '${id}%'
+        // @ts-ignore
+        const data = await this.runQuery(`SELECT "${columnConfig.column}" as "${columnConfig.name}" FROM ${this.getFromQueryString(columnConfig.table)} WHERE "${columnConfig.idColumn}" LIKE '${id}%'
         `)
         sectionData.columns.push({
           ...column,

@@ -276,6 +276,7 @@ export const tooltipConfig: Array<{
     ],
   },
 ]
+
 export const defaultColumnGroup: keyof typeof columnGroups = Object.entries(columnGroups).find(([_k, v]) =>
   v.columns.includes(defaultColumn)
 )![0]
