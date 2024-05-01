@@ -46,11 +46,31 @@ const INITIAL_VIEW_STATE = {
 // const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
 export const Map: React.FC<MapProps> = ({ initialFilter }) => {
   const router = useRouter()
+  const [containerHeight, setContainerHeight] = useState<string | undefined>(undefined)
   const [clickedGeo, setClickedGeo] = useState<any>({
     geoid: null,
     geometry: null,
     centroid: null,
   })
+  // on window resize, update the height of the container
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window === "undefined" || typeof document === "undefined") {
+        return
+      }
+      const windowHeight = window.innerHeight
+      // find height of #top-nav
+      const navHeight = document.getElementById("top-nav")?.clientHeight || 0
+      setContainerHeight(`${windowHeight - navHeight}px`)
+    }
+    
+    window.addEventListener("resize", handleResize)
+    handleResize()
+    
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
 
   const { isReady, colorFunc, colors, ds, breaks, currentColumnSpec, currentColumnGroup, filter, isBivariate } =
     useDataService()
@@ -135,6 +155,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
   //   }
   //   dispatch(setCurrentData(data.filename))
   // }
+
   const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
 
   useEffect(() => {
@@ -167,7 +188,11 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
   }, [clickedGeo.geoid])
 
   return (
-    <div className="relative left-0 top-0 h-[100vh] max-h-full w-[100vw] max-w-full">
+    <div className="relative left-0 top-0 h-[100vh] max-h-full w-[100vw] max-w-full"
+      style={{
+        height: containerHeight,
+      }}
+    >
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
         <Legend title={currentColumnSpec.name} colors={colors} breaks={breaks as any} isBivariate={isBivariate as any} />
       </div>
