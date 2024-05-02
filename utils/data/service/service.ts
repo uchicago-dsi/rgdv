@@ -225,7 +225,7 @@ export class DataService {
     // eg quartiles = 0.25, 0.5, 0.75
     // for use less than value is that quantile
     const breaks = await Promise.all(
-      table.map((t, i) => this.getQuantiles(cleanColumns[i]!, t, 3, idColumn[i]!, filter?.[i]))
+      table.map((t, i) => this.getQuantiles(cleanColumns[i]!, t, 3, idColumn[i]!, filter))
     )
     let query = `SELECT t0.${idColumn[0]}, `
     query += `${this.getQuantileCaseClause(`t0.${cleanColumns[0]}`, breaks![0]!, "q0")}, `
