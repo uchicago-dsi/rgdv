@@ -12,6 +12,7 @@ export interface MapState {
   currentColumn: string | number
   currentColumnGroup: keyof typeof columnGroups
   idFilter?: string
+  colorFilter?: number[][]
   tooltip: {
     x: number
     y: number
@@ -64,12 +65,14 @@ export const mapSlice = createSlice({
         return
       }
       state.currentColumnGroup = action.payload
+      state.colorFilter = undefined
       if (!columnGroup?.columns.includes(`${state.currentColumn}`) && columnGroup.columns.length > 0) {
         state.currentColumn = columnGroup.columns[0]!
       }
     },
     setCurrentColumn: (state, action: PayloadAction<string | number>) => {
       state.currentColumn = action.payload
+      state.colorFilter = undefined
     },
     setTooltipInfo: (state, action: PayloadAction<{ x: number; y: number; id: string } | null>) => {
       state.tooltip = action.payload
@@ -77,11 +80,35 @@ export const mapSlice = createSlice({
     setCurrentFilter: (state, action: PayloadAction<string>) => {
       state.idFilter = action.payload
     },
+    upcertColorFilter: (state, action: PayloadAction<number[]>) => {
+      if (!state.colorFilter) {
+        state.colorFilter = [action.payload]
+        return
+      } else {
+        const idx = state.colorFilter.findIndex(
+          (f) => f[0] === action.payload[0] && f[1] === action.payload[1] && f[2] === action.payload[2]
+        )
+        if (idx === -1) {
+          state.colorFilter.push(action.payload)
+        } else {
+          state.colorFilter.splice(idx, 1)
+        }
+      }
+    },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setYear, setBreaks, setColors, setCurrentColumn, setTooltipInfo, setCurrentData, setCurrentFilter, setCurrentColumnGroup} =
-  mapSlice.actions
+export const {
+  setYear,
+  setBreaks,
+  setColors,
+  setCurrentColumn,
+  setTooltipInfo,
+  setCurrentData,
+  setCurrentFilter,
+  setCurrentColumnGroup,
+  upcertColorFilter
+} = mapSlice.actions
 
 export default mapSlice.reducer

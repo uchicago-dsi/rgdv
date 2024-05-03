@@ -28,6 +28,7 @@ export type BivariateColorParamteres = {bivariate: true}&{
   table: string[],
   reversed?: boolean[],
   filter?: string
+  colorFilter?: number[][]
 }
 
 export type MonovariateColorParamteres = {bivariate: false}&{
@@ -39,4 +40,5 @@ export type MonovariateColorParamteres = {bivariate: false}&{
   reversed?: boolean,
   filter?: string,
   range?: "continuous" | "categorical"
+  colorFilter?: number[][]
 }

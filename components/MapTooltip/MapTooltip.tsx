@@ -22,7 +22,7 @@ export const MapTooltip: React.FC<MapTooltipProps> = ({ dataService }) => {
   if (!x || !y) {
     return null
   }
-  console.log(data)
+
   return (
     <div
       className="padding-4 pointer-events-none fixed z-[1001] rounded-md border border-gray-200 bg-white/90 p-2 shadow-md"

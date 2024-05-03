@@ -5,6 +5,7 @@ import { getDuckDb, runQuery } from "utils/duckdb"
 import * as d3 from "d3"
 import tinycolor from "tinycolor2"
 import { BivariateColorParamteres, MonovariateColorParamteres, d3Bivariate } from "./types"
+import { deepCompare2d1d } from "../compareArrayElements"
 
 // 2000 to 2021
 const fullYears = new Array(22).fill(0).map((_, i) => 2000 + i)
@@ -193,7 +194,7 @@ export class DataService {
     return query
   }
 
-  async getBivariateColorValues({ idColumn, colorScheme, column, table, filter, reversed }: BivariateColorParamteres) {
+  async getBivariateColorValues({ idColumn, colorScheme, column, table, filter, reversed, colorFilter }: BivariateColorParamteres) {
     if (idColumn.length !== 2 || column.length !== 2 || table.length !== 2) {
       console.error(
         `Invalid Bivariate Color Values request: ${idColumn}, ${colorScheme}, ${column}, ${table}, ${filter}`
@@ -216,6 +217,17 @@ export class DataService {
       //   legendColors[0]
       // ]
       colors = legendColors.map((row: any) => row.slice().reverse())
+    }
+    if (colorFilter) {
+      for (let i=0;i<colors.length; i++){
+        for (let j=0;j<colors[i].length; j++){
+          const color = colors[i][j]
+          const isInFilter = deepCompare2d1d(colorFilter, color)
+          if (!isInFilter) {
+            colors[i][j] = [...color, 120]
+          }
+        }
+      }
     }
     // console.log("COLORS", colors)
     // console.log("LEGEND COLORS", legendColors)
@@ -377,8 +389,6 @@ export class DataService {
       data.push(sectionData)
     }
     this.tooltipResults[id] = data
-    console.log('id', data)
-
   }
 
   async getTimeseries(id: string) {

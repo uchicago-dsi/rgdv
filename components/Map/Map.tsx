@@ -27,6 +27,7 @@ import { store, useAppDispatch, useAppSelector } from "utils/state/store"
 import { zeroPopTracts } from "utils/zeroPopTracts"
 import Legend from "components/Legend"
 import MapTooltip from "components/MapTooltip"
+import { deepCompare2d1d } from "utils/data/compareArrayElements"
 
 export type MapProps = {
   initialFilter?: string
@@ -85,7 +86,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
     }
   }, [])
 
-  const { isReady, colorFunc, colors, ds, breaks, currentColumnSpec, currentColumnGroup, filter, isBivariate } =
+  const { isReady, colorFunc, colors, ds, breaks, currentColumnSpec, colorFilter, currentColumnGroup, filter, isBivariate } =
     useDataService()
   const availableColumns = columnGroups[currentColumnGroup]?.columns || []
   const getElementColor = (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
@@ -100,9 +101,16 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       return [120, 120, 120, 120]
     }
     // @ts-ignore
-    return colorFunc(id)
+    const color = colorFunc(id)
+    if (colorFilter && colorFilter.length) {
+      const isInFilter = deepCompare2d1d(colorFilter, color)
+      if (!isInFilter) {
+        return [color[0], color[1], color[2], 20]
+      }
+    }
+    return color
   }
-  // console.log("UPDATE", isReady, currentColumnSpec.name, colorFunc)
+
   const layers = [
     new GeoJsonLayer({
       // @ts-ignore
@@ -130,7 +138,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       getFillColor: getElementColor,
       autoHighlight: true,
       updateTriggers: {
-        getFillColor: [isReady, currentColumnSpec.name, colorFunc],
+        getFillColor: [isReady, currentColumnSpec.name, colorFunc, colorFilter],
       },
       onClick: (info, event) => {
         if (event?.srcEvent?.altKey) {
@@ -182,7 +190,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       }
       const res = await fetch(`/api/stores/${clickedGeo.geoid}`)
       const data = (await res.json()) as any
-      console.log("data", data)
+
       setClickedGeo((prev: any) => ({
         geoid: prev.geoid,
         geometry: data.geometry,

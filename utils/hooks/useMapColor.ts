@@ -11,6 +11,7 @@ export type ColorHook = (props: {
   nBins?: number
   reversed?: boolean | boolean[]
   filter?: string
+  colorFilter?: number[][]
   breaksSchema?:
     | {
         type: "manual"
@@ -40,25 +41,25 @@ export const useMapColor: ColorHook = (args,isReady) => {
     f: args.filter,
     b: args.nBins,
     r: args.reversed,
+    cf: args.colorFilter,
     isReady
   })
-  console.log("UPDATE TRIGGER", updateTrigger)
 
   useEffect(() => {
     const main = async () => {
       if (!isReady) {
         return
       }
-      console.log('args', args)
       const colorParams = args.bivariate
         ? (args as BivariateColorParamteres)
         : (args as unknown as MonovariateColorParamteres)
-      const colorResults = await ds.getColorValues(colorParams)
+
+        const colorResults = await ds.getColorValues(colorParams)
       if (!colorResults) {
         return
       }
       const { colorMap, breaks, colors } = colorResults
-
+      
       const colorFunc = (_id: string | number) => {
         const id = _id.toString()
         if (args.filter?.length && id.startsWith(args.filter) === false) {

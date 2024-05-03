@@ -22,6 +22,7 @@ export const useDataService = () => {
   }
   const currentColumn = useAppSelector((state) => state.map.currentColumn)
   const currentColumnGroup = useAppSelector((state) => state.map.currentColumnGroup)
+  const colorFilter = useAppSelector((state) => state.map.colorFilter)
   // @ts-ignore
   const currentColumnSpec = columnsDict[currentColumn]!
   if (!currentColumnSpec) {
@@ -70,6 +71,7 @@ export const useDataService = () => {
     isReady,
     currentColumn,
     colorFunc,
+    colorFilter,
     breaks,
     colors,
     currentColumnSpec,

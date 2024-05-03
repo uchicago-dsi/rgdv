@@ -2,8 +2,14 @@
 import LegendBreakText from "components/LegendBreakText"
 import { LegendProps } from "./types"
 import { useEffect, useState } from "react"
+import { useAppDispatch, useAppSelector } from "utils/state/store"
+import { upcertColorFilter } from "utils/state/map"
+import { deepCompare2d1d, deepCompareArray } from "utils/data/compareArrayElements"
 
 export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, breaks }) => {
+  const colorFilter = useAppSelector((state) => state.map.colorFilter)
+  const dispatch = useAppDispatch()
+
   const [legendtooltip, setLegendTooltip] = useState<number[]>([])
   const [legendClicked, setLegendClicked] = useState(false)
   const [clearLegendTimeout, setClearLegendTimeout] = useState<null | ReturnType<typeof setTimeout>>(null)
@@ -14,7 +20,9 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
     } else {
       clearLegendTimeout && clearTimeout(clearLegendTimeout)
     }
-    return () => {clearLegendTimeout && clearTimeout(clearLegendTimeout)}
+    return () => {
+      clearLegendTimeout && clearTimeout(clearLegendTimeout)
+    }
   }, [legendtooltip])
 
   if (isBivariate && Array.isArray(colors?.[0]?.[0])) {
@@ -32,20 +40,24 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
           >
             {colors.map((crow: number[][], i) => (
               <div key={i} className="flex flex-col">
-                {crow.map((c: number[], j: number) => (
-                  <button
-                    onClick={() => setLegendTooltip([i, j])}
-                    className={`h-8 w-8 ${
-                      legendtooltip[0] === i && legendtooltip[1] === j
-                        ? "opacity-100 shadow-sm"
-                        : legendtooltip?.length > 0
-                        ? "opacity-10"
-                        : "opacity-100"
-                    }`}
-                    style={{ background: `rgb(${c.join(",")})` }}
-                    key={`${i}-${j}`}
-                  ></button>
-                ))}
+                {crow.map((c: number[], j: number) => {
+                  return (
+                    <button
+                      onClick={() => dispatch(upcertColorFilter(c))}
+                      onMouseEnter={() => setLegendTooltip([i, j])}
+                      onMouseLeave={() => setLegendTooltip([])}
+                      className={`h-8 w-8 ${
+                        legendtooltip[0] === i && legendtooltip[1] === j
+                          ? "opacity-100 shadow-sm"
+                          : legendtooltip?.length > 0 || (colorFilter?.length && !deepCompare2d1d(colorFilter, c))
+                          ? "opacity-10"
+                          : "opacity-100"
+                      }`}
+                      style={{ background: `rgb(${c.join(",")})` }}
+                      key={`${i}-${j}`}
+                    ></button>
+                  )
+                })}
               </div>
             ))}
             <span className="absolute bottom-[-1rem] left-[-0.375rem] font-black">&darr;</span>
@@ -83,7 +95,16 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
       <div className="ColorLegend">
         <h3>{column.name}</h3>
         {!!(colors?.length && breaks?.length) &&
-          colors.map((_, i) => <LegendBreakText key={i} colors={colors as any} breaks={breaks as any} index={i} />)}
+          colors.map((_, i) => (
+            <LegendBreakText
+              key={i}
+              colors={colors as any}
+              breaks={breaks as any}
+              index={i}
+              colorFilter={colorFilter}
+              onClick={(color, _i) => dispatch(upcertColorFilter(color))}
+            />
+          ))}
         <p style={{ maxWidth: "35ch", fontSize: "0.75rem" }}>{/* <i>{currentDataSpec?.attribution}</i> */}</p>
       </div>
     )
