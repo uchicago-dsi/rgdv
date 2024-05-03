@@ -178,20 +178,20 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
   "Market Concentration": {
     description: "Concentration Metrics",
     columns: [
-      "Concentration Index 2000 (No Dollar Stores)",
-      "Concentration Index 2010 (No Dollar Stores)",
       "Concentration Index 2020 (No Dollar Stores)",
+      "Concentration Index 2010 (No Dollar Stores)",
+      "Concentration Index 2000 (No Dollar Stores)",
     ],
   },
   "Food Access": {
     description: "Gravity",
     columns: [
-      "Gravity 2000",
-      "Gravity 2010",
       "Gravity 2020",
-      "Gravity 2000 (With Dollar Stores)",
-      "Gravity 2010 (With Dollar Stores)",
+      "Gravity 2010",
+      "Gravity 2000",
       "Gravity 2020 (With Dollar Stores)",
+      "Gravity 2010 (With Dollar Stores)",
+      "Gravity 2000 (With Dollar Stores)",
     ],
   },
   "Racial Equity": {
