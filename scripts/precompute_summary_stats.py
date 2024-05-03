@@ -246,3 +246,6 @@ with open(path.join(data_dir, 'demography_state.msgpack'), 'wb') as f:
 # %%
 state_stats = pd.read_parquet(path.join(data_dir, 'state_summary_stats.parquet'))
 # %%
+# read in data_dir 'demography_state.parquet'
+df = pd.read_parquet(path.join(data_dir, 'gravity_dollar_pivoted.parquet'))
+# %%
