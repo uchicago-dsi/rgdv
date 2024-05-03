@@ -3,6 +3,8 @@ import pandas as pd
 from os import path
 # msgpack
 import msgpack
+# pd remove col limit
+pd.set_option('display.max_columns', None)
 # %%
 current_dir = path.dirname(path.abspath(__file__))
 data_dir = path.join(current_dir, '..', 'public', 'data')
@@ -52,17 +54,54 @@ def get_county_percentile(df, col, id_col, na_val=None):
     df.loc[loc_filter, 'county_percentile'] = round(df.loc[loc_filter, 'county_percentile'])
   return df
 
-def generate_stats(filepath, level, id_col, data_col, prefix):
-  df = make_county_and_state_cols(filepath)
-  df_agg = df[[id_col,data_col]].groupby(id_col).median().reset_index()
-  df_agg = get_percentile(df_agg, data_col)
+debug_county = '13155'
+
+def generate_stats(
+    df_filepath,
+    demog_filepath, 
+    level, 
+    id_col, 
+    demog_id_col,
+    data_col, 
+    population_col,
+    prefix,
+    DEBUG=None
+  ):
+  df = make_county_and_state_cols(df_filepath)
+  demog = make_county_and_state_cols(demog_filepath)
+  df = df.merge(demog, how='left', on=[id_col, 'state', 'county'])
+  df[data_col] = pd.to_numeric(df[data_col], errors='coerce').fillna(0)
+  df[population_col] = pd.to_numeric(df[population_col], errors='coerce').fillna(0)
+
+  weighted_col = f"{data_col}_weighted"
+  df[weighted_col] = df[data_col] * df[population_col]
+
+  df_agg = df[[id_col,data_col,population_col,weighted_col]].groupby(id_col).sum().reset_index()
+  df_agg[weighted_col] = df_agg[weighted_col] / df_agg[population_col]
+  df_agg = get_percentile(df_agg, weighted_col)
+  df_agg = df_agg.drop(columns=[data_col, population_col])
+
+  if DEBUG:
+    return {
+      "joined": df.query(f"{id_col} == '{debug_county}'"),
+      "agg":  df_agg.query(f"{id_col} == '{debug_county}'"),
+      "pctile": df_agg.query(f"{id_col} == '{debug_county}'")
+  }
+
   out_cols = [
-      id_col, f"{prefix}_{year}", f"{prefix}_{year}_percentile", f"{prefix}_{year}_state_percentile", f"{prefix}_{year}_county_percentile"
-    ]
+      id_col, 
+      f"{prefix}_{data_col}" if level == 'tract' else f"{prefix}_{data_col}_weighted", 
+      f"{prefix}_{year}_percentile", 
+      f"{prefix}_{year}_state_percentile", 
+      f"{prefix}_{year}_county_percentile"
+    ] 
+  
   if level != 'state':
-    df_agg = get_state_percentile(df_agg, data_col, id_col)
+    df_agg = get_state_percentile(df_agg, weighted_col, id_col)
+
   if level == 'tract':
-    df_agg = get_county_percentile(df_agg, data_col, id_col)
+    df_agg = get_county_percentile(df_agg, weighted_col, id_col)
+  print(df_agg.columns)
   df_agg.columns = out_cols[:len(df_agg.columns)]
   return df_agg
 
@@ -73,27 +112,37 @@ def to_msgpack(df, outpath, id_col):
   with open(outpath, 'wb') as f:
     packed = msgpack.packb(data_dict)
     f.write(packed)
-
+# %%
 gravity_county = generate_stats(
   path.join(data_dir, 'gravity_dollar_pivoted.parquet'),
+  path.join(data_dir, 'demography_tract.parquet'),
+  "county",
   "county",
   "county",
   year,
-  "gravity"
+  "TOTAL_POPULATION",
+  "gravity",
 )
+
 hhi_county = generate_stats(
   path.join(data_dir, 'concentration_metrics_wide_ds.parquet'),
+  path.join(data_dir, 'demography_tract.parquet'),
+  "county",
   "county",
   "county",
   year,
+  "TOTAL_POPULATION",
   "hhi"
 )
 
 segregation_county = generate_stats(
   path.join(data_dir, 'sdoh.parquet'),
+  path.join(data_dir, 'demography_tract.parquet'),
+  "county",
   "county",
   "county",
   "ICE_Black_Alone_White_Alone",
+  "TOTAL_POPULATION",
   "segregation"
 )
 # %%
@@ -106,24 +155,33 @@ to_msgpack(county_joined, path.join(data_dir, 'county_summary_stats.msgpack'), '
 
 gravity_tract = generate_stats(
   path.join(data_dir, 'gravity_dollar_pivoted.parquet'),
+  path.join(data_dir, 'demography_tract.parquet'),
   "tract",
   "GEOID",
+  "GEOID",
   year,
+  "TOTAL_POPULATION",
   "gravity"
 )
 hhi_tract = generate_stats(
   path.join(data_dir, 'concentration_metrics_wide_ds.parquet'),
+  path.join(data_dir, 'demography_tract.parquet'),
   "tract",
   "GEOID",
+  "GEOID",
   year,
+  "TOTAL_POPULATION",
   "hhi"
 )
 
 segregation_tract = generate_stats(
   path.join(data_dir, 'sdoh.parquet'),
+  path.join(data_dir, 'demography_tract.parquet'),
   "tract",
   "GEOID",
+  "GEOID",
   "ICE_Black_Alone_White_Alone",
+  "TOTAL_POPULATION",
   "segregation"
 )
 
@@ -135,31 +193,56 @@ tract_joined.to_parquet(path.join(data_dir, 'tract_summary_stats.parquet'), inde
 to_msgpack(tract_joined, path.join(data_dir, 'tract_summary_stats.msgpack'), 'GEOID')
 # %%
 
-gravity_tract = generate_stats(
+gravity_state = generate_stats(
   path.join(data_dir, 'gravity_dollar_pivoted.parquet'),
+  path.join(data_dir, 'demography_tract.parquet'),
   "state",
   "state",
+  'state',
   year,
+  'TOTAL_POPULATION',
   "gravity"
 )
-hhi_tract = generate_stats(
+hhi_state = generate_stats(
   path.join(data_dir, 'concentration_metrics_wide_ds.parquet'),
+
+  path.join(data_dir, 'demography_tract.parquet'),
   "state",
   "state",
+  'state',
   year,
+  'TOTAL_POPULATION',
   "hhi"
 )
 
-segregation_tract = generate_stats(
+segregation_state = generate_stats(
   path.join(data_dir, 'sdoh.parquet'),
+
+  path.join(data_dir, 'demography_tract.parquet'),
   "state",
   "state",
+  'state',
   "ICE_Black_Alone_White_Alone",
+  'TOTAL_POPULATION',
   "segregation"
 )
 # %%
-state_joined = gravity_tract.merge(hhi_tract, how='outer', on="state")\
-  .merge(segregation_tract, how='outer', on="state")
+state_joined = gravity_state.merge(hhi_state, how='outer', on="state")\
+  .merge(segregation_state, how='outer', on="state")
 state_joined.to_parquet(path.join(data_dir, 'state_summary_stats.parquet'), index=False)
 to_msgpack(state_joined, path.join(data_dir, 'state_summary_stats.msgpack'), 'state')
+# %%
+state_demog = pd.read_parquet(path.join(data_dir, 'demography_state.parquet'))
+# %%
+import msgpack
+# %%
+state_dict = {}
+for index, row in state_demog.iterrows():
+  state_dict[row['GEOID']] = row.to_dict()
+# %%
+with open(path.join(data_dir, 'demography_state.msgpack'), 'wb') as f:
+  packed = msgpack.packb(state_dict)
+  f.write(packed)
+# %%
+state_stats = pd.read_parquet(path.join(data_dir, 'state_summary_stats.parquet'))
 # %%
