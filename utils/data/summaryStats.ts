@@ -1,31 +1,33 @@
-import { UnpackrStream } from "msgpackr"
-import fs from "fs"
+import { readMsgPackFile } from "./msgpack"
+import { join } from "path"
 
-export const getSummaryStats = async <T extends Record<string, unknown>>(filepath: string, id: string) => {
+export const getSummaryStats = async <T extends Record<string, unknown>>(level: 'tract'|'state'|'county', id: string) => {
   try {
-    const stream = fs.createReadStream(filepath)
-    const unpackr = new UnpackrStream()
-    stream.pipe(unpackr)
-
-    for await (const data of unpackr) {
-      const d = data.get(id)
-      if (d) {
-        return {
-          ok: true,
-          result: Object.fromEntries(d) as T
-        }
+    const filepath = join(process.cwd(), "public", "data", "summary", level, `${id.slice(0,2)}.min.msgpack.gz`) 
+    const data = await readMsgPackFile<any>(filepath, true)
+    const entry = data[id]
+    const columns = data.columns
+    if (!entry || !columns) {
+      return {
+        ok: false,
+        error: `No data found for id "${id}"`,
       }
     }
+    const result: Record<string, unknown> = {}
+    for (const [i, col] of columns.entries()) {
+      const value = entry[i]
+      result[col] = value
+    }
     return {
-      ok: false,
-      error: `No data found for id "${id}"`
+      ok: true,
+      result: result as T
     }
   } catch (error) {
     console.log("Error getting messagepack data")
     console.log(error)
     return {
       ok: false,
-      error: error
+      error: error,
     }
   }
 }

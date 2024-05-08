@@ -86,8 +86,18 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
     }
   }, [])
 
-  const { isReady, colorFunc, colors, ds, breaks, currentColumnSpec, colorFilter, currentColumnGroup, filter, isBivariate } =
-    useDataService()
+  const {
+    isReady,
+    colorFunc,
+    colors,
+    ds,
+    breaks,
+    currentColumnSpec,
+    colorFilter,
+    currentColumnGroup,
+    filter,
+    isBivariate,
+  } = useDataService()
   const availableColumns = columnGroups[currentColumnGroup]?.columns || []
   const getElementColor = (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
     if (!isReady) {
@@ -148,6 +158,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
         }
       },
       onHover: (info: any) => {
+        console.log(info)
         const isZeroPop = zeroPopTracts.indexOf(info.object?.properties?.GEOID) !== -1
         const isFiltered = filter && info.object?.properties?.GEOID?.startsWith(filter) === false
         if (info?.x && info?.y && info?.object && !isFiltered && !isZeroPop) {
@@ -188,7 +199,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
           centroid: null,
         })
       }
-      const res = await fetch(`/api/stores/${clickedGeo.geoid}`)
+      const res = await fetch(`/api/isochrone/${clickedGeo.geoid}`)
       const data = (await res.json()) as any
 
       setClickedGeo((prev: any) => ({
@@ -209,12 +220,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       }}
     >
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
-        <Legend
-          column={currentColumnSpec}
-          colors={colors}
-          breaks={breaks as any}
-          isBivariate={isBivariate as any}
-        />
+        <Legend column={currentColumnSpec} colors={colors} breaks={breaks as any} isBivariate={isBivariate as any} />
       </div>
       <div className="absolute left-4 top-4 z-30 max-w-[50vw]">
         <DropdownMenuDemo>
@@ -263,7 +269,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
                       <Select.ItemIndicator className="SelectItemIndicator">
                         <CheckboxIcon />
                       </Select.ItemIndicator>
-                    </Select.Item> 
+                    </Select.Item>
                   ))}
                 </>
               </SelectMenu>

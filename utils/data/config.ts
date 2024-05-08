@@ -2,6 +2,7 @@ import { DataConfig, ColumnConfig, ColumnGroups, Columns } from "./config.types"
 
 const years = [2000, 2010, 2020]
 
+
 const generateHhiConfig = (year: number) =>
   ({
     name: `Concentration Index ${year} (No Dollar Stores)`,
@@ -173,6 +174,30 @@ export const dataConfig: DataConfig = {
     attribution: "Data source: US Census Bureau. ACS 2021 5 year estimates",
   },
 } as const
+
+
+export const timeSeriesConfig = {
+  hhi: {
+    table: "data/concentration_metrics_wide.parquet",
+    columns: new Array(2021-1997).fill(null).map((_, i) => i + 1997),
+    idColumn: "GEOID"
+  },
+  hhiDs: {
+    table: "data/concentration_metrics_wide_ds.parquet",
+    columns: new Array(2021-1997).fill(null).map((_, i) => i + 1997),
+    idColumn: "GEOID"
+  },
+  gravity: {
+    table: "data/gravity_no_dollar_pivoted.parquet",
+    columns: [2000, ...(new Array(2021-2010).fill(null).map((_, i) => i + 2010))],
+    idColumn: "GEOID"
+  },
+  gravityDs: {
+    table: "data/gravity_dollar_pivoted.parquet",
+    columns: [2000, ...(new Array(2021-2010).fill(null).map((_, i) => i + 2010))],
+    idColumn: "GEOID"
+  }
+} as const 
 
 export const columnGroups: ColumnGroups<typeof columnsDict> = {
   "Market Concentration": {
