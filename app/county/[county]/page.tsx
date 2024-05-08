@@ -67,25 +67,18 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
   getContentDirs()
   const county = params.county
 
-  const countyDataPath = path.join(process.cwd(), "public", "data", `county_summary_stats.msgpack`)
-  const countyDemoPath = path.join(process.cwd(), "public", "data", `demography_county.msgpack`)
-
-  const [countyStats, countyDemography, generalStatText] = await Promise.all([
-    getSummaryStats<CountyData>(countyDataPath, county),
-    getSummaryStats<CountyDemogData>(countyDemoPath, county),
+  const [countyStats, generalStatText] = await Promise.all([
+    getSummaryStats<CountyData & CountyDemogData>('county', county),
     getMdxContent("statistics", "county.mdx"),
   ])
 
-  if (!countyStats.ok || !countyDemography.ok) {
+  if (!countyStats.ok) {
     return <div>Sorry, we couldn&apos;t find data for that county.</div>
   }
 
   // @ts-ignore
   const stats = generalStatText?.data?.statistics?.stat
-  const data = {
-    ...countyStats.result,
-    ...countyDemography.result,
-  } as CountyData & CountyDemogData
+  const data = countyStats.result!
 
   // @ts-ignore
   const foodAccesstemplate = generalStatText?.data?.statistics?.overview?.find((f) => f.measure === "gravity")

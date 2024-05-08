@@ -10,6 +10,7 @@ import { getMdxContent } from "hooks/useMdxContent"
 import { getContentDirs } from "utils/contentDirs"
 import { getThresholdValue } from "utils/data/formatDataTemplate"
 import { getSummaryStats } from "utils/data/summaryStats"
+import StoreList from "components/StoreList"
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 
 type TractRouteProps = {
@@ -62,32 +63,66 @@ type TractDemogData = {
   PCT_NO_HEALTHCARE: number
 }
 
+const summaryTractArrayCols = [
+  "county",
+  "gravity_2021",
+  "gravity_2021_percentile",
+  "gravity_2021_state_percentile",
+  "hhi_2021",
+  "hhi_2021_percentile",
+  "hhi_2021_state_percentile",
+  "segregation_2021",
+  "segregation_2021_percentile",
+  "segregation_2021_state_percentile",
+]
+
+const summaryDemogCols = [
+  "GEOID",
+  "NAME",
+  "TOTAL_POPULATION",
+  "NH WHITE ALONE",
+  "NH BLACK ALONE",
+  "NH AMERICAN INDIAN ALONE",
+  "NH ASIAN ALONE",
+  "NH PACIFIC ISLANDER ALONE",
+  "NH SOME OTHER RACE",
+  "NH TWO OR MORE",
+  "NH TWO OR MORE INCLUDING SOME OTHER",
+  "NH TWO OR MORE EXCLUDING SOME OTHER",
+  "HISPANIC OR LATINO",
+  "PCT NH WHITE",
+  "PCT NH BLACK",
+  "PCT NH AMERICAN INDIAN",
+  "PCT NH ASIAN",
+  "PCT NH PACIFIC ISLANDER",
+  "PCT NH SOME OTHER",
+  "PCT NH TWO OR MORE",
+  "PCT NH TWO OR MORE INCLUDING SOME OTHER",
+  "PCT NH TWO OR MORE EXCLUDING SOME OTHER",
+  "PCT HISPANIC OR LATINO",
+  "MEDIAN_AGE",
+  "POVERTY_RATE",
+  "MEDIAN_HOUSEHOLD_INCOME",
+  "NO HEALTHCARE TOTAL",
+  "PCT_NO_HEALTHCARE",
+]
+
 const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
-  console.log("TRACT PAGE", params)
   // dynamic routes to use mdx content
   getContentDirs()
   const tract = params.tract
 
-  const tractDataPath = path.join(process.cwd(), "public", "data", `tract_summary_stats.msgpack`)
-  const tractDemoPath = path.join(process.cwd(), "public", "data", `demography_tract.msgpack`)
-
-  const [tractStats, tractDemography, generalStatText] = await Promise.all([
-    getSummaryStats<TractData>(tractDataPath, tract),
-    getSummaryStats<TractDemogData>(tractDemoPath, tract),
+  const [tractData, generalStatText] = await Promise.all([
+    getSummaryStats<TractData>('tract', tract),
     getMdxContent("statistics", "tract.mdx"),
   ])
 
-  if (!tractStats.ok || !tractDemography.ok) {
+  if (!tractData.ok) {
     return <div>Sorry, we couldn&apos;t find data for that tract.</div>
   }
-
+  const data = tractData.result!
   // @ts-ignore
   const stats = generalStatText?.data?.statistics?.stat
-  const data = {
-    ...tractStats.result,
-    ...tractDemography.result,
-  } as TractData & TractDemogData
-
   // @ts-ignore
   const foodAccesstemplate = generalStatText?.data?.statistics?.overview?.find((f) => f.measure === "gravity")
   // @ts-ignore
@@ -95,6 +130,7 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
   // @ts-ignore
   const racialEquityTemplate = generalStatText?.data?.statistics?.overview?.find((f) => f.measure === "segregation")
 
+  // @ts-ignore
   const tractName = data.NAME.toLowerCase().includes("tract") ? data.NAME : `${data.NAME} tract`
 
   // @ts-ignore
@@ -121,9 +157,10 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
           <div className="prose max-w-none">
             <h2 className="mb-0 text-sm font-light">TRACT REPORT</h2>
             <h1>{tractName}</h1>
-            {/* <p>
+            <p>
+              {/* @ts-ignore */}
               <TinaMarkdown content={generalStatText.data.statistics.body} />
-            </p> */}
+            </p>
           </div>
         </div>
         <div>
@@ -190,6 +227,9 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
       </div>
       <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl">
         <TimeseriesChart id={tract} />
+      </div>
+      <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl">
+        <StoreList id={tract} />
       </div>
     </div>
   )

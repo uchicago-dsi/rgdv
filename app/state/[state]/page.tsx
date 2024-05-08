@@ -66,26 +66,18 @@ const StatePage: React.FC<StateRouteProps> = async ({ params }) => {
   // dynamic routes to use mdx content
   getContentDirs()
   const state = params.state
-
-  const stateDataPath = path.join(process.cwd(), "public", "data", `state_summary_stats.msgpack`)
-  const stateDemoPath = path.join(process.cwd(), "public", "data", `demography_state.msgpack`)
-
-  const [stateStats, stateDemography, generalStatText] = await Promise.all([
-    getSummaryStats<StateData>(stateDataPath, state),
-    getSummaryStats<StateDemogData>(stateDemoPath, state),
+  const [stateStats, generalStatText] = await Promise.all([
+    getSummaryStats<StateData & StateDemogData>('state', state),
     getMdxContent("statistics", "state.mdx"),
   ])
 
-  if (!stateStats.ok || !stateDemography.ok) {
+  if (!stateStats.ok) {
     return <div>Sorry, we couldn&apos;t find data for that state.</div>
   }
 
   // @ts-ignore
   const stats = generalStatText?.data?.statistics?.stat
-  const data = {
-    ...stateStats.result,
-    ...stateDemography.result,
-  } as StateData & StateDemogData
+  const data = stateStats.result!
 
   // @ts-ignore
   const foodAccesstemplate = generalStatText?.data?.statistics?.overview?.find((f) => f.measure === "gravity")
