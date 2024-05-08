@@ -1,15 +1,14 @@
 import { withParentSize } from "@visx/responsive"
 import { scaleLinear, scaleTime } from "@visx/scale"
-import { Axis, AreaSeries, LineSeries, Tooltip, XYChart } from "@visx/xychart"
+import { Axis, Tooltip } from "@visx/xychart"
 import React, { useCallback } from "react"
 import { DataRecord, ResponsiveXYChartProps } from "./types"
 import { timeSeriesConfig } from "utils/data/config"
 import { Threshold } from "@visx/threshold"
-import { curveBasis } from "@visx/curve"
 import { LinePath } from "@visx/shape"
-import { AxisLeft, AxisBottom } from "@visx/axis"
+import { AxisBottom, AxisLeft } from "@visx/axis"
 import { localPoint } from '@visx/event';
-import { max, extent, bisector } from '@visx/vendor/d3-array';
+import { bisector } from '@visx/vendor/d3-array';
 
 const bisectDate = bisector<any, Date>((d: any) => new Date(d.date)).left;
 const getMinMax = (data: DataRecord[], keys: string[]) => {
@@ -94,6 +93,7 @@ const ResponsiveXYChart = withParentSize<ResponsiveXYChartProps>(
         const d1 = parsedData[index];
         let d = d0;
         if (d1 && d1.year) {
+          // @ts-ignore
           d = x0.valueOf() - (d0.year).valueOf() > (d1.year).valueOf() - x0.valueOf() ? d1 : d0;
         }
         console.log(d, x)
