@@ -3,6 +3,8 @@ import pandas as pd
 from os import path
 # msgpack
 import msgpack
+import numpy as np
+import gzip
 # pd remove col limit
 pd.set_option('display.max_columns', None)
 # %%
@@ -112,6 +114,46 @@ def to_msgpack(df, outpath, id_col):
   with open(outpath, 'wb') as f:
     packed = msgpack.packb(data_dict)
     f.write(packed)
+
+
+def open_msgpack(filepath):
+  with open(filepath, 'rb') as f:
+    return msgpack.unpackb(f.read())
+
+def write_msgpack(data, filepath, compress=False):
+  packed = msgpack.packb(data)
+  if compress:
+    with gzip.open(filepath.replace(".msgpack", ".min.msgpack.gz"), 'wb') as f:
+      f.write(packed)
+  else:
+    with open(filepath.replace(".msgpack", ".min.msgpack"), 'wb') as f:
+      f.write(packed)
+
+def columnarize_msgpack(data, id_col, filepath, cols, compress=False):
+  print('Columnarizing ', len(data), ' rows')
+  data_min = {
+    "columns": cols
+  }
+  for row in range(len(data)):
+    values = data[row]
+    id = values[id_col]
+    data_min[id] = []
+    for col in cols:
+      data_min[id].append(values[col])
+  try:
+    write_msgpack(data_min, filepath, compress)
+  except: 
+    print('Error writing ', filepath)
+    return data_min
+  
+def split_df_and_msgpack(df, id_col, outpath, compress=False):
+  columns = list(df.columns)
+  df['state'] = df[id_col].str.slice(0, 2)
+  unique_states = df['state'].unique()
+  for state in unique_states:
+    state_data = df[df['state'] == state].to_dict(orient='records')
+    columnarize_msgpack(state_data, id_col, path.join(outpath, f'{state}.msgpack'), columns, compress=compress)
+
 # %%
 gravity_county = generate_stats(
   path.join(data_dir, 'gravity_dollar_pivoted.parquet'),
@@ -145,12 +187,18 @@ segregation_county = generate_stats(
   "TOTAL_POPULATION",
   "segregation"
 )
+county_demography = pd.read_parquet(path.join(data_dir, 'demography_county.parquet'))
 # %%
 county_joined = gravity_county.merge(hhi_county, how='outer', on="county")\
-  .merge(segregation_county, how='outer', on="county")
+  .merge(segregation_county, how='outer', on="county")\
+  .merge(county_demography, how='outer', left_on="county", right_on="GEOID")
 # %%
-county_joined.to_parquet(path.join(data_dir, 'county_summary_stats.parquet'), index=False)
-to_msgpack(county_joined, path.join(data_dir, 'county_summary_stats.msgpack'), 'county')
+split_df_and_msgpack(
+  county_joined,
+  'county',
+  path.join(data_dir, 'summary', 'county'),
+  compress=True
+)
 # %%
 
 gravity_tract = generate_stats(
@@ -184,13 +232,19 @@ segregation_tract = generate_stats(
   "TOTAL_POPULATION",
   "segregation"
 )
-
+# %%
+tract_demography = pd.read_parquet(path.join(data_dir, 'demography_tract.parquet'))
 # %%
 tract_joined = gravity_tract.merge(hhi_tract, how='outer', on="GEOID")\
-  .merge(segregation_tract, how='outer', on="GEOID")
+  .merge(segregation_tract, how='outer', on="GEOID")\
+  .merge(tract_demography, how='outer', on="GEOID")
 # %%
-tract_joined.to_parquet(path.join(data_dir, 'tract_summary_stats.parquet'), index=False)
-to_msgpack(tract_joined, path.join(data_dir, 'tract_summary_stats.msgpack'), 'GEOID')
+split_df_and_msgpack(
+  tract_joined,
+  'GEOID',
+  path.join(data_dir, 'summary', 'tract'),
+  compress=True
+)
 # %%
 
 gravity_state = generate_stats(
@@ -227,25 +281,18 @@ segregation_state = generate_stats(
   "segregation"
 )
 # %%
-state_joined = gravity_state.merge(hhi_state, how='outer', on="state")\
-  .merge(segregation_state, how='outer', on="state")
-state_joined.to_parquet(path.join(data_dir, 'state_summary_stats.parquet'), index=False)
-to_msgpack(state_joined, path.join(data_dir, 'state_summary_stats.msgpack'), 'state')
-# %%
 state_demog = pd.read_parquet(path.join(data_dir, 'demography_state.parquet'))
 # %%
-import msgpack
+state_joined = gravity_state.merge(hhi_state, how='outer', on="state")\
+  .merge(segregation_state, how='outer', on="state")\
+  .merge(state_demog, how='outer', left_on='state', right_on="GEOID")
 # %%
-state_dict = {}
-for index, row in state_demog.iterrows():
-  state_dict[row['GEOID']] = row.to_dict()
+split_df_and_msgpack(
+  state_joined,
+  'state',
+  path.join(data_dir, 'summary', 'state'),
+  compress=True
+)
 # %%
-with open(path.join(data_dir, 'demography_state.msgpack'), 'wb') as f:
-  packed = msgpack.packb(state_dict)
-  f.write(packed)
-# %%
-state_stats = pd.read_parquet(path.join(data_dir, 'state_summary_stats.parquet'))
-# %%
-# read in data_dir 'demography_state.parquet'
-df = pd.read_parquet(path.join(data_dir, 'gravity_dollar_pivoted.parquet'))
+demog_tract = pd.read_parquet(path.join(data_dir, 'demography_tract.parquet'))
 # %%
