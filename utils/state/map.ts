@@ -38,27 +38,34 @@ const initialState: MapState = {
   idFilter: undefined,
 }
 
-export const fetchCentroidById = createAsyncThunk(
-  'map/setCentroid',
-  async (id: string) => {
-    const response = await fetch(`/api/centroids/${id}`)
-    if (!response.ok) {
-      throw new Error('Failed to fetch centroid')
-    }
-    const centroid = await response.json() as [number, number]
-    const zoom = {
-      2: 6,
-      5: 8,
-      11: 12,
-    }[id.length]
-
+export const fetchCentroidById = createAsyncThunk("map/setCentroid", async (id: string) => {
+  if (id === null) {
     return {
-      centroid,
-      zoom,
-      id
+      centroid: [
+        -98.5833,
+        39.8333,
+      ],
+      id: null,
+      zoom: 4,
     }
   }
-)
+  const response = await fetch(`/api/centroids/${id}`)
+  if (!response.ok) {
+    throw new Error("Failed to fetch centroid")
+  }
+  const centroid = (await response.json()) as [number, number]
+  const zoom = {
+    2: 6,
+    5: 8,
+    11: 12,
+  }[id.length]
+
+  return {
+    centroid,
+    zoom,
+    id,
+  }
+})
 
 export const mapSlice = createSlice({
   name: "map",
@@ -124,15 +131,18 @@ export const mapSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchCentroidById.pending, (state, action) => {
+      state.idFilter = action.meta.arg
+    }),
     builder.addCase(fetchCentroidById.fulfilled, (state, action) => {
       state.centroid = {
         x: action.payload.centroid[0],
         y: action.payload.centroid[1],
-        z: action.payload.zoom!
+        z: action.payload.zoom!,
       }
-      state.idFilter = action.payload.id
+      // @ts-ignore
     })
-  }
+  },
 })
 
 // Action creators are generated for each case reducer function
@@ -145,7 +155,7 @@ export const {
   setCurrentData,
   setCurrentFilter,
   setCurrentColumnGroup,
-  upcertColorFilter
+  upcertColorFilter,
 } = mapSlice.actions
 
 export default mapSlice.reducer
