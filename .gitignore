@@ -36,3 +36,4 @@ yarn-error.log*
 .env
 package.json
 public/data/___*
+public/data/archive
