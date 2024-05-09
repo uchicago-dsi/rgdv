@@ -1,5 +1,5 @@
 "use client"
-import { createSlice } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { columnGroups, defaultColumn, defaultColumnGroup, defaultYear } from "utils/data/config"
 
@@ -12,6 +12,11 @@ export interface MapState {
   currentColumn: string | number
   currentColumnGroup: keyof typeof columnGroups
   idFilter?: string
+  centroid?: {
+    x: number
+    y: number
+    z: number
+  }
   colorFilter?: number[][]
   tooltip: {
     x: number
@@ -32,6 +37,28 @@ const initialState: MapState = {
   tooltip: null,
   idFilter: undefined,
 }
+
+export const fetchCentroidById = createAsyncThunk(
+  'map/setCentroid',
+  async (id: string) => {
+    const response = await fetch(`/api/centroids/${id}`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch centroid')
+    }
+    const centroid = await response.json() as [number, number]
+    const zoom = {
+      2: 6,
+      5: 8,
+      11: 12,
+    }[id.length]
+
+    return {
+      centroid,
+      zoom,
+      id
+    }
+  }
+)
 
 export const mapSlice = createSlice({
   name: "map",
@@ -96,6 +123,16 @@ export const mapSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchCentroidById.fulfilled, (state, action) => {
+      state.centroid = {
+        x: action.payload.centroid[0],
+        y: action.payload.centroid[1],
+        z: action.payload.zoom!
+      }
+      state.idFilter = action.payload.id
+    })
+  }
 })
 
 // Action creators are generated for each case reducer function

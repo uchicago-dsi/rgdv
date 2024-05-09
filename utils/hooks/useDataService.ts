@@ -23,6 +23,7 @@ export const useDataService = () => {
   const currentColumn = useAppSelector((state) => state.map.currentColumn)
   const currentColumnGroup = useAppSelector((state) => state.map.currentColumnGroup)
   const colorFilter = useAppSelector((state) => state.map.colorFilter)
+  const currentCentroid = useAppSelector((state) => state.map.centroid)
   // @ts-ignore
   const currentColumnSpec = columnsDict[currentColumn]!
   if (!currentColumnSpec) {
@@ -41,7 +42,6 @@ export const useDataService = () => {
   const nBins = isBivariate ? 3 : currentColumnSpec?.nBins || 5
   const table = currentColumnSpec?.bivariate ? currentColumnSpec?.tables : currentColumnSpec.table
   const idColumn = currentColumnSpec?.bivariate ? currentColumnSpec?.idColumns : currentColumnSpec.idColumn
-
   const { colorFunc, breaks, colors } = useMapColor(
     {
       bivariate: currentColumnSpec?.bivariate || false,
@@ -74,6 +74,7 @@ export const useDataService = () => {
     colorFilter,
     breaks,
     colors,
+    currentCentroid,
     currentColumnSpec,
     currentColumnGroup,
     filter,

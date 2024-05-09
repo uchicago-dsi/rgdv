@@ -17,6 +17,7 @@ import { SelectMenu } from "components/Select/Select"
 import { columnGroups, columnsDict, dataConfig } from "utils/data/config"
 import { useDataService } from "utils/hooks/useDataService"
 import {
+  fetchCentroidById,
   setCurrentColumn,
   setCurrentColumnGroup,
   setCurrentData,
@@ -86,6 +87,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
     }
   }, [])
 
+
   const {
     isReady,
     colorFunc,
@@ -95,9 +97,22 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
     currentColumnSpec,
     colorFilter,
     currentColumnGroup,
+    currentCentroid,
     filter,
     isBivariate,
   } = useDataService()
+
+  useEffect(() => {
+    // pan map to centroid
+    if (currentCentroid) {
+      // @ts-ignore
+      mapRef.current?.jumpTo({
+        center: [currentCentroid.x, currentCentroid.y],
+        zoom: currentCentroid.z,
+        speed: 2,
+      })
+    }
+  },[currentCentroid])
   const availableColumns = columnGroups[currentColumnGroup]?.columns || []
   const getElementColor = (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
     if (!isReady) {
@@ -158,7 +173,6 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
         }
       },
       onHover: (info: any) => {
-        console.log(info)
         const isZeroPop = zeroPopTracts.indexOf(info.object?.properties?.GEOID) !== -1
         const isFiltered = filter && info.object?.properties?.GEOID?.startsWith(filter) === false
         if (info?.x && info?.y && info?.object && !isFiltered && !isZeroPop) {
@@ -181,11 +195,11 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
   const dispatch = useAppDispatch()
   const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col))
   const handleSetColumnGroup = (group: string) => dispatch(setCurrentColumnGroup(group))
-  const handleSetFilter = (filter: string) => dispatch(setCurrentFilter(filter))
+  const handleSetFilter = (filter: string) => dispatch(fetchCentroidById(filter))
 
   useEffect(() => {
     if (initialFilter) {
-      dispatch(setCurrentFilter(initialFilter))
+      dispatch(fetchCentroidById(initialFilter))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialFilter])
