@@ -35,7 +35,7 @@ export const columnsDict = {
   "Gravity 2000 (With Dollar Stores)": generateGravityConfig(2000, true),
   "Gravity 2010 (With Dollar Stores)": generateGravityConfig(2010, true),
   "Gravity 2020 (With Dollar Stores)": generateGravityConfig(2020, true),
-  "Segregation Factor ICE Black Alone White Alone": {
+  "Measure of Segregation (Black/African American and White)": {
     name: "Segregation Factor ICE Hispanic NH White Alone",
     bivariate: false,
     table: "data/sdoh.parquet",
@@ -43,7 +43,7 @@ export const columnsDict = {
     column: "ICE_Black_Alone_White_Alone",
     description: `Segregation ICE Black Alone White Alone`,
   },
-  "Segregation Factor ICE Hispanic NH White Alone": {
+  "Measure of Segregation (Hispanic/Latinx and Non-hispanic White)": {
     name: "Segregation Factor ICE Hispanic NH White Alone",
     bivariate: false,
     table: "data/sdoh.parquet",
@@ -122,6 +122,25 @@ export const columnsDict = {
     description: "Bivariate",
     colorScheme: "BuPu",
   },
+  "Economic Advantage & Food Access - Bivariate 2020": {
+    name: "ADI & Food Access - 2020",
+    bivariate: true,
+    reversed: [true, true],
+    column: ["ADI_NATRANK", "2020"],
+    columnLabels: ["Economic Disadvantage", "Poor Food Access"],
+    idColumns: ["FIPS", "GEOID"],
+    tables: ["data/adi/2021_tracts.parquet", "data/gravity_no_dollar_pivoted.parquet"],
+    description: "Bivariate",
+    colorScheme: "RdBu",
+  },
+  "Economic Advantage Index": {
+    name: "Economic Advantage Index",
+    column: "ADI_NATRANK",
+    description: "ADI",
+    table: "data/adi/2021_tracts.parquet",
+    idColumn: "FIPS",
+    bivariate: false
+  }
 } as const
 
 export const dataConfig: DataConfig = {
@@ -173,6 +192,14 @@ export const dataConfig: DataConfig = {
     eager: true,
     attribution: "Data source: US Census Bureau. ACS 2021 5 year estimates",
   },
+  "data/adi/2021_tracts.parquet": {
+    filename: "data/adi/2021_tracts.parquet",
+    name: "Economic Advantage Index",
+    id: "FIPS",
+    columns: [],
+    eager: true,
+    attribution: "Data source: UW ADI",
+  },
 } as const
 
 
@@ -222,8 +249,9 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
   "Racial Equity": {
     description: "Segregation Factors",
     columns: [
-      "Segregation Factor ICE Black Alone White Alone",
-      "Segregation Factor ICE Hispanic NH White Alone",
+      "Economic Advantage Index",
+      "Measure of Segregation (Black/African American and White)",
+      "Measure of Segregation (Hispanic/Latinx and Non-hispanic White)",
       "Yost Overall Quintile",
       "Yost State Quintile",
     ],
@@ -240,7 +268,7 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
   },
   Bivariate: {
     description: "Bivariate",
-    columns: ["Concentration & Food Access - Bivariate 2020"],
+    columns: ["Concentration & Food Access - Bivariate 2020", "Economic Advantage & Food Access - Bivariate 2020"],
   },
 } as const
 
