@@ -319,11 +319,11 @@ export const tooltipConfig: Array<{
     section: "Racial Equity",
     columns: [
       {
-        col: "Segregation Factor ICE Black Alone White Alone",
+        col: "Measure of Segregation (Black/African American and White)",
         label: "Segregation - Black Alone White Alone",
       },
       {
-        col: "Segregation Factor ICE Hispanic NH White Alone",
+        col: "Measure of Segregation (Hispanic/Latinx and Non-hispanic White)",
         label: "Segregation - Hispanic NH White Alone",
       },
     ],
