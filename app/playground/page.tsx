@@ -1,143 +1,116 @@
 "use client"
-// import { useEffect, useState } from "react"
-// import { DataService } from "utils/data/service/service"
-// import { d3Bivariate } from "utils/data/service/types"
-// const _ds = new DataService()
-// const colorKeys = Object.keys(d3Bivariate)
+import {ungzip} from 'pako';
+import { unpack } from "msgpackr"
+import { useEffect, useRef, useState } from 'react';
+import { MemoryMonitor } from 'components/dev/MemoryMonitor';
+import Dexie from 'dexie';
+
+async function fetchAndUnzip(url: string) {
+  try {
+      // Fetch the file
+      const response = await fetch(url);
+      if (!response.ok) {
+          throw new Error('Network response was not ok.');
+      }
+
+      // Retrieve the data as a Blob
+      const blob = await response.blob();
+
+      // Use FileReader to read the blob as an ArrayBuffer
+      const buffer = await blob.arrayBuffer();
+
+      // Use pako to decompress the data
+      const decompressed = ungzip(new Uint8Array(buffer));
+
+      // Handle the uncompressed data
+      return decompressed;
+  } catch (error) {
+      console.error('There was an error:', error);
+  }
+}
+
+async function getMsgpack(url:string, compressed:boolean){
+  const t0 = performance.now()
+  const data = compressed ? await fetchAndUnzip(url) : await fetch(url)
+  console.log('fetched in', performance.now() - t0, 'ms')
+  const unpacked = unpack(data)
+  console.log('unpacked in', performance.now() - t0, 'ms')
+  return unpacked
+}
+
+let staticValues: any  = []
+
+// Function to transform the 2D array into a list of objects
+function transformArrayToObject(data: any[][], keys: string[]) {
+  return data.map(subArray => {
+      let obj = {};
+      subArray.forEach((item, index) => {
+          if (index < keys.length) { // Make sure the index exists in the keys array
+            // @ts-ignore
+              obj[keys[index]] = item;
+          }
+      });
+      return obj;
+  });
+}
 
 export default function Playground() {
-  // const [ds, setDs] = useState<DataService | null>(null)
-
-  // // sql
-  // const [result, setResult] = useState<any>(undefined)
-  // const [query, setQuery] = useState<string>("")
-
-  // const [scheme, setScheme] = useState<keyof typeof d3Bivariate>("RdBu")
-  // const [colorresult, _setColorResult] = useState<any>(undefined)
-
   // useEffect(() => {
-  //   const init = async () => {
-  //     const prevquery = localStorage.getItem("query")
-  //     if (prevquery) {
-  //       setQuery(prevquery)
+  //   const main = async () => {
+  //     console.log('Fetching data...')
+  //     const data = await getMsgpack('/data/tract_full.min.msgpack.gz', true)
+  //     const tobjectify = performance.now()
+  //     const outData = []
+  //     const idbKeys = []
+  //     const columns = data.columns
+  //     console.log(columns)
+  //     const keys = Object.keys(columns)
+  //     for (let i = 1; i < keys.length; i++) {
+  //       const row = data[keys[i]]
+  //       if (!row) {
+  //         console.log('No data for', keys[i], row)
+  //         continue
+  //       }
+  //       idbKeys.push(row[0])
+  //       const obj = {}
+  //       for (let j = 0; j < columns.length; j++) {
+  //         const column = columns[j]
+  //         obj[column] = row[j]
+  //         outData.push(obj)
+  //       }
   //     }
-  //     await _ds?.initDb()
-  //     await _ds?.initData()
-  //     setDs(_ds)
+
+  //     const tDexie = performance.now()
+
+  //     const db = new Dexie('MyDatabase');
+  //     console.log(data.columns.map((c:string) => `"${c}"`).join(','))
+  //     db.version(1).stores({
+  //         tracts: data.columns.map((c:string) => `"${c}"`).join(',')
+  //     })
+  //     console.log('Dexie loaded')
+  //     db.tracts.bulkAdd(outData, idbKeys).then(function(lastKey: any) {
+  //         console.log("Done adding 100,000 raindrops all over the place");
+  //         console.log("Last raindrop's id was: " + lastKey); // Will be 100000.
+  //     }).catch(Dexie.BulkError, function (e) {
+  //         // Explicitly catching the bulkAdd() operation makes those successful
+  //         // additions commit despite that there were errors.
+  //         console.error ("Some raindrops did not succeed. However, " +
+  //           100000-e.failures.length + " raindrops was added successfully");
+  //     });
+  //     console.log('Transformed in', performance.now() - tDexie, 'ms')
+  //     // const res = alasql.queryArray('SELECT "GEOID"',[staticValues]);
+  //     // console.log('Query took', performance.now() - t0, 'ms')
+  //     // console.log(res)
+  //     // const tQuery = performance.now()
+  //     // const res = alasql('SELECT * FROM ? LIMIT 10',[staticValues]);
+  //     // console.log(res);
+  //     // console.log('Query took', performance.now() - tQuery, 'ms')
   //   }
-  //   if (ds === null) {
-  //     init()
-  //   }
-  // }, [])
+  //   main()
+  // },[])
 
-  // useEffect(() => {
-  //   localStorage.setItem("query", query)
-  // }, [query])
-
-  // const runQuery = async (query: string) => {
-  //   const res = await ds?.runQuery(query)
-  //   // @ts-ignore
-  //   setResult(JSON.parse(JSON.stringify(res)))
-  // }
-
-  // const runColors = async () => {
-  //   // const res = await ds?.getBivariateColorValues(
-  //   //   ["GEOID", "GEOID"], 
-  //   //   scheme,
-  //   //   ["2020", "2020"], //col
-  //   //   ["data/concentration_metrics_wide.parquet", "data/gravity_no_dollar_pivoted.parquet"], // table
-  //   // )
-  //   // setColorResult(res?.colorMatrix)
-  //   // console.log(res)
-  // }
-
-  // return (
-  //   <div className="p-4">
-  //     <h1 className="text-4xl mb-4">Playground</h1>
-  //     {ds === null ? (
-  //       <p className="p-5 text-center">Loading...</p>
-  //     ) : (
-  //       <>
-  //       <h3>SQL</h3>
-  //         <p>
-  //           <i>
-  //             Type your SQL query below using DuckDb syntax. Press alt+enter to execute your query. Your previous query
-  //             will automatically load (on this browser/computer).
-  //           </i>
-  //         </p>
-  //         <hr className="my-4" />
-  //         {/* 20 line text input */}
-  //         <textarea
-  //           className="h-48 w-full border-2 p-2"
-  //           placeholder="Enter query here"
-  //           defaultValue={query}
-  //           onKeyDown={(e) => {
-  //             if (e.key === "Enter" && e.altKey) {
-  //               runQuery(e.currentTarget.value)
-  //               setQuery(e.currentTarget.value)
-  //             }
-  //           }}
-  //         ></textarea>
-  //         <hr className="my-4" />
-  //         <h3>Result:</h3>
-  //         <pre className="block max-h-96 w-full overflow-y-auto bg-neutral-900 p-2 text-white">
-  //           {JSON.stringify(result, null, 2)}
-  //           {result == undefined && "No result yet. Please run a query."}
-  //         </pre>
-  //         <hr className="my-4" />
-  //         <h3>Colors</h3>
-  //         {/* two inputs with d3Keys */}
-  //         {/* on change set scheme1 or scheme2 */}
-  //         <div className="flex space-x-4">
-  //           <select
-  //             className="w-1/2"
-  //             value={scheme}
-  //             onChange={(e) => setScheme(e.target.value as keyof typeof d3Bivariate)}
-  //           >
-  //             {colorKeys.map((k) => (
-  //               <option key={k} value={k}>
-  //                 {k}
-  //               </option>
-  //             ))}
-  //           </select>
-  //           {/* button to run color query */}
-  //           <button
-  //             className="bg-blue-500 text-white p-2 rounded"
-  //             onClick={runColors}
-  //           >
-  //             Run
-  //           </button>
-  //         </div>
-
-  //         <div className="w-96 h-96">
-  //           {/* @ts-ignore */}
-  //               {colorresult?.map((row, i) => {
-  //                 console.log(row)
-  //                 return (
-  //                   <div key={i} className="flex">
-  //                     {/* @ts-ignore */}
-  //                     {row.map((col, j) => {
-  //                       return (
-  //                         <div
-  //                           key={j}
-  //                           className="w-8 h-8 m-0"
-  //                           style={{
-  //                             backgroundColor: `rgba(${col.join(",")})`,
-  //                           }}
-  //                         ></div>
-  //                       )
-  //                     })}
-  //                   </div>
-  //                 )
-
-
-  //               }
-  //             )}
-  //           </div>
-          
-  //       </>
-  //     )}
-  //   </div>
-  // )
-  return null
+return <div>
+    <MemoryMonitor />
+    <h1>Playground</h1>
+  </div>
 }
