@@ -29,6 +29,7 @@ import { zeroPopTracts } from "utils/zeroPopTracts"
 import Legend from "components/Legend"
 import MapTooltip from "components/MapTooltip"
 import { deepCompare2d1d } from "utils/data/compareArrayElements"
+import { MemoryMonitor } from "components/dev/MemoryMonitor"
 
 export type MapProps = {
   initialFilter?: string
@@ -311,6 +312,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
         <NavigationControl />
         <DeckGLOverlay layers={layers} interleaved={true} />
       </GlMap>
+      <MemoryMonitor />
     </div>
   )
 }
