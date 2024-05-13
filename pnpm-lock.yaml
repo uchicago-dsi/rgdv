@@ -224,6 +224,9 @@ dependencies:
   dexie:
     specifier: ^4.0.4
     version: 4.0.4
+  duckdb-wasm-kit:
+    specifier: ^0.1.31
+    version: 0.1.31(react@18.2.0)
   gray-matter:
     specifier: ^4.0.3
     version: 4.0.3
@@ -2298,6 +2301,12 @@ packages:
       apache-arrow: 14.0.2
     dev: false
 
+  /@duckdb/duckdb-wasm@1.28.1-dev159.0:
+    resolution: {integrity: sha512-aPETuqp8YFpz0fNpviZ+pL/QoQM2Z4GwIJd9DWQXNne6HKcrS+qXSf6BgQSkUBUi7ViA/Cen53tMd+E6AhMzOw==}
+    dependencies:
+      apache-arrow: 15.0.2
+    dev: false
+
   /@emoji-mart/data@1.1.2:
     resolution: {integrity: sha512-1HP8BxD2azjqWJvxIaWAMyTySeZY0Osr83ukYjltPVkNXeJvTz7yDrPLBtnrD5uqJ3tg4CcLuuBW09wahqL/fg==}
     dev: false
@@ -3117,6 +3126,10 @@ packages:
       react: '>= 16'
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /@holdenmatt/ts-utils@0.1.16:
+    resolution: {integrity: sha512-+5kjJU3HOsxC8EBURYFu2cij06sTaQiDvak7wfcGpWI8YouJBZH7L+fy41CujzSNgRxqRe8R3H6mZ9ZGEOUdPA==}
     dev: false
 
   /@humanwhocodes/config-array@0.11.14:
@@ -17369,6 +17382,18 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
+  /duckdb-wasm-kit@0.1.31(react@18.2.0):
+    resolution: {integrity: sha512-o0Z4ENR+sXBS1PfPRz3+oLIOpDJjf4ynkB3seA70rMgOJuBOU+QL+2J1JLWgbX8ARkcmwgI344kqKK44GGwdVA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@duckdb/duckdb-wasm': 1.28.1-dev159.0
+      '@holdenmatt/ts-utils': 0.1.16
+      apache-arrow: 15.0.2
+      react: 18.2.0
+      react-async-hook: 4.0.0(react@18.2.0)
+    dev: false
+
   /duplexer2@0.1.4:
     resolution: {integrity: sha512-asLFVfWWtJ90ZyOUHMqk7/S2w2guQKxUI2itj3d92ADHhxUSbCMGi1f1cBcJ7xM1To+pE/Khbwo1yuNbMEPKeA==}
     dependencies:
@@ -25719,6 +25744,15 @@ packages:
       ini: 1.3.8
       minimist: 1.2.8
       strip-json-comments: 2.0.1
+
+  /react-async-hook@4.0.0(react@18.2.0):
+    resolution: {integrity: sha512-97lgjFkOcHCTYSrsKBpsXg3iVWM0LnzedB749iP76sb3/8Ouu4nHIkCLEOrQWHVYqrYxjF05NN6GHoXWFkB3Kw==}
+    engines: {node: '>=8', npm: '>=5'}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /react-beautiful-dnd@13.1.1(react-dom@17.0.2)(react-native@0.74.1)(react@17.0.2):
     resolution: {integrity: sha512-0Lvs4tq2VcrEjEgDXHjT98r+63drkKEgqyxdA7qD3mvKwga6a5SscbdLPO2IExotU1jW8L0Ksdl0Cj2AF67nPQ==}
