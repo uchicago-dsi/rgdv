@@ -38,7 +38,7 @@ import Dexie from 'dexie';
 //   return unpacked
 // }
 
-let staticValues: any  = []
+// let staticValues: any  = []
 
 // // Function to transform the 2D array into a list of objects
 // function transformArrayToObject(data: any[][], keys: string[]) {
