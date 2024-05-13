@@ -10,7 +10,7 @@ pd.set_option('display.max_columns', None)
 # %%
 current_dir = path.dirname(path.abspath(__file__))
 data_dir = path.join(current_dir, '..', 'public', 'data')
-# %%
+                     # %%
 year = '2021'
 
 def make_county_and_state_cols(filepath, id_col="GEOID"):
@@ -142,8 +142,9 @@ def columnarize_msgpack(data, id_col, filepath, cols, compress=False):
       data_min[id].append(values[col])
   try:
     write_msgpack(data_min, filepath, compress)
-  except: 
+  except Exception as e: 
     print('Error writing ', filepath)
+    print(e)
     return data_min
   
 def split_df_and_msgpack(df, id_col, outpath, compress=False):
@@ -187,11 +188,15 @@ segregation_county = generate_stats(
   "TOTAL_POPULATION",
   "segregation"
 )
-county_demography = pd.read_parquet(path.join(data_dir, 'demography_county.parquet'))
 # %%
-county_joined = gravity_county.merge(hhi_county, how='outer', on="county")\
-  .merge(segregation_county, how='outer', on="county")\
-  .merge(county_demography, how='outer', left_on="county", right_on="GEOID")
+county_demography = pd.read_parquet(path.join(data_dir, 'demography_county.parquet'))
+county_adi = pd.read_parquet(path.join(data_dir, 'adi', '2021_counties.parquet'))
+# %%
+county_joined = gravity_county.merge(hhi_county, how='left', on="county")\
+  .merge(segregation_county, how='left', on="county")\
+  .merge(county_demography, how='left', left_on="county", right_on="GEOID")\
+  .merge(county_adi, how='left', left_on="county", right_on="COUNTY")\
+  .drop(columns=["COUNTY"])
 # %%
 split_df_and_msgpack(
   county_joined,
@@ -234,10 +239,21 @@ segregation_tract = generate_stats(
 )
 # %%
 tract_demography = pd.read_parquet(path.join(data_dir, 'demography_tract.parquet'))
+tract_adi = pd.read_parquet(path.join(data_dir, 'adi', '2021_tracts.parquet'))
 # %%
 tract_joined = gravity_tract.merge(hhi_tract, how='outer', on="GEOID")\
   .merge(segregation_tract, how='outer', on="GEOID")\
-  .merge(tract_demography, how='outer', on="GEOID")
+  .merge(tract_demography, how='outer', on="GEOID")\
+  .merge(tract_adi, how='outer', left_on="GEOID", right_on="FIPS")
+# %%
+columnarize_msgpack(
+  tract_joined.to_dict(orient="records"), 
+  "GEOID", 
+  path.join(data_dir, f'tract_full.msgpack'), 
+  list(tract_joined.columns), 
+  compress=True
+)
+# %%
 # %%
 split_df_and_msgpack(
   tract_joined,
@@ -282,10 +298,12 @@ segregation_state = generate_stats(
 )
 # %%
 state_demog = pd.read_parquet(path.join(data_dir, 'demography_state.parquet'))
+state_adi = pd.read_parquet(path.join(data_dir, 'adi', '2021_states.parquet'))
 # %%
 state_joined = gravity_state.merge(hhi_state, how='outer', on="state")\
   .merge(segregation_state, how='outer', on="state")\
-  .merge(state_demog, how='outer', left_on='state', right_on="GEOID")
+  .merge(state_demog, how='outer', left_on='state', right_on="GEOID")\
+  .merge(state_adi, how='outer', left_on='state', right_on="STATE")
 # %%
 split_df_and_msgpack(
   state_joined,

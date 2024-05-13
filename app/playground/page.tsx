@@ -5,54 +5,54 @@ import { useEffect, useRef, useState } from 'react';
 import { MemoryMonitor } from 'components/dev/MemoryMonitor';
 import Dexie from 'dexie';
 
-async function fetchAndUnzip(url: string) {
-  try {
-      // Fetch the file
-      const response = await fetch(url);
-      if (!response.ok) {
-          throw new Error('Network response was not ok.');
-      }
+// async function fetchAndUnzip(url: string) {
+//   try {
+//       // Fetch the file
+//       const response = await fetch(url);
+//       if (!response.ok) {
+//           throw new Error('Network response was not ok.');
+//       }
 
-      // Retrieve the data as a Blob
-      const blob = await response.blob();
+//       // Retrieve the data as a Blob
+//       const blob = await response.blob();
 
-      // Use FileReader to read the blob as an ArrayBuffer
-      const buffer = await blob.arrayBuffer();
+//       // Use FileReader to read the blob as an ArrayBuffer
+//       const buffer = await blob.arrayBuffer();
 
-      // Use pako to decompress the data
-      const decompressed = ungzip(new Uint8Array(buffer));
+//       // Use pako to decompress the data
+//       const decompressed = ungzip(new Uint8Array(buffer));
 
-      // Handle the uncompressed data
-      return decompressed;
-  } catch (error) {
-      console.error('There was an error:', error);
-  }
-}
+//       // Handle the uncompressed data
+//       return decompressed;
+//   } catch (error) {
+//       console.error('There was an error:', error);
+//   }
+// }
 
-async function getMsgpack(url:string, compressed:boolean){
-  const t0 = performance.now()
-  const data = compressed ? await fetchAndUnzip(url) : await fetch(url)
-  console.log('fetched in', performance.now() - t0, 'ms')
-  const unpacked = unpack(data)
-  console.log('unpacked in', performance.now() - t0, 'ms')
-  return unpacked
-}
+// async function getMsgpack(url:string, compressed:boolean){
+//   const t0 = performance.now()
+//   const data = compressed ? await fetchAndUnzip(url) : await fetch(url)
+//   console.log('fetched in', performance.now() - t0, 'ms')
+//   const unpacked = unpack(data)
+//   console.log('unpacked in', performance.now() - t0, 'ms')
+//   return unpacked
+// }
 
 let staticValues: any  = []
 
-// Function to transform the 2D array into a list of objects
-function transformArrayToObject(data: any[][], keys: string[]) {
-  return data.map(subArray => {
-      let obj = {};
-      subArray.forEach((item, index) => {
-          if (index < keys.length) { // Make sure the index exists in the keys array
-            // @ts-ignore
-              obj[keys[index]] = item;
-          }
-      });
-      return obj;
-  });
-}
+// // Function to transform the 2D array into a list of objects
+// function transformArrayToObject(data: any[][], keys: string[]) {
+//   return data.map(subArray => {
+//       let obj = {};
+//       subArray.forEach((item, index) => {
+//           if (index < keys.length) { // Make sure the index exists in the keys array
+//             // @ts-ignore
+//               obj[keys[index]] = item;
+//           }
+//       });
+//       return obj;
+//   });
+// }
 
 export default function Playground() {
   // useEffect(() => {
