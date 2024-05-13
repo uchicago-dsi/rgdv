@@ -1,0 +1,156 @@
+---
+sections:
+  - title: Project Motivation
+    body: "\_More coming soon.\n"
+  - title: Data
+    body: >
+      #### Methodology
+
+
+      Food supply accessibility: To estimate food access, we use a gravity model
+      with a floating catchment area (FCA). This data model represents
+      accessibility scores for different locations, quantifying how easily
+      people in a given area can access grocery stores. These scores account for
+      both the amount of resources available (weighted by store sales) and the
+      distance or travel time to these resources, applying a decay function that
+      makes further away locations less valuable than nearby ones.
+
+
+      This approach provides a more nuanced understanding of accessibility
+      compared to a simple binary measure of whether a location is within a
+      certain distance (eg. a grocery location within 1 mile or 10 miles). This
+      complexity allows the model to better reflect real-world conditions where
+      access diminishes with distance and is influenced by the concentration and
+      capacity of resources. Thus, it offers a more detailed and actionable
+      insight for planning and policy-making, identifying not just whether
+      services are accessible, but how accessible they are in relative terms.
+
+
+      To calculate the gravity model, we use the following steps:
+
+
+      1. Define supply locations: we use the InfoGroup reference USA store
+      locations coded as Grocery Stores, Warehouse Stores, Supercenters, and in
+      some cases Dollar Stores. \
+         \
+         We weighted each location by its sales volume - in the case of Dollar Stores, Supercenters, and Warehouse Stores, we divide sales based on estimates of the percentage of sales that area food items. To compare values over time, we adjust for inflation (using CPI) and adjust for median income and goods pricing (where higher sales volumes in affluent areas may represent fewer total groceries sold, and the opposite may be true in lower income areas).
+      2. Define demand locations: we use census data crosswalked to 2020 census
+      tract geographies to estimate the number of people in a given area.. 
+
+      3. Define travel time: we use the straight line distance between census
+      block groups, aggregated to census tracts, to estimate the travel time
+      between locations.
+
+      4. Calculate the catchment areas: for the following steps, we use the
+      Python Spatial Analysis Library (PySAL's) accessibility module. First, we
+      calculate dynamical defines areas around each census tract based on the
+      distance or time threshold that people are willing to travel to access a
+      grocery store.\
+         \
+         A distance decay function is applied, which assumes that the attractiveness or utility of a grocery store decreases as the distance from the store increases. Our weighting is linear, (α=1) which means that a store would have to be twice as attractive for someone to travel twice as far. We use a distance threshold of 1.2km (β=1200) to estimate the threshold at which distance sensitivity starts to decay more rapidly. \
+
+      5. Calculate accessibility:  for each census tract, we calculate the
+      accessibility score to grocery stores. We sum weighted supply values of
+      all grocery stores within the catchment area, modified by the distance and
+      supply of that store. The sum of all of the distance decayed supply values
+      divided by the total demand reflects the food supply accessibility value.
+      Other spatial access models may take into account competition for
+      resources, which is very important for services that can hit capacity
+      limits such as Healthcare, but in the case of grocery supply it is very
+      rare in the US context that a store would be fully sold out of viable food
+      supply. \
+
+
+      6. Normalize and interpret: for the food access score, we assign a
+      percentile to each tract's accessibility score from 0 to 100 relative to
+      all tracts. For counties and states, we calculate the population weighted
+      average of accessibility scores for all the tracts within, and then assign
+      a percentile relative to all counties or states. 
+
+
+      Market concentration: To estimate market concentration we use the
+      Herfindahl-Hirschman Index (HHI), a widely used measure of market
+      concentration. HHI is particularly useful when assessing the competitive
+      landscape of industries like grocery stores. 
+
+
+      To calculate HHI, we use the following steps:
+
+
+      1. Estimate service areas / travel time tolerance: we want to measure the
+      dominance of a particular grocery store or grocery parent company within a
+      reasonable range that people might be willing to travel to access
+      groceries. These ranges are based on the density of a place, where denser
+      areas may be more sensitive to distance than a more rural or remote area.
+      We assign distance ranges of 5 to 20 minutes driving time with average
+      area traffic, based on reported ranges of how far people are willing to
+      travel in the USDA FoodAPS survey. While many people in urban areas likely
+      do not drive to the grocery store, the 5 minute range of driving roughly
+      equates to a reasonable walking distance when traffic and street grids are
+      considered.\
+         \
+         We assign a driving time of 5 to 20 minutes based on the density of a given census tract and its neighbors (spatial lagged value) to differentiate tracts that area next to urban areas but are less dense, and truly rural or remote areas. We take the density values and normalize them from 0 to 100, exponentially scale the values to emphasize lower driving tolerances, and normalized again. Based on these scores, we create driving service areas using the Microsoft Bing isochrone API. The estimate the service area based on modeled traffic at 6pm on a Saturday evening in July. We apply a 500 foot linear buffer to the isochrones to capture strip malls or other locations that are just outside the calculated area. 
+      2. Find stores within a census tract's service area: based on the service
+      area of a tract, we find all the stores nearby based on their location. \
+         \
+         For service areas that have no locations, we increase the threshold by 10 minutes (eg. 20 to 30, 30 to 40) up to a 60 minute driving tolerance until a store or stores are in the area. 
+      3. Find the ultimate parent chain of the stores: for each store in the
+      service area, we identify its parent chain based on the 'Parent Number'
+      column of the Reference USA data. This links an individual grocery chain
+      to their parent company (eg. Harris Teeter is owned by Kroger). 
+
+      4. Calculate the HHI index: based on the total sales of each parent chain
+      in the service area of a tract, we calculate HHI. In essence, this measure
+      reflects how dominant stores are in the area, where a value of 1
+      represents total dominance (1 store has all of the sales) and a value
+      closer to zero reflects a more dispersed market (0.5 means two stores have
+      equal sales, 0.1 means ten stores, and so on). 
+
+      5. Normalize and interpret: We take the HHI values for each tract and
+      assign a percentile value from 0 to 100 relative to all tracts. We invert
+      this value so that a high value represents a competitive, diffuse market
+      and a low value represents a highly concentrated market. For counties and
+      states, we aggregate tract level HHI values with a population-weighted
+      average, and then assign a percentile score relative to other counties or
+      states.
+
+
+      Segregation: NIH NCI data, crosswalked from 2010 census tracts to 2020
+      census tracts based on NHGIS weights.
+
+
+      Economic disadvantage: ADI data, aggregated from 2020 census block groups
+      to 2020 census tracts via population weighted averages.
+
+
+      #### Sources
+
+
+      * Grocery locations: InfoGroup Reference USA / Data Axle (1997-2023)
+
+      * Isochrone generation: Microsoft Bing API
+
+      * Segregation Indices: NCI NIH
+
+      * Economic Advantage Index: UW Area Deprivation Index
+
+      * Demographic Data: American Community Survey 2021 5-year estimates
+
+      * Census Tracts: American Community Survey 2020 Geographic Boundaries
+
+      * Population-weighted Centroids: Census Centers of Population 2020
+
+      * Inflation: Consumer Price Index (CPI)
+  - title: Key Contributors
+    body: "This project is a collaboration between \_[Rural Advancement Foundation International-USA](https://www.rafiusa.org/)\_(RAFI-USA) and the Open Spatial Lab at the Data Science Institute at the University of Chicago.\n\nBelow are the key contributors to the project:\n\n* Aaron Johnson (Policy Co-Director, RAFI-USA)\n* Melanie Canales (RAFI-USA)\n* Dylan Halpern (Technical Lead, UChicago)\n* Susan Paykin (Program Lead, UChicago)\n"
+  - title: Acknowledgements
+    body: >
+      This project was made by possible by the generous support of the Robert
+      Wood Johnson Foundation. We are grateful for RWJF's support in realizing
+      this project, and additional programmatic support provided by the 11th
+      Hour Foundation.
+---
+
+# About
+
+ More coming soon.
