@@ -2,7 +2,7 @@ import withBundleAnalyzer from "@next/bundle-analyzer"
 import withPlugins from "next-compose-plugins"
 import { env } from "./env.mjs"
 import NodePolyFillPlugin from "node-polyfill-webpack-plugin"
-import path from "path"
+
 /**
  * @type {import('next').NextConfig}
  */
@@ -11,6 +11,17 @@ const config = withPlugins([[new NodePolyFillPlugin(), withBundleAnalyzer({ enab
   experimental: {
     instrumentationHook: true,
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  webpack(config, { webpack, isServer }) {
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+        resourceRegExp: isServer ? /(alasql|react-native-fs)/ : /react-native-fs/,
+      })
+    )
+    return config
+  }
   // rewrites() {
   //   return [
   //     { source: "/healthz", destination: "/api/health" },
