@@ -140,7 +140,6 @@ export const mapSlice = createSlice({
         y: action.payload.centroid[1],
         z: action.payload.zoom!,
       }
-      // @ts-ignore
     })
   },
 })
