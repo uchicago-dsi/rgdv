@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { getDuckDB } from "duckdb-wasm-kit"
-import { DataService } from "utils/data/service/service"
+import { DataService, dataTableName } from "utils/data/service/service"
 import { idColumn } from "utils/data/config"
 import { globals } from "utils/state/globals"
 import { AsyncDuckDBConnection } from "@duckdb/duckdb-wasm"
@@ -35,17 +35,14 @@ export const initializeDb = createAsyncThunk("map/initDb", async () => {
   if (globals.globalConn) {
     return "ready"
   }
-  const { db, conn } = await getDuckDB().then(async (db) => {
-    const conn = await db.connect() as unknown as AsyncDuckDBConnection
-    return {
-      db,
-      conn,
-    }
-  })
-  await conn.query(`CREATE TABLE IF NOT EXISTS data 
-      AS 
-      SELECT * 
-      FROM '${window.location.origin}/data/full_tract.parquet'`)
+  const [db, buffer] = await Promise.all([
+    getDuckDB(),
+    fetch(`${window.location.origin}/data/full_tract.parquet`).then((r) => r.arrayBuffer()),
+  ])
+  
+  const dataArray = new Uint8Array(buffer)
+  await db.registerFileBuffer(dataTableName, dataArray)
+  const conn = (await db.connect()) as unknown as AsyncDuckDBConnection
 
   globals.set({
     conn,

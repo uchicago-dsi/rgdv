@@ -5,6 +5,7 @@ import tinycolor from "tinycolor2"
 import { BivariateColorParamteres, MonovariateColorParamteres, d3Bivariate } from "./types"
 import { deepCompare2d1d } from "../compareArrayElements"
 import type { AsyncDuckDBConnection } from "@duckdb/duckdb-wasm"
+export const dataTableName = "data.parquet"
 export class DataService<DataT extends Record<string, any>> {
   data: Record<string, Record<string, Record<string | number, number>>> = {}
   dbStatus: "none" | "loading" | "loaded" | "error" = "none"
@@ -37,7 +38,7 @@ export class DataService<DataT extends Record<string, any>> {
   }
 
   async getUniqueValues(column: string | number, filter?: string): Promise<Array<number>> {
-    let query = `SELECT DISTINCT "${column}" FROM data`
+    let query = `SELECT DISTINCT "${column}" FROM ${dataTableName}`
     if (filter) {
       query += ` WHERE "${this.idColumn}" LIKE '${filter}%';`
     } else {
@@ -58,7 +59,7 @@ export class DataService<DataT extends Record<string, any>> {
     const quantileFractions = Array.from({ length: n - 1 }, (_, i) => (i + 1) / n)
     let query = `SELECT 
       ${quantileFractions.map((f, i) => `round(approx_quantile(${column}, ${f}), 3) as break${i}`)}
-      FROM data
+      FROM ${dataTableName}
     `
     if (filter) {
       query += ` WHERE ${this.idColumn} LIKE '${filter}%';`
@@ -142,7 +143,7 @@ export class DataService<DataT extends Record<string, any>> {
     query += `${this.getQuantileCaseClause(`${cleanColumns[0]}`, breaks[0], "q0")}, `
     query += `${this.getQuantileCaseClause(`${cleanColumns[1]}`, breaks[1], "q1")}, `
     query += `${this.getBivariateCaseClause(["q0", "q1"], colors)}`
-    query += ` FROM data`
+    query += ` FROM ${dataTableName}`
     const colorMap = this.mapColors((await this.runQuery(query)) as DataT[])
     return {
       colorMap,
@@ -195,7 +196,7 @@ export class DataService<DataT extends Record<string, any>> {
         "color",
         rgbColors.map((v: any) => `[${v}]`)
       )
-      query += ` FROM data`
+      query += ` FROM ${dataTableName}`
     } else {
       query += `
       SELECT ${cleanColumn}, ${this.idColumn},
@@ -204,7 +205,7 @@ export class DataService<DataT extends Record<string, any>> {
         WHEN ${column} IS NULL THEN [120,120,120,0]
         ELSE [${rgbColors[rgbColors.length - 1]}]
         END as color
-        FROM data
+        FROM ${dataTableName}
     `
     }
     if (filter) {
@@ -253,7 +254,7 @@ export class DataService<DataT extends Record<string, any>> {
     if (this.tooltipResults[id]) {
       return this.tooltipResults[id]
     }
-    const _res = await this.runQuery<DataT[]>(`SELECT * FROM data WHERE "${this.idColumn}" LIKE '${id}'`)
+    const _res = await this.runQuery<DataT[]>(`SELECT * FROM ${dataTableName} WHERE "${this.idColumn}" LIKE '${id}'`)
     if (!_res || _res.length === 0) {
       console.error(`No results for tooltip query: ${id}`)
       return
@@ -293,7 +294,7 @@ export class DataService<DataT extends Record<string, any>> {
     `
       )
       .join(", ")
-    const result = await this.runQuery(`SELECT ${columns} FROM data`)
+    const result = await this.runQuery(`SELECT ${columns} FROM ${dataTableName}`)
     if (!this.timeseriesResults[id]) {
       this.timeseriesResults[id] = {}
     }
