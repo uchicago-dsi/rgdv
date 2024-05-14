@@ -1,7 +1,9 @@
+"use client"
 import { columnsDict, dataConfig, timeSeriesConfig, tooltipConfig } from "../config"
 import { DataConfig, DataRecord } from "../config.types"
 import { DuckDBDataProtocol, type AsyncDuckDB, type AsyncDuckDBConnection } from "@duckdb/duckdb-wasm"
-import { getDuckDb, runQuery } from "utils/duckdb"
+import { runQuery } from "utils/duckdb"
+import { getDuckDB } from "duckdb-wasm-kit";
 import * as d3 from "d3"
 import tinycolor from "tinycolor2"
 import { BivariateColorParamteres, MonovariateColorParamteres, d3Bivariate } from "./types"
@@ -36,9 +38,9 @@ export class DataService {
   completeCallback?: (s: string) => void
   hasRunWasm: boolean = false
   dbStatus: "none" | "loading" | "loaded" | "error" = "none"
-  db?: AsyncDuckDB
+  db?: ReturnType<Awaited<typeof getDuckDB>>
   baseURL: string = window?.location?.origin || ""
-  conn?: AsyncDuckDBConnection
+  conn?: AsyncDuckDB
   tooltipResults: any = {}
   timeseriesResults: any = {}
 
@@ -67,7 +69,9 @@ export class DataService {
       return this.waitForDb()
     }
     this.dbStatus = "loading"
-    this.db = await getDuckDb()
+    // @ts-ignore
+    this.db = await getDuckDB()
+    // @ts-ignore
     this.conn = await this.db.connect()
     this.dbStatus = "loaded"
   }

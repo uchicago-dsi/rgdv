@@ -1,19 +1,24 @@
 import { useEffect } from "react"
 import { ds } from "utils/data/service"
-import { mapSlice } from "utils/state/map"
+import { initializeDb, mapSlice } from "utils/state/map"
 import { useAppDispatch, useAppSelector } from "utils/state/store"
 import { useMapColor } from "./useMapColor"
 import { columnGroups, columnsDict } from "utils/data/config"
-
 export const useDataService = () => {
   const dispatch = useAppDispatch()
+  const dbStatus = useAppSelector((state) => state.map.dbStatus)
+
+  // useEffect(() => {
+  //   ds.setCompleteCallback((s) => {
+  //     dispatch(mapSlice.actions.setComplete(s))
+  //   })
+  //   ds.initData()
+  // }, [dispatch])
 
   useEffect(() => {
-    ds.setCompleteCallback((s) => {
-      dispatch(mapSlice.actions.setComplete(s))
-    })
-    ds.initData()
+    dbStatus === 'uninitialized' && dispatch(initializeDb())
   }, [dispatch])
+  
 
   const completeData = useAppSelector((state) => state.map.completeData)
   const filter = useAppSelector((state) => state.map.idFilter)

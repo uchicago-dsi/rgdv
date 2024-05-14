@@ -1,13 +1,18 @@
 "use client"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
+import { getDuckDB } from "duckdb-wasm-kit"
 import { columnGroups, defaultColumn, defaultColumnGroup, defaultYear } from "utils/data/config"
+import { runQuery } from "utils/duckdb"
 
+let globalDb: any;
+let globalConn: any;
 export interface MapState {
   year: number
   breaks: Array<number>
   colors: Array<Array<number>>
   completeData: Array<string>
+  dbStatus?: string
   // currentData: string,
   currentColumn: string | number
   currentColumnGroup: keyof typeof columnGroups
@@ -30,6 +35,7 @@ const initialState: MapState = {
   breaks: [0, 1, 2, 3, 4, 5],
   colors: [[255, 255, 255, 0]],
   completeData: [],
+  dbStatus: 'uninitialized',
   // currentData: defaultData,
 
   currentColumn: defaultColumn,
@@ -65,6 +71,34 @@ export const fetchCentroidById = createAsyncThunk("map/setCentroid", async (id: 
     zoom,
     id,
   }
+})
+
+export const initializeDb = createAsyncThunk("map/initDb", async () => {
+  console.log('INITIALIZING DB!!!!')
+  if (globalConn) {
+    return "ready"
+  }
+  const {
+    db,
+    conn
+  } = await getDuckDB().then(async (db) => {
+    const conn = await db.connect()
+    return {
+      db,
+      conn,
+    }
+  })
+  await runQuery({
+    conn: conn as any,
+    db: db as any,
+    query: `CREATE TABLE IF NOT EXISTS data 
+      AS 
+      SELECT * 
+      FROM '${window.location.origin}/data/full_tract.parquet'`
+  })
+  globalConn = conn
+  globalDb = db
+  return "ready"
 })
 
 export const mapSlice = createSlice({
@@ -140,8 +174,21 @@ export const mapSlice = createSlice({
         y: action.payload.centroid[1],
         z: action.payload.zoom!,
       }
+    }),
+    builder.addCase(initializeDb.pending, (state) => {
+      state.dbStatus = 'loading'
+    }),
+    builder.addCase(initializeDb.fulfilled, (state, action) => {
+      state.dbStatus = action.payload
+      runQuery({
+        query: "SHOW ALL TABLES;",
+        db: globalDb,
+        conn: globalConn,
+      }).then(r => {
+        console.log(JSON.parse(JSON.stringify(r)))
+      })
     })
-  },
+  }
 })
 
 // Action creators are generated for each case reducer function
