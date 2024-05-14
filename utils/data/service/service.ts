@@ -1,131 +1,45 @@
-import { columnsDict, dataConfig, timeSeriesConfig, tooltipConfig } from "../config"
-import { DataConfig, DataRecord } from "../config.types"
-import { DuckDBDataProtocol, type AsyncDuckDB, type AsyncDuckDBConnection } from "@duckdb/duckdb-wasm"
-import { getDuckDb, runQuery } from "utils/duckdb"
+"use client"
+import { columnsDict, timeSeriesConfig, tooltipConfig } from "../config"
 import * as d3 from "d3"
 import tinycolor from "tinycolor2"
 import { BivariateColorParamteres, MonovariateColorParamteres, d3Bivariate } from "./types"
 import { deepCompare2d1d } from "../compareArrayElements"
-
-// 2000 to 2021
-const fullYears = new Array(22).fill(0).map((_, i) => 2000 + i)
-
-const timeseriesQueries = {
-  "data/gravity_no_dollar_pivoted.parquet": {
-    query: `SELECT
-    median("2000") as "2000",
-    median("2010") as "2010",
-    median("2020") as "2020",
-  from "data/gravity_dollar_pivoted.parquet" `,
-    name: "Gravity (No Dollar Stores)",
-  },
-
-  "data/concentration_metrics_wide.parquet": {
-    query: `SELECT
-    ${fullYears.map((y) => `median("${y}") as "${y}"`).join(",\n")}
-    from "data/concentration_metrics_wide.parquet" `,
-    name: "Concentration Metrics (No Dollar Stores)",
-  },
-} as const
-
-export class DataService {
-  config: DataConfig
+import type { AsyncDuckDBConnection } from "@duckdb/duckdb-wasm"
+export class DataService<DataT extends Record<string, any>> {
   data: Record<string, Record<string, Record<string | number, number>>> = {}
-  complete: Array<string> = []
-  eagerData: Array<string> = []
-  completeCallback?: (s: string) => void
-  hasRunWasm: boolean = false
   dbStatus: "none" | "loading" | "loaded" | "error" = "none"
-  db?: AsyncDuckDB
   baseURL: string = window?.location?.origin || ""
   conn?: AsyncDuckDBConnection
   tooltipResults: any = {}
   timeseriesResults: any = {}
+  _dataId: keyof DataT = "GEOID"
+  idColumn: string
 
-  constructor(completeCallback?: (s: string) => void, config: DataConfig = dataConfig) {
-    this.config = config
-    this.completeCallback = completeCallback
+  constructor(conn: AsyncDuckDBConnection, idColumn: keyof DataT) {
+    this.conn = conn
+    this._dataId = idColumn
+    this.idColumn = idColumn.toString()
   }
 
-  initData() {
-    const eagerData = Object.entries(this.config).filter(([k, v]) => v.eager)
-    eagerData.forEach(([k, v]) => this.registerData(k, v))
-  }
-
-  async waitForDb() {
-    if (this.dbStatus === "loaded") {
-      return
-    }
-    while (this.dbStatus === "loading") {
-      await new Promise((r) => setTimeout(r, 100))
-    }
-  }
-  async initDb() {
-    if (this.dbStatus === "loaded") {
-      return
-    } else if (this.dbStatus === "loading") {
-      return this.waitForDb()
-    }
-    this.dbStatus = "loading"
-    this.db = await getDuckDb()
-    this.conn = await this.db.connect()
-    this.dbStatus = "loaded"
-  }
-
-  backgroundDataLoad() {
-    if (this.complete.length === Object.keys(this.config).length) {
-      const remainingData = Object.entries(this.config).filter(([k, v]) => !this.complete.includes(k))
-      remainingData.forEach(([k, v]) => this.registerData(k, v))
-    }
-  }
-
-  async registerData(name: string, config: DataRecord) {
-    if (this.complete.includes(name)) {
-      return
-    }
-    await this.initDb()
-    await this.db!.registerFileURL(name, `${this.baseURL}/${config.filename}`, DuckDBDataProtocol.HTTP, false)
-    if (this.completeCallback) {
-      this.completeCallback(name)
-    }
-    this.complete.push(name)
-  }
-
-  getFromQueryString(filename: string) {
-    if (this.complete.includes(filename)) {
-      return `'${filename}'`
-    } else {
-      return `'${this.baseURL}/${filename}'`
-    }
-  }
-
-  async runQuery(query: string, freshConn?: boolean) {
-    await this.initDb()
+  async runQuery<QueryT extends any[]>(query: string, freshConn?: boolean) {
     try {
-      const conn = freshConn ? await this.db!.connect() : this.conn!
-      const r = await runQuery({
-        conn,
-        query,
-      })
-      if (freshConn) {
-        await conn.close()
+      if (!this.conn) {
+        throw new Error("No connection")
       }
-      return r
+      const conn = this.conn!
+      const r = await conn.query(query)
+      const array = r.toArray()
+      return array as QueryT
     } catch (e) {
       console.error(e)
       return []
     }
   }
 
-  async getUniqueValues(
-    column: string | number,
-    table: string,
-    idCol: string,
-    filter?: string
-  ): Promise<Array<number>> {
-    let query = `SELECT DISTINCT "${column}" FROM ${this.getFromQueryString(table)}`
+  async getUniqueValues(column: string | number, filter?: string): Promise<Array<number>> {
+    let query = `SELECT DISTINCT "${column}" FROM data`
     if (filter) {
-      query += ` WHERE "${idCol}" LIKE '${filter}%';`
+      query += ` WHERE "${this.idColumn}" LIKE '${filter}%';`
     } else {
       query += ";"
     }
@@ -137,23 +51,17 @@ export class DataService {
     // @ts-ignore
     return Object.values(result[0]) as Array<number>
   }
-  async getQuantiles(
-    column: string | number,
-    table: string,
-    n: number,
-    idCol: string,
-    filter?: string
-  ): Promise<Array<number>> {
+  async getQuantiles(column: string | number, n: number, filter?: string): Promise<Array<number>> {
     // breakpoints to use for quantile breaks
     // eg. n=5 - 0.2, 0.4, 0.6, 0.8 - 4 breaks
     // eg. n=4 - 0.25, 0.5, 0.75 - 3 breaks
     const quantileFractions = Array.from({ length: n - 1 }, (_, i) => (i + 1) / n)
     let query = `SELECT 
       ${quantileFractions.map((f, i) => `round(approx_quantile(${column}, ${f}), 3) as break${i}`)}
-      FROM ${this.getFromQueryString(table)}
+      FROM data
     `
     if (filter) {
-      query += ` WHERE ${idCol} LIKE '${filter}%';`
+      query += ` WHERE ${this.idColumn} LIKE '${filter}%';`
     } else {
       query += ";"
     }
@@ -177,7 +85,7 @@ export class DataService {
     }
     const values = _values || [...quantiles.map((_, i) => i), quantiles.length]
 
-    let query = `CASE `
+    let query = `\nCASE `
 
     for (let i = 0; i < quantiles.length; i++) {
       query += ` WHEN ${column} < ${quantiles[i]} THEN ${values[i]} `
@@ -186,7 +94,7 @@ export class DataService {
     return query
   }
   getBivariateCaseClause(columns: [string, string], colors: Array<Array<number>>) {
-    let query = `CASE `
+    let query = `\nCASE `
     query += "\n"
     query += `WHEN ${columns[0]} IS NULL and ${columns[1]} IS NULL THEN [120,120,120,0]`
     query += "\n"
@@ -200,23 +108,8 @@ export class DataService {
     return query
   }
 
-  async getBivariateColorValues({
-    idColumn,
-    colorScheme,
-    column,
-    table,
-    filter,
-    reversed,
-    colorFilter,
-  }: BivariateColorParamteres) {
-    if (idColumn.length !== 2 || column.length !== 2 || table.length !== 2) {
-      console.error(
-        `Invalid Bivariate Color Values request: ${idColumn}, ${colorScheme}, ${column}, ${table}, ${filter}`
-      )
-      return
-    }
+  async getBivariateColorValues({ colorScheme, column, filter, reversed, colorFilter }: BivariateColorParamteres) {
     const cleanColumns = column.map((c) => (typeof c === "string" && c.startsWith('"') ? c : `"${c}"`))
-
     const legendColors = d3Bivariate[colorScheme]?.map((row: any) =>
       row.map((c: any) => {
         const tc = tinycolor(c).toRgb()
@@ -225,13 +118,9 @@ export class DataService {
     )
     let colors = legendColors
     if (reversed?.[1]) {
-      // colors = [
-      //   legendColors[2],
-      //   legendColors[1],
-      //   legendColors[0]
-      // ]
       colors = legendColors.map((row: any) => row.slice().reverse())
     }
+
     if (colorFilter) {
       for (let i = 0; i < colors.length; i++) {
         for (let j = 0; j < colors[i].length; j++) {
@@ -243,29 +132,18 @@ export class DataService {
         }
       }
     }
-    // console.log("COLORS", colors)
-    // console.log("LEGEND COLORS", legendColors)
-    // console.log("REVERSED", reversed)
-    // map breaks values
-    // always 1 less than desired breaks
-    // eg quartiles = 0.25, 0.5, 0.75
-    // for use less than value is that quantile
-    const breaks = await Promise.all(
-      table.map((t, i) => this.getQuantiles(cleanColumns[i]!, t, 3, idColumn[i]!, filter))
-    )
-    let query = `SELECT t0.${idColumn[0]}, `
-    query += `${this.getQuantileCaseClause(`t0.${cleanColumns[0]}`, breaks![0]!, "q0")}, `
-    query += `${this.getQuantileCaseClause(`t1.${cleanColumns[1]}`, breaks![1]!, "q1")}, `
+
+    const breaks = await Promise.all([
+      this.getQuantiles(cleanColumns[0]!, 3, filter),
+      this.getQuantiles(cleanColumns[1]!, 3, filter),
+    ])
+
+    let query = `SELECT ${this.idColumn}, `
+    query += `${this.getQuantileCaseClause(`${cleanColumns[0]}`, breaks[0], "q0")}, `
+    query += `${this.getQuantileCaseClause(`${cleanColumns[1]}`, breaks[1], "q1")}, `
     query += `${this.getBivariateCaseClause(["q0", "q1"], colors)}`
-    query += ` FROM ${this.getFromQueryString(table[0]!)} t0`
-    query += ` JOIN ${this.getFromQueryString(table[1]!)} t1 ON t0.${idColumn[0]} = t1.${idColumn[1]}`
-    // query += ";"
-    const colorValues = await this.runQuery(query)
-    const colorMap = {}
-    for (let i = 0; i < colorValues.length; i++) {
-      // @ts-expect-error
-      colorMap[colorValues[i][idColumn[0]]] = colorValues[i].color.toJSON()
-    }
+    query += ` FROM data`
+    const colorMap = this.mapColors((await this.runQuery(query)) as DataT[])
     return {
       colorMap,
       breaks: breaks,
@@ -273,16 +151,18 @@ export class DataService {
     }
   }
 
-  async getMonovariateColorValues({
-    idColumn,
-    colorScheme,
-    column,
-    table,
-    nBins,
-    reversed,
-    filter,
-    range,
-  }: MonovariateColorParamteres) {
+  mapColors(colorValues: Array<any>) {
+    const colorMap: Record<string, any> = {}
+    for (let i = 0; i < colorValues.length; i++) {
+      const entryValue = colorValues[i]
+      if (!entryValue) continue
+      const id = entryValue[this._dataId]
+      colorMap[id] = entryValue.color.toJSON()
+    }
+    return colorMap
+  }
+
+  async getMonovariateColorValues({ colorScheme, column, nBins, reversed, filter, range }: MonovariateColorParamteres) {
     const cleanColumn = typeof column === "string" ? column : `"${column}"`
     // @ts-ignore
     const d3Colors = d3[colorScheme]?.[nBins]
@@ -303,41 +183,36 @@ export class DataService {
     }
     const values =
       range === "categorical"
-        ? await this.getUniqueValues(cleanColumn, table, idColumn, filter)
-        : await this.getQuantiles(cleanColumn, table, nBins, idColumn, filter)
+        ? await this.getUniqueValues(cleanColumn, filter)
+        : await this.getQuantiles(cleanColumn, nBins, filter)
+
     let query = ``
     if (!range || range === "continuous") {
-      query += `SELECT ${cleanColumn}, ${idColumn}, `
+      query += `SELECT ${cleanColumn}, ${this.idColumn}, `
       query += this.getQuantileCaseClause(
         cleanColumn,
         values,
         "color",
         rgbColors.map((v: any) => `[${v}]`)
       )
-      query += ` FROM ${this.getFromQueryString(table)}`
+      query += ` FROM data`
     } else {
       query += `
-      SELECT ${cleanColumn}, ${idColumn},
+      SELECT ${cleanColumn}, ${this.idColumn},
       CASE 
         ${values.map((q, i) => `WHEN ${column} = ${q} THEN [${rgbColors[i]}]`).join("\n")}
         WHEN ${column} IS NULL THEN [120,120,120,0]
         ELSE [${rgbColors[rgbColors.length - 1]}]
         END as color
-        FROM ${this.getFromQueryString(table)}
+        FROM data
     `
     }
     if (filter) {
-      query += ` WHERE ${idColumn} LIKE '${filter}%';`
+      query += ` WHERE ${this.idColumn} LIKE '${filter}%';`
     } else {
       query += ";"
     }
-    // @ts-ignore
-    const colorValues = await this.runQuery(query)
-    const colorMap = {}
-    for (let i = 0; i < colorValues.length; i++) {
-      // @ts-expect-error
-      colorMap[colorValues[i][idColumn]] = colorValues[i].color.toJSON()
-    }
+    const colorMap = this.mapColors(await this.runQuery(query))
     return {
       colorMap,
       breaks: values,
@@ -348,34 +223,29 @@ export class DataService {
     props:
       | ({ bivariate: false } & {
           bivariate: boolean
-          idColumn: string
           colorScheme: string
           column: string | number
-          table: string
           nBins: number
           reversed?: boolean
           filter?: string
           range?: "continuous" | "categorical"
         })
       | ({ bivariate: true } & {
-          idColumn: string[]
           colorScheme: keyof typeof d3Bivariate
           column: Array<string | number>
-          table: string[]
           filter?: string
           [key: string]: any
         })
   ) {
     const bivariate = props.bivariate
     if (bivariate) {
-      const { idColumn, table, column, colorScheme, filter, reversed } = props as BivariateColorParamteres
+      const { column, colorScheme, filter, reversed } = props as BivariateColorParamteres
       // @ts-ignore
-      return this.getBivariateColorValues({ idColumn, colorScheme, column, table, filter, reversed })
+      return this.getBivariateColorValues({ colorScheme, column, filter, reversed })
     } else {
-      const { idColumn, colorScheme, reversed, column, table, nBins, filter, range } =
-        props as MonovariateColorParamteres
+      const { colorScheme, reversed, column, nBins, filter, range } = props as MonovariateColorParamteres
       // @ts-ignore
-      return this.getMonovariateColorValues({ idColumn, colorScheme, column, table, nBins, reversed, filter, range })
+      return this.getMonovariateColorValues({ colorScheme, column, nBins, reversed, filter, range })
     }
   }
 
@@ -383,35 +253,36 @@ export class DataService {
     if (this.tooltipResults[id]) {
       return this.tooltipResults[id]
     }
-    let data: any[] = []
+    const _res = await this.runQuery<DataT[]>(`SELECT * FROM data WHERE "${this.idColumn}" LIKE '${id}'`)
+    if (!_res || _res.length === 0) {
+      console.error(`No results for tooltip query: ${id}`)
+      return
+    }
+    const data = _res[0]!
+    let formattedData = []
     for (const section of tooltipConfig) {
       const sectionData: any = {
         section: section.section,
         columns: [],
       }
       for (const column of section.columns) {
-        // @ts-ignore
         const columnConfig = columnsDict[column.col]
-        // @ts-ignore
-        const data = await this.runQuery(`SELECT "${columnConfig.column}" as "${columnConfig.name}" FROM ${this.getFromQueryString(columnConfig.table)} WHERE "${columnConfig.idColumn}" LIKE '${id}%'
-        `)
+        const entry = data[columnConfig.column as keyof typeof data]
         sectionData.columns.push({
           ...column,
-          // @ts-ignore
-          data: data?.[0]?.[columnConfig.name],
+          ...columnConfig,
+          data: entry,
         })
       }
-      data.push(sectionData)
+      formattedData.push(sectionData)
     }
-    this.tooltipResults[id] = data
+    this.tooltipResults[id] = formattedData
+    return this.tooltipResults[id]
   }
 
   async getTimeseries(id: string, variable: keyof typeof timeSeriesConfig) {
     if (this.timeseriesResults[id]?.[variable]) return
     const config = timeSeriesConfig[variable]
-    const table = config.table
-    const idColumn = config.idColumn
-    // const totalPopulation = await this.runQuery(`SELECT sum("TOTAL_POPULATION") as "TOTAL_POPULATION" FROM ${this.getFromQueryString(table)} WHERE ${idColumn} LIKE '${id}%'`)
     const columns = config.columns
       .map(
         (c) => `
@@ -422,25 +293,11 @@ export class DataService {
     `
       )
       .join(", ")
-
-    const query = `
-      SELECT ${columns} FROM ${this.getFromQueryString(table)} t0
-      LEFT JOIN ${this.getFromQueryString("data/demography_tract.parquet")} t1 
-      ON t1.GEOID == t0.GEOID
-      WHERE t1."${idColumn}" LIKE '${id}%' AND t0."${idColumn}" LIKE '${id}%'
-    `
-
-    const result = await this.runQuery(query)
-
+    const result = await this.runQuery(`SELECT ${columns} FROM data`)
     if (!this.timeseriesResults[id]) {
       this.timeseriesResults[id] = {}
     }
 
     this.timeseriesResults[id][variable] = result[0]
-  }
-
-  setCompleteCallback(cb: (s: string) => void) {
-    this.completeCallback = cb
-    this.complete.forEach(cb)
   }
 }

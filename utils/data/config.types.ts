@@ -1,24 +1,12 @@
 import * as d3 from "d3"
 import { d3Bivariate } from "./service/types"
 
-export type DataRecord = {
-  filename: string
-  name: string
-  columns: Array<string>
-  eager: boolean
-  attribution: string
-  id: string
-}
-
-export type DataConfig = Record<string, DataRecord>
 export interface BaseColumnSchema {
   name: string
   description: string
 }
 export interface BinsSchema extends BaseColumnSchema {
   column: string | number
-  idColumn: string
-  table: string
   colorScheme?: keyof typeof d3
   nBins?: number
   reversed?: boolean
@@ -29,8 +17,6 @@ export interface BinsSchema extends BaseColumnSchema {
 export interface BivariateBinsSchema extends BaseColumnSchema {
   column: Array<string | number>
   columnLabels?: Array<string>
-  idColumns: Array<string>
-  tables: Array<string>
   reversed?: Array<boolean>
   colorScheme?: keyof typeof d3Bivariate
   manualBreaks?: Array<Array<number>>

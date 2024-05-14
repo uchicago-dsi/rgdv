@@ -1,2 +1,3 @@
-import { DataService } from "./service";
-export const ds = new DataService()
+export { 
+  DataService
+} from './service'

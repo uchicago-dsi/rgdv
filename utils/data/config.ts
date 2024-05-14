@@ -1,24 +1,22 @@
-import { DataConfig, ColumnConfig, ColumnGroups, Columns } from "./config.types"
+import { color } from "d3"
+import { ColumnConfig, ColumnGroups } from "./config.types"
 
-const years = [2000, 2010, 2020]
+export const idColumn = "GEOID"
 
 const generateHhiConfig = (year: number) =>
   ({
     name: `Concentration Index ${year} (No Dollar Stores)`,
-    column: year,
+    column: `hhi_${year}`, // hhi_2000, hhi_2010
     bivariate: false,
-    idColumn: "GEOID",
-    table: "data/concentration_metrics_wide.parquet",
     description: `Herfindahl-Hirschman Index for ${year}`,
+    colorScheme: "schemeGreens"
   }) as ColumnConfig
 
 const generateGravityConfig = (year: number, dollar_stores: boolean) =>
   ({
     name: `Gravity ${year}`,
-    column: year,
+    column: `gravity_${year}`,
     bivariate: false,
-    table: "data/gravity_no_dollar_pivoted.parquet",
-    idColumn: "GEOID",
     nBins: 9,
     colorScheme: "schemeSpectral",
     description: `Gravity for ${year}`,
@@ -37,24 +35,18 @@ export const columnsDict = {
   "Measure of Segregation (Black/African American and White)": {
     name: "Segregation Factor ICE Hispanic NH White Alone",
     bivariate: false,
-    table: "data/sdoh.parquet",
-    idColumn: "GEOID",
     column: "ICE_Black_Alone_White_Alone",
     description: `Segregation ICE Black Alone White Alone`,
   },
   "Measure of Segregation (Hispanic/Latinx and Non-hispanic White)": {
     name: "Segregation Factor ICE Hispanic NH White Alone",
     bivariate: false,
-    table: "data/sdoh.parquet",
-    idColumn: "GEOID",
     column: "ICE_Hispanic_NH_White_Alone",
     description: `Segregation ICE Hispanic NH White Alone`,
   },
   "Yost Overall Quintile": {
     name: "Yost Overall Quintile",
     bivariate: false,
-    table: "data/sdoh.parquet",
-    idColumn: "GEOID",
     column: "Yost_Overall_Quintile",
     description: `Yost Segregation factor for Overall Quintile`,
     colorScheme: "schemeOranges",
@@ -63,8 +55,6 @@ export const columnsDict = {
   "Yost State Quintile": {
     name: "Yost State Quintile",
     bivariate: false,
-    table: "data/sdoh.parquet",
-    idColumn: "GEOID",
     column: "Yost_State_Quintile",
     description: `Yost Segregation factor for State Quintile`,
     colorScheme: "schemeOranges",
@@ -73,51 +63,40 @@ export const columnsDict = {
   "Total Population": {
     name: "Total Population",
     column: "TOTAL_POPULATION",
-    description: "Total population",
-    table: "data/demography_tract.parquet",
-    idColumn: "GEOID",
+    description: "Total population (ACS 2021 5-year estimates)",
     bivariate: false,
+    colorScheme: "schemeBlues",
   },
   "Median Household Income": {
     name: "Median Household Income",
     column: "MEDIAN_HOUSEHOLD_INCOME",
     description: "Median household income",
-    table: "data/demography_tract.parquet",
-    idColumn: "GEOID",
     bivariate: false,
   },
   "Poverty Rate": {
     name: "Poverty Rate",
     column: "POVERTY_RATE",
     description: "Poverty rate",
-    table: "data/demography_tract.parquet",
-    idColumn: "GEOID",
     bivariate: false,
   },
   "No Healthcare (Percent)": {
     name: "No Healthcare (Percent)",
     column: "PCT_NO_HEALTHCARE",
     description: "Percentage of population without healthcare",
-    table: "data/demography_tract.parquet",
-    idColumn: "GEOID",
     bivariate: false,
   },
   "Percent Black or African American": {
     name: "Percent Black or African American",
     column: "NH BLACK ALONE",
     description: "Percentage of population that is Black or African American",
-    table: "data/demography_tract.parquet",
-    idColumn: "GEOID",
     bivariate: false,
   },
   "Concentration & Food Access - Bivariate 2020": {
     name: "Concentration & Food Access - 2020",
     bivariate: true,
     reversed: [false, true],
-    column: ["2020", "2020"],
+    column: ["hhi_2020", "gravity_2020"],
     columnLabels: ["Market Concentration", "Poor Food Access"],
-    idColumns: ["GEOID", "GEOID"],
-    tables: ["data/concentration_metrics_wide.parquet", "data/gravity_no_dollar_pivoted.parquet"],
     description: "Bivariate",
     colorScheme: "BuPu",
   },
@@ -125,10 +104,8 @@ export const columnsDict = {
     name: "ADI & Food Access - 2020",
     bivariate: true,
     reversed: [true, true],
-    column: ["ADI_NATRANK", "2020"],
+    column: ["ADI_NATRANK", "gravity_2020"],
     columnLabels: ["Economic Disadvantage", "Poor Food Access"],
-    idColumns: ["FIPS", "GEOID"],
-    tables: ["data/adi/2021_tracts.parquet", "data/gravity_no_dollar_pivoted.parquet"],
     description: "Bivariate",
     colorScheme: "RdBu",
   },
@@ -136,10 +113,8 @@ export const columnsDict = {
     name: "ADI & Food Access - 2020",
     bivariate: true,
     reversed: [true, false],
-    column: ["ADI_NATRANK", "2020"],
+    column: ["ADI_NATRANK", "hhi_2020"],
     columnLabels: ["Economic Disadvantage", "Market Concentration"],
-    idColumns: ["FIPS", "GEOID"],
-    tables: ["data/adi/2021_tracts.parquet", "data/concentration_metrics_wide.parquet"],
     description: "Bivariate",
     colorScheme: "PuOr",
   },
@@ -147,91 +122,22 @@ export const columnsDict = {
     name: "Economic Advantage Index",
     column: "ADI_NATRANK",
     description: "ADI",
-    table: "data/adi/2021_tracts.parquet",
-    idColumn: "FIPS",
     bivariate: false,
-  },
-} as const
-
-export const dataConfig: DataConfig = {
-  "data/concentration_metrics_wide_ds.parquet": {
-    filename: "data/concentration_metrics_wide_ds.parquet",
-    name: "Concentration Metrics (No Dollar Stores)",
-    id: "GEOID",
-    columns: [""],
-    eager: true,
-    attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
-  },
-  "data/concentration_metrics_wide.parquet": {
-    filename: "data/concentration_metrics_wide.parquet",
-    name: "Concentration Metrics (Dollar Stores)",
-    id: "GEOID",
-    columns: [],
-    eager: true,
-    attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
-  },
-  "data/gravity_no_dollar_pivoted.parquet": {
-    filename: "data/gravity_no_dollar_pivoted.parquet",
-    name: "Gravity (No Dollar Stores)",
-    id: "GEOID",
-    columns: [],
-    eager: true,
-    attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
-  },
-  "data/gravity_dollar_pivoted.parquet": {
-    name: "Gravity (With Dollar Stores)",
-    filename: "data/gravity_dollar_pivoted.parquet",
-    id: "GEOID",
-    columns: [],
-    eager: true,
-    attribution: "Data source: InfoGroup Reference USA. ACS 2000-2020. Census Centers of Population 2020.",
-  },
-  "data/sdoh.parquet": {
-    filename: "data/sdoh.parquet",
-    name: "Segregation Factors",
-    id: "GEOID",
-    columns: [],
-    eager: true,
-    attribution: "Data source: NIH NCI.",
-  },
-  "data/demography_tract.parquet": {
-    filename: "data/demography_tract.parquet",
-    name: "Demographic Data",
-    id: "GEOID",
-    columns: [],
-    eager: true,
-    attribution: "Data source: US Census Bureau. ACS 2021 5 year estimates",
-  },
-  "data/adi/2021_tracts.parquet": {
-    filename: "data/adi/2021_tracts.parquet",
-    name: "Economic Advantage Index",
-    id: "FIPS",
-    columns: [],
-    eager: true,
-    attribution: "Data source: UW ADI",
   },
 } as const
 
 export const timeSeriesConfig = {
   hhi: {
-    table: "data/concentration_metrics_wide.parquet",
     columns: new Array(2021 - 1997).fill(null).map((_, i) => i + 1997),
-    idColumn: "GEOID",
   },
   hhiDs: {
-    table: "data/concentration_metrics_wide_ds.parquet",
     columns: new Array(2021 - 1997).fill(null).map((_, i) => i + 1997),
-    idColumn: "GEOID",
   },
   gravity: {
-    table: "data/gravity_no_dollar_pivoted.parquet",
     columns: [2000, ...new Array(2021 - 2010).fill(null).map((_, i) => i + 2010)],
-    idColumn: "GEOID",
   },
   gravityDs: {
-    table: "data/gravity_dollar_pivoted.parquet",
     columns: [2000, ...new Array(2021 - 2010).fill(null).map((_, i) => i + 2010)],
-    idColumn: "GEOID",
   },
 } as const
 
@@ -266,7 +172,7 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
     ],
   },
   "Demographic Data": {
-    description: "Demographic Data",
+    description: "Various Demographic Data",
     columns: [
       "Total Population",
       "Median Household Income",
@@ -286,6 +192,7 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
 } as const
 
 export const defaultColumn: keyof typeof columnsDict = "Concentration & Food Access - Bivariate 2020"
+
 export const tooltipConfig: Array<{
   section?: string
   columns: Array<{
