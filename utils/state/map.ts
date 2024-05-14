@@ -1,131 +1,31 @@
 "use client"
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
-import { getDuckDB } from "duckdb-wasm-kit"
-import { columnGroups, defaultColumn, defaultColumnGroup, defaultYear } from "utils/data/config"
-import { runQuery } from "utils/duckdb"
-
-let globalDb: any;
-let globalConn: any;
-export interface MapState {
-  year: number
-  breaks: Array<number>
-  colors: Array<Array<number>>
-  completeData: Array<string>
-  dbStatus?: string
-  // currentData: string,
-  currentColumn: string | number
-  currentColumnGroup: keyof typeof columnGroups
-  idFilter?: string
-  centroid?: {
-    x: number
-    y: number
-    z: number
-  }
-  colorFilter?: number[][]
-  tooltip: {
-    x: number
-    y: number
-    id: string
-  } | null
-}
+import { columnGroups, columnsDict, defaultColumn, defaultColumnGroup} from "utils/data/config"
+import { fetchCentroidById, initializeDb } from "utils/state/thunks"
+import { MapState } from "./types"
 
 const initialState: MapState = {
-  year: defaultYear,
-  breaks: [0, 1, 2, 3, 4, 5],
-  colors: [[255, 255, 255, 0]],
-  completeData: [],
-  dbStatus: 'uninitialized',
-  // currentData: defaultData,
-
+  dbStatus: "uninitialized",
   currentColumn: defaultColumn,
   currentColumnGroup: defaultColumnGroup,
   tooltip: null,
   idFilter: undefined,
+  colorFilter: undefined,
+  snapshot: 0,
+  breaks: [],
+  colors: [],
 }
-
-export const fetchCentroidById = createAsyncThunk("map/setCentroid", async (id: string) => {
-  if (id === null) {
-    return {
-      centroid: [
-        -98.5833,
-        39.8333,
-      ],
-      id: null,
-      zoom: 4,
-    }
-  }
-  const response = await fetch(`/api/centroids/${id}`)
-  if (!response.ok) {
-    throw new Error("Failed to fetch centroid")
-  }
-  const centroid = (await response.json()) as [number, number]
-  const zoom = {
-    2: 6,
-    5: 8,
-    11: 12,
-  }[id.length]
-
-  return {
-    centroid,
-    zoom,
-    id,
-  }
-})
-
-export const initializeDb = createAsyncThunk("map/initDb", async () => {
-  console.log('INITIALIZING DB!!!!')
-  if (globalConn) {
-    return "ready"
-  }
-  const {
-    db,
-    conn
-  } = await getDuckDB().then(async (db) => {
-    const conn = await db.connect()
-    return {
-      db,
-      conn,
-    }
-  })
-  await runQuery({
-    conn: conn as any,
-    db: db as any,
-    query: `CREATE TABLE IF NOT EXISTS data 
-      AS 
-      SELECT * 
-      FROM '${window.location.origin}/data/full_tract.parquet'`
-  })
-  globalConn = conn
-  globalDb = db
-  return "ready"
-})
 
 export const mapSlice = createSlice({
   name: "map",
   initialState,
   reducers: {
-    setYear: (state, action: PayloadAction<number>) => {
-      state.year = action.payload
-    },
     setBreaks: (state, action: PayloadAction<Array<number>>) => {
       state.breaks = action.payload
     },
     setColors: (state, action: PayloadAction<Array<Array<number>>>) => {
       state.colors = action.payload
-    },
-    setComplete: (state, action: PayloadAction<string>) => {
-      state.completeData.push(action.payload)
-    },
-    setCurrentData: (state, action: PayloadAction<string>) => {
-      // state.currentData = action.payload
-      // const dataConfig = config.find(c => c.filename === action.payload)
-      // if (!dataConfig?.columns?.[0]) {
-      //   return
-      // }
-      // if (state.currentColumn === '' || !dataConfig?.columns.find(c => c.column === state.currentColumn)) {
-      //   state.currentColumn = dataConfig.columns[0].column
-      // }
     },
     setCurrentColumnGroup: (state, action: PayloadAction<keyof typeof columnGroups>) => {
       const columnGroup = columnGroups[action.payload]
@@ -138,7 +38,7 @@ export const mapSlice = createSlice({
         state.currentColumn = columnGroup.columns[0]!
       }
     },
-    setCurrentColumn: (state, action: PayloadAction<string | number>) => {
+    setCurrentColumn: (state, action: PayloadAction<keyof typeof columnsDict>) => {
       state.currentColumn = action.payload
       state.colorFilter = undefined
     },
@@ -163,42 +63,45 @@ export const mapSlice = createSlice({
         }
       }
     },
+    setMapBreaksColors: (
+      state,
+      action: PayloadAction<{ 
+        breaks: number[]; 
+        colors: number[][]
+        snapshot: number 
+      }>
+    ) => {
+      state.snapshot = action.payload.snapshot
+      state.breaks = action.payload.breaks
+      state.colors = action.payload.colors
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCentroidById.pending, (state, action) => {
       state.idFilter = action.meta.arg
     }),
-    builder.addCase(fetchCentroidById.fulfilled, (state, action) => {
-      state.centroid = {
-        x: action.payload.centroid[0],
-        y: action.payload.centroid[1],
-        z: action.payload.zoom!,
-      }
-    }),
-    builder.addCase(initializeDb.pending, (state) => {
-      state.dbStatus = 'loading'
-    }),
-    builder.addCase(initializeDb.fulfilled, (state, action) => {
-      state.dbStatus = action.payload
-      runQuery({
-        query: "SHOW ALL TABLES;",
-        db: globalDb,
-        conn: globalConn,
-      }).then(r => {
-        console.log(JSON.parse(JSON.stringify(r)))
+      builder.addCase(fetchCentroidById.fulfilled, (state, action) => {
+        state.centroid = {
+          x: action.payload.centroid[0],
+          y: action.payload.centroid[1],
+          z: action.payload.zoom!,
+        }
+      }),
+      builder.addCase(initializeDb.pending, (state) => {
+        state.dbStatus = "loading"
+      }),
+      builder.addCase(initializeDb.fulfilled, (state, action) => {
+        state.dbStatus = action.payload
       })
-    })
-  }
+  },
 })
 
 // Action creators are generated for each case reducer function
 export const {
-  setYear,
   setBreaks,
   setColors,
   setCurrentColumn,
   setTooltipInfo,
-  setCurrentData,
   setCurrentFilter,
   setCurrentColumnGroup,
   upcertColorFilter,

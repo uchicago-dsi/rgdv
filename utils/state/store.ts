@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit"
 import mapReducer from "./map"
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { listenerMiddleware } from "./middleware"
 
 export const store = configureStore({
   reducer: {
     map: mapReducer
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(listenerMiddleware.middleware)
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import { useAppSelector } from "utils/state/store"
 import { MapTooltipProps } from "./types"
+import { globals } from "utils/state/globals"
 
-export const MapTooltip: React.FC<MapTooltipProps> = ({ dataService }) => {
+export const MapTooltip: React.FC<MapTooltipProps> = () => {
   const tooltip = useAppSelector((state) => state.map.tooltip)
   const { x, y, id } = tooltip || {}
-  const data = dataService.tooltipResults[id as any]
+  const data = globals.globalDs?.tooltipResults?.[id as any]
   const [_updateTrigger, setUpdateTrigger] = useState<number>(1)
 
   useEffect(() => {
@@ -13,11 +14,11 @@ export const MapTooltip: React.FC<MapTooltipProps> = ({ dataService }) => {
       if (!id) {
         return
       }
-      await dataService.getTooltipValues(id)
+      await globals.globalDs?.getTooltipValues(id)
       setUpdateTrigger((v) => (v + 1) % 100)
     }
     main()
-  }, [dataService, id])
+  }, [globals.globalDs, id])
 
   if (!x || !y) {
     return null

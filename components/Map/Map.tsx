@@ -14,22 +14,20 @@ import { Provider } from "react-redux"
 import CountyFilterSelector from "components/CountyFilterSelector"
 import DropdownMenuDemo from "components/Dropdown/Dropdown"
 import { SelectMenu } from "components/Select/Select"
-import { columnGroups, columnsDict, dataConfig } from "utils/data/config"
+import { columnGroups } from "utils/data/config"
 import { useDataService } from "utils/hooks/useDataService"
 import {
-  fetchCentroidById,
   setCurrentColumn,
   setCurrentColumnGroup,
-  setCurrentData,
-  setCurrentFilter,
   setTooltipInfo,
 } from "utils/state/map"
-import { store, useAppDispatch, useAppSelector } from "utils/state/store"
+import { store, useAppDispatch } from "utils/state/store"
 import { zeroPopTracts } from "utils/zeroPopTracts"
 import Legend from "components/Legend"
 import MapTooltip from "components/MapTooltip"
 import { deepCompare2d1d } from "utils/data/compareArrayElements"
 import { MemoryMonitor } from "components/dev/MemoryMonitor"
+import { fetchCentroidById } from "utils/state/thunks"
 
 export type MapProps = {
   initialFilter?: string
@@ -91,9 +89,8 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
 
   const {
     isReady,
-    colorFunc,
+    colorFunction,
     colors,
-    ds,
     breaks,
     currentColumnSpec,
     colorFilter,
@@ -126,8 +123,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
     if (id === undefined) {
       return [120, 120, 120, 120]
     }
-    // @ts-ignore
-    const color = colorFunc(id)
+    const color = colorFunction(id)
     if (colorFilter && colorFilter.length) {
       const isInFilter = deepCompare2d1d(colorFilter, color)
       if (!isInFilter) {
@@ -164,7 +160,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       getFillColor: getElementColor,
       autoHighlight: true,
       updateTriggers: {
-        getFillColor: [isReady, currentColumnSpec.name, colorFunc, colorFilter],
+        getFillColor: [isReady, currentColumnSpec.name, colorFunction, colorFilter],
       },
       onClick: (info, event) => {
         if (event?.srcEvent?.altKey) {
@@ -296,7 +292,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
           </div>
         </DropdownMenuDemo>
       </div>
-      <MapTooltip dataService={ds} />
+      <MapTooltip />
       <GlMap
         // hash={true}
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
@@ -304,7 +300,6 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
         initialViewState={INITIAL_VIEW_STATE}
         // @ts-ignore
         projection={"mercator"}
-        // @ts-ignore
         ref={mapRef}
         reuseMaps={true}
       >
