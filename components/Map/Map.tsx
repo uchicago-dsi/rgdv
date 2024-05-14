@@ -231,6 +231,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       }}
     >
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
+        {/* @ts-ignore */}
         <Legend column={currentColumnSpec} colors={colors} breaks={breaks as any} isBivariate={isBivariate as any} />
       </div>
       <div className="absolute left-4 top-4 z-30 max-w-[50vw]">

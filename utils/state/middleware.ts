@@ -1,13 +1,13 @@
 import { createListenerMiddleware } from "@reduxjs/toolkit"
-import { mapSlice } from "utils/state/map"
+import { mapSlice, setTooltipReady } from "utils/state/map"
 import { MapState } from "utils/state/types"
 import { globals } from "./globals"
 import { columnsDict } from "utils/data/config"
 import { BivariateColorParamteres, MonovariateColorParamteres } from "utils/data/service/types"
 
 // Create the middleware instance and methods
-export const listenerMiddleware = createListenerMiddleware<{ map: MapState }>()
-listenerMiddleware.startListening({
+export const mapDataMiddleware = createListenerMiddleware<{ map: MapState }>()
+mapDataMiddleware.startListening({
   // Can match against actions _or_ state changes/contents
   predicate: (action, currentState, previousState) => {
     const [columnChanged, idFilterChanged, dbStatusChanged] = [
@@ -19,7 +19,6 @@ listenerMiddleware.startListening({
   },
   // Listeners can have long-running async workflows
   effect: async (_action, listenerApi) => {
-    console.log("Config changed")
     const state = listenerApi.getState()
     const dispatch = listenerApi.dispatch
     const ds = globals.globalDs
@@ -73,6 +72,32 @@ listenerMiddleware.startListening({
         colors: result.value.colors,
         snapshot
       }))
+    }
+  },
+})
+
+mapDataMiddleware.startListening({
+  // Can match against actions _or_ state changes/contents
+  predicate: (action, currentState, previousState) => {
+    return currentState.map.tooltip?.id !== previousState.map.tooltip?.id
+  },
+  // Listeners can have long-running async workflows
+  effect: async (action, listenerApi) => {
+    const id = (action as any).payload?.id as string
+    const dispatch = listenerApi.dispatch
+    // Spawn "child tasks" that can do more work and return results
+    const task = listenerApi.fork(async (forkApi) => {
+      if (!id) {
+        return null
+      }
+      const tooltipInfo = await globals.globalDs.getTooltipValues(id)
+      return true
+    })
+
+    // Unwrap the child result in the listener
+    const result = await task.result
+    if ("ok" == result.status && null !== result.value ) {
+      dispatch(setTooltipReady(id))
     }
   },
 })

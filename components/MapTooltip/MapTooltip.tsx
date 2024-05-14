@@ -5,20 +5,9 @@ import { globals } from "utils/state/globals"
 
 export const MapTooltip: React.FC<MapTooltipProps> = () => {
   const tooltip = useAppSelector((state) => state.map.tooltip)
+  const tooltipStatus = useAppSelector((state) => state.map.tooltipStatus)
   const { x, y, id } = tooltip || {}
   const data = globals.globalDs?.tooltipResults?.[id as any]
-  const [_updateTrigger, setUpdateTrigger] = useState<number>(1)
-
-  useEffect(() => {
-    const main = async () => {
-      if (!id) {
-        return
-      }
-      await globals.globalDs?.getTooltipValues(id)
-      setUpdateTrigger((v) => (v + 1) % 100)
-    }
-    main()
-  }, [globals.globalDs, id])
 
   if (!x || !y) {
     return null
@@ -33,7 +22,7 @@ export const MapTooltip: React.FC<MapTooltipProps> = () => {
       }}
     >
       {/* @ts-ignore */}
-      {data ? (
+      {tooltipStatus === 'ready' ? (
         data.map((section: any, i: number) => {
           const columns = section.columns
           return (

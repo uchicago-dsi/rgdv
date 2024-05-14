@@ -186,7 +186,6 @@ export class DataService<DataT extends Record<string, any>> {
         ? await this.getUniqueValues(cleanColumn, filter)
         : await this.getQuantiles(cleanColumn, nBins, filter)
 
-    console.log("VALUES", values)
     let query = ``
     if (!range || range === "continuous") {
       query += `SELECT ${cleanColumn}, ${this.idColumn}, `
@@ -268,9 +267,10 @@ export class DataService<DataT extends Record<string, any>> {
       }
       for (const column of section.columns) {
         const columnConfig = columnsDict[column.col]
-        const entry = data[columnConfig.name]
+        const entry = data[columnConfig.column as keyof typeof data]
         sectionData.columns.push({
           ...column,
+          ...columnConfig,
           data: entry,
         })
       }

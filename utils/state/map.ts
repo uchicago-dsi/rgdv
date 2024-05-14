@@ -4,6 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 import { columnGroups, columnsDict, defaultColumn, defaultColumnGroup} from "utils/data/config"
 import { fetchCentroidById, initializeDb } from "utils/state/thunks"
 import { MapState } from "./types"
+import { globals } from "./globals"
 
 const initialState: MapState = {
   dbStatus: "uninitialized",
@@ -15,6 +16,7 @@ const initialState: MapState = {
   snapshot: 0,
   breaks: [],
   colors: [],
+  tooltipStatus: undefined
 }
 
 export const mapSlice = createSlice({
@@ -44,6 +46,17 @@ export const mapSlice = createSlice({
     },
     setTooltipInfo: (state, action: PayloadAction<{ x: number; y: number; id: string } | null>) => {
       state.tooltip = action.payload
+      const id = action.payload?.id
+      if (!!id && !globals.globalDs.tooltipResults[id]) {
+        state.tooltipStatus = 'pending'
+      } else {
+        state.tooltipStatus = 'ready'
+      }
+    },
+    setTooltipReady: (state, action: PayloadAction<string>) => {
+      if (state.tooltip?.id === action.payload) {
+        state.tooltipStatus = 'ready'
+      }
     },
     setCurrentFilter: (state, action: PayloadAction<string>) => {
       state.idFilter = action.payload
@@ -102,6 +115,7 @@ export const {
   setColors,
   setCurrentColumn,
   setTooltipInfo,
+  setTooltipReady,
   setCurrentFilter,
   setCurrentColumnGroup,
   upcertColorFilter,

@@ -19,5 +19,6 @@ export interface MapState {
     y: number
     id: string
   } | null,
+  tooltipStatus?: 'pending' | 'ready'
   snapshot: number
 }
