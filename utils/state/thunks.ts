@@ -39,10 +39,13 @@ export const initializeDb = createAsyncThunk("map/initDb", async () => {
     getDuckDB(),
     fetch(`${window.location.origin}/data/full_tract.parquet`).then((r) => r.arrayBuffer()),
   ])
-  
+
   const dataArray = new Uint8Array(buffer)
-  await db.registerFileBuffer(dataTableName, dataArray)
-  const conn = (await db.connect()) as unknown as AsyncDuckDBConnection
+
+  const [_, conn] = await Promise.all([
+    db.registerFileBuffer(dataTableName, dataArray),
+    db.connect() as unknown as AsyncDuckDBConnection,
+  ])
 
   globals.set({
     conn,
