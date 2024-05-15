@@ -11,6 +11,7 @@ pd.set_option('display.max_columns', None)
 current_dir = path.dirname(path.abspath(__file__))
 data_dir = path.join(current_dir, '..', 'public', 'data')
 # %%
+df_full =  pd.read_parquet(path.join(data_dir, 'full_tract.parquet'))
 # %%
 year = '2023'
 

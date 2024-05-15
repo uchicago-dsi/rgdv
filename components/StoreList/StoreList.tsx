@@ -15,6 +15,9 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
       label: "Estimated Percent of Sales",
       formatter: percentFormatter.format,
     },
+    "ADDRESS LINE 1": {
+      label: "Address"
+    }
   },
   title,
 }) => {
@@ -65,7 +68,7 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
               {columns.map((col, j: number) => {
                 const _val = row[col as keyof typeof row]
                 // @ts-ignore
-                const val = formatters.hasOwnProperty(col) ? formatters[col].formatter(_val) : _val
+                const val = formatters[col]?.formatter?.(_val) ||  _val
                 return <td key={j}>{val}</td>
               })}
             </tr>

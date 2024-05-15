@@ -11,6 +11,11 @@ import { getContentDirs } from "utils/contentDirs"
 import { getThresholdValue } from "utils/data/formatDataTemplate"
 import { getSummaryStats } from "utils/data/summaryStats"
 import StoreList from "components/StoreList"
+import wasmInit, {readParquet} from "parquet-wasm";
+
+import { parquetRead } from "hyparquet"
+import { readFileSync } from "fs"
+
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 
 type TractRouteProps = {
@@ -111,7 +116,6 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
   // dynamic routes to use mdx content
   getContentDirs()
   const tract = params.tract
-
   const [tractData, generalStatText] = await Promise.all([
     getSummaryStats<TractData>('tract', tract),
     getMdxContent("statistics", "tract.mdx"),
@@ -128,28 +132,32 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
   // @ts-ignore
   const marketPowerTemplate = generalStatText?.data?.statistics?.overview?.find((f) => f.measure === "hhi")
   // @ts-ignore
-  const racialEquityTemplate = generalStatText?.data?.statistics?.overview?.find((f) => f.measure === "segregation")
+  const segregationTemplate = generalStatText?.data?.statistics?.overview?.find((f) => f.measure === "segregation")
+  // @ts-ignore
+  const economicAdvantageTemplate = generalStatText?.data?.statistics?.overview?.find((f) => f.measure === "adi")
 
   // @ts-ignore
   const tractName = data.NAME.toLowerCase().includes("tract") ? data.NAME : `${data.NAME} tract`
 
   // @ts-ignore
-  const [foodAccess, marketPower, racialEquity] = [
-    data[foodAccesstemplate.column as keyof typeof data],
+  const [foodAccess, marketPower, segregation, economicAdvantage] = [
+    +data[foodAccesstemplate.column as keyof typeof data],
     100 - +data[marketPowerTemplate.column as keyof typeof data],
-    100 - +data[racialEquityTemplate.column as keyof typeof data],
+    100 - +data[segregationTemplate.column as keyof typeof data],
+    +data[economicAdvantageTemplate.column as keyof typeof data]
   ]
-
+  console.log('food access', foodAccesstemplate)
   const foodAccessText = getThresholdValue(foodAccess, data, foodAccesstemplate)
   const marketPowerText = getThresholdValue(marketPower, data, marketPowerTemplate)
-  const racialEquityText = getThresholdValue(racialEquity, data, racialEquityTemplate)
+  const segregationText = getThresholdValue(segregation, data, segregationTemplate)
+  const economicAdvantageText = getThresholdValue(economicAdvantage, data, economicAdvantageTemplate)
 
   return (
     <div className="min-h-[100vh] bg-theme-canvas-500 p-4">
       {/* grid two equal columns
         collapse on mobile */}
-      <div className="grid gap-8 lg:grid-cols-2">
-        <div>
+      <div className="grid gap-8 lg:grid-cols-4">
+        <div className="col-span-1">
           <a href="/tract" className="align-center mb-4 flex items-center pb-2 text-sm text-gray-600">
             <ArrowLeftIcon className="mr-2 inline size-4" />
             Back to counties
@@ -163,8 +171,8 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
             </p>
           </div>
         </div>
-        <div>
-          <div className="relative grid gap-8 lg:grid-cols-3">
+        <div className="col-start-2 col-end-6 py-8">
+          <div className="relative grid gap-8 lg:grid-cols-4">
             <DataLockup
               title={foodAccesstemplate.title}
               tooltip={foodAccesstemplate.tooltip}
@@ -180,10 +188,17 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
               border
             />
             <DataLockup
-              title={racialEquityTemplate.title}
-              tooltip={racialEquityTemplate.tooltip}
-              value={racialEquity}
-              description={racialEquityText}
+              title={economicAdvantageTemplate.title}
+              tooltip={economicAdvantageTemplate.tooltip}
+              value={economicAdvantage}
+              description={economicAdvantageText}
+              border
+            />
+            <DataLockup
+              title={segregationTemplate.title}
+              tooltip={segregationTemplate.tooltip}
+              value={segregation}
+              description={segregationText}
             />
           </div>
         </div>
@@ -228,7 +243,7 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
       {/* <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl">
         <TimeseriesChart id={tract} />
       </div> */}
-      <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl">
+      <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl overflow-y-auto">
         <StoreList id={tract} />
       </div>
     </div>
