@@ -96,6 +96,7 @@
     "d3-scale": "^4.0.2",
     "deck.gl": "^8.9.34",
     "dexie": "^4.0.4",
+    "duckdb": "^0.10.2",
     "duckdb-wasm-kit": "^0.1.31",
     "gray-matter": "^4.0.3",
     "http-server": "^14.1.1",

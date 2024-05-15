@@ -2,10 +2,20 @@
 import React, { useEffect } from "react"
 import { StoreData } from "app/api/stores/[geoid]/types"
 import { StoreListProps } from "./types"
+const percentFormatter = new Intl.NumberFormat("en-US", {
+  style: "percent",
+  maximumFractionDigits: 1,
+})
 
-export const StoreList: React.FC<StoreListProps> = ({
+export const StoreList: React.FC<StoreListProps<string[]>> = ({
   id,
-  columns = ["COMPANY", "PARENT COMPANY", "CITY", "STATE", "ZIPCODE"],
+  columns = ["COMPANY", "PARENT COMPANY", "ADDRESS LINE 1", "CITY", "STATE", "ZIPCODE", "PCT OF TRACT SALES"],
+  formatters = {
+    "PCT OF TRACT SALES": {
+      label: "Estimated Percent of Sales",
+      formatter: percentFormatter.format,
+    },
+  },
   title,
 }) => {
   const [data, setData] = React.useState<StoreData | null | "error">(null)
@@ -16,7 +26,6 @@ export const StoreList: React.FC<StoreListProps> = ({
         const response = await fetch(`/api/stores/${id}`)
         if (response.ok) {
           const data = (await response.json()) as StoreData
-          console.log(data)
           setData(data)
         } else {
           setData("error")
@@ -36,24 +45,29 @@ export const StoreList: React.FC<StoreListProps> = ({
   }
 
   return (
-    <div className="prose max-h-full overflow-y-auto">
+    <div className="prose max-w-full overflow-y-auto">
       <h3>
         Store{data?.length > 1 ? "s" : ""} in {title || "service area"}
       </h3>
-      <table className="table-auto">
+      <table className="max-h-full w-full table-auto overflow-y-auto">
         <thead>
           <tr>
-            {columns.map((col, i) => (
-              <th key={i}>{col}</th>
-            ))}
+            {columns.map((_col, i) => {
+              // @ts-ignore
+              const col = formatters[_col]?.label || _col
+              return <th key={i}>{col}</th>
+            })}
           </tr>
         </thead>
         <tbody>
           {data.map((row, i) => (
             <tr key={i}>
-              {columns.map((col, j) => (
-                <td key={j}>{row[col as keyof typeof row]}</td>
-              ))}
+              {columns.map((col, j: number) => {
+                const _val = row[col as keyof typeof row]
+                // @ts-ignore
+                const val = formatters.hasOwnProperty(col) ? formatters[col].formatter(_val) : _val
+                return <td key={j}>{val}</td>
+              })}
             </tr>
           ))}
         </tbody>

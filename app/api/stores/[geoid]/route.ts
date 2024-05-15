@@ -1,7 +1,7 @@
 "use server"
-import { unpack } from "msgpackr"
-import { StoreData } from "./types"
-import nodeFetch from "node-fetch"
+import { StoreEntry } from "./types"
+import { readRemoteMsgPackFile } from "utils/data/msgpack"
+import { mapArrayToRecords } from "utils/data/mapArrayToRecords"
 
 export type ReqParams = {
   params: {
@@ -9,18 +9,26 @@ export type ReqParams = {
   }
 }
 
-const cache: Record<string, StoreData> = {}
+const cache: any = {}
+let columns: string[] = []
 
 const getStores = async (geoid: string) => {
-  const county = geoid.slice(0, 5)
+  const county = geoid.slice(0, 5) as keyof typeof cache
   if (cache[county] === undefined) {
-    const r = await nodeFetch(`${process.env.DATA_ENDPOINT}stores${county}.msgpack`)
-    const buffer = await r.arrayBuffer()
-    const dataBuffer = Buffer.from(buffer)
-    let data = unpack(dataBuffer)
-    cache[county] = data as StoreData
+    const data = await readRemoteMsgPackFile<Record<string, Record<string, StoreEntry>>>(`${process.env.DATA_ENDPOINT}stores/${String(county)}.msgpack.gz`, true)
+    cache[county] = data
+    if (!columns.length && data.columns) {
+      // @ts-ignore
+      columns = data.columns
+    }
   }
-  return cache[county]?.filter((store) => store.GEOID === geoid) || []
+  const id = geoid as keyof typeof cache[typeof county]
+  if (!cache[county]?.[id]) {
+    return []
+  }
+  const entry = cache[county]![id] as unknown as any[][]
+  // @ts-ignore
+  return mapArrayToRecords(entry, columns).sort((a, b) => b['PCT OF TRACT SALES'] - a['PCT OF TRACT SALES'])
 }
 
 export async function GET(_req: Request, reqParams: ReqParams) {

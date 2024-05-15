@@ -12,3 +12,11 @@ export async function readMsgPackFile<T extends any>(filePath: string, compresse
   const unpackedData = compressed ? unpack(await ungzip(contents)) : unpack(contents)
   return unpackedData as T
 }
+
+export async function readRemoteMsgPackFile<T extends any>(url: string, compressed: boolean = false) {
+  const r = await fetch(url)
+  const buffer = await r.arrayBuffer()
+  const dataBuffer = Buffer.from(buffer)
+  const unpackedData = compressed ? unpack(await ungzip(dataBuffer)) : unpack(dataBuffer)
+  return unpackedData as T
+}
