@@ -11,14 +11,8 @@ pd.set_option('display.max_columns', None)
 current_dir = path.dirname(path.abspath(__file__))
 data_dir = path.join(current_dir, '..', 'public', 'data')
 # %%
-df_full = pd.read_parquet(path.join(data_dir, 'full_tract.parquet'))
 # %%
-df_full.to_parquet(
-  path.join(data_dir, 'full_tract_inflated.parquet'),
-  compression="none"
-)
-# %%
-year = '2021'
+year = '2023'
 
 def make_county_and_state_cols(filepath, id_col="GEOID"):
   df = pd.read_parquet(filepath)
@@ -214,22 +208,22 @@ split_df_and_msgpack(
 # %%
 
 gravity_tract = generate_stats(
-  path.join(data_dir, 'gravity_dollar_pivoted.parquet'),
+  path.join(data_dir, 'gravity_no_dollar_pivoted.parquet'),
   path.join(data_dir, 'demography_tract.parquet'),
   "tract",
   "GEOID",
   "GEOID",
-  year,
+  '2021',
   "TOTAL_POPULATION",
   "gravity"
 )
 hhi_tract = generate_stats(
-  path.join(data_dir, 'concentration_metrics_wide_ds.parquet'),
+  path.join(data_dir, 'concentration_metrics_wide.parquet'),
   path.join(data_dir, 'demography_tract.parquet'),
   "tract",
   "GEOID",
   "GEOID",
-  year,
+  '2023',
   "TOTAL_POPULATION",
   "hhi"
 )
@@ -253,37 +247,62 @@ tract_joined = gravity_tract.merge(hhi_tract, how='outer', on="GEOID")\
   .merge(tract_demography, how='outer', on="GEOID")\
   .merge(tract_adi, how='outer', left_on="GEOID", right_on="FIPS")
 # %%
-gravity_full = pd.read_parquet(path.join(data_dir, 'gravity_dollar_pivoted.parquet'))[[
-  'GEOID',
-  '2000',
-  '2010',
-  '2020'
-]].rename(columns={
-  '2000': 'gravity_2000',
-  '2010': 'gravity_2010',
-  '2020': 'gravity_2020'
-  })
-hhi_full = pd.read_parquet(path.join(data_dir, 'concentration_metrics_wide_ds.parquet'))[[
-  'GEOID',
-  '2000',
-  '2010',
-  '2020'
-]].rename(columns={
-  '2000': 'hhi_2000',
-  '2010': 'hhi_2010',
-  '2020': 'hhi_2020'
-  })
+def get_full_data(path, column_dict, out_cols=["GEOID"]):
+  df = pd.read_parquet(path)
+  for key, value in column_dict.items():
+    df = df.rename(columns={key: value})
+  cols_out = list(column_dict.values()) + out_cols
+  return df[cols_out]
 
-sdoh_full = pd.read_parquet(path.join(data_dir, 'sdoh.parquet'))[[
-  'GEOID',
-  'ICE_Black_Alone_White_Alone',
-  'ICE_Hispanic_NH_White_Alone',
-]]
+gravity_full_ds = get_full_data(
+  path.join(data_dir, 'gravity_dollar_pivoted.parquet'),
+  {
+    '2000': 'gravity_ds_2000',
+    '2010': 'gravity_ds_2010',
+    '2020': 'gravity_ds_2020'
+  }
+)
+
+gravity_full = get_full_data(
+  path.join(data_dir, 'gravity_no_dollar_pivoted.parquet'),
+  {
+    '2000': 'gravity_2000',
+    '2010': 'gravity_2010',
+    '2020': 'gravity_2020'
+  }
+)
+hhi_full_ds = get_full_data(
+  path.join(data_dir, 'concentration_metrics_wide_ds.parquet'),
+  {
+    '2000': 'hhi_ds_2000',
+    '2010': 'hhi_ds_2010',
+    '2020': 'hhi_ds_2020'
+  }
+)
+
+hhi_full = get_full_data(
+  path.join(data_dir, 'concentration_metrics_wide.parquet'),
+  {
+    '2000': 'hhi_2000',
+    '2010': 'hhi_2010',
+    '2020': 'hhi_2020'
+  }
+)
+sdoh_full = get_full_data(
+  path.join(data_dir, 'sdoh.parquet'),
+  {
+    'ICE_Black_Alone_White_Alone': 'ICE_Black_Alone_White_Alone',
+    'ICE_Hispanic_NH_White_Alone': 'ICE_Hispanic_NH_White_Alone'
+  }
+)
 # %%
 full_out = tract_joined.merge(gravity_full, how='left', on="GEOID")\
+  .merge(gravity_full_ds, how='left', on="GEOID")\
+  .merge(hhi_full_ds, how='left', on="GEOID")\
   .merge(hhi_full, how='left', on="GEOID")\
   .merge(sdoh_full, how='left', on="GEOID")\
   .drop(columns=["FIPS"])
+# %%
 full_out.to_parquet(path.join(data_dir, 'full_tract.parquet'), compression='gzip')
 # %%
 columnarize_msgpack(
