@@ -180,9 +180,9 @@ const CountyPage: React.FC<CountyRouteProps> = async ({ params }) => {
           </ul>
         </div>
       </div>
-      <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl">
+      {/* <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl">
         <TimeseriesChart id={county} />
-      </div>
+      </div> */}
     </div>
   )
 }
