@@ -13,6 +13,11 @@ data_dir = path.join(current_dir, '..', 'public', 'data')
 # %%
 df_full = pd.read_parquet(path.join(data_dir, 'full_tract.parquet'))
 # %%
+df_full.to_parquet(
+  path.join(data_dir, 'full_tract_inflated.parquet'),
+  compression="none"
+)
+# %%
 year = '2021'
 
 def make_county_and_state_cols(filepath, id_col="GEOID"):
