@@ -6,6 +6,22 @@ import { BivariateColorParamteres, MonovariateColorParamteres, d3Bivariate } fro
 import { deepCompare2d1d } from "../compareArrayElements"
 import type { AsyncDuckDBConnection } from "@duckdb/duckdb-wasm"
 export const dataTableName = "data.parquet"
+
+export const getDecimalsFromRange = (range: number) => {
+  if (range < 0.01) {
+    return 12
+  } else  if (range < 0.1) {
+    return 8
+  } else if (range < 1) {
+    return 5
+  } else if (range < 10) {
+    return 2
+  } else if (range < 100) {
+    return 1
+  } else {
+    return 0
+  }
+}
 export class DataService<DataT extends Record<string, any>> {
   data: Record<string, Record<string, Record<string | number, number>>> = {}
   dbStatus: "none" | "loading" | "loaded" | "error" = "none"
@@ -57,8 +73,10 @@ export class DataService<DataT extends Record<string, any>> {
     // eg. n=5 - 0.2, 0.4, 0.6, 0.8 - 4 breaks
     // eg. n=4 - 0.25, 0.5, 0.75 - 3 breaks
     const quantileFractions = Array.from({ length: n - 1 }, (_, i) => (i + 1) / n)
+    const rangeResponse = await this.runQuery(`SELECT MAX(${column}) - MIN(${column}) as range FROM ${dataTableName}`)
+    const sigFigs = getDecimalsFromRange(rangeResponse[0].range)
     let query = `SELECT 
-      ${quantileFractions.map((f, i) => `round(approx_quantile(${column}, ${f}), 3) as break${i}`)}
+      ${quantileFractions.map((f, i) => `round(approx_quantile(${column}, ${f}), ${sigFigs}) as break${i}`)}
       FROM ${dataTableName}
     `
     if (filter) {
@@ -165,10 +183,12 @@ export class DataService<DataT extends Record<string, any>> {
 
   async getMonovariateColorValues({ colorScheme, column, nBins, reversed, filter, range }: MonovariateColorParamteres) {
     const cleanColumn = typeof column === "string" ? column : `"${column}"`
+    const n = nBins || 5
+    const cleanColorScheme = colorScheme || "schemeYlGn"
     // @ts-ignore
-    const d3Colors = d3[colorScheme]?.[nBins]
+    const d3Colors = d3[cleanColorScheme]?.[n]
     if (!d3Colors) {
-      console.error(`Color scheme ${colorScheme} with ${nBins} bins not found`)
+      console.error(`Color scheme ${cleanColorScheme} with ${n} bins not found`)
       return {
         colorMap: {},
         breaks: [],
@@ -185,7 +205,7 @@ export class DataService<DataT extends Record<string, any>> {
     const values =
       range === "categorical"
         ? await this.getUniqueValues(cleanColumn, filter)
-        : await this.getQuantiles(cleanColumn, nBins, filter)
+        : await this.getQuantiles(cleanColumn, n, filter)
 
     let query = ``
     if (!range || range === "continuous") {

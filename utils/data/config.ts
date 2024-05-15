@@ -65,6 +65,7 @@ export const columnsDict = {
     column: "TOTAL_POPULATION",
     description: "Total population (ACS 2021 5-year estimates)",
     bivariate: false,
+    nbins: 5,
     colorScheme: "schemeBlues",
   },
   "Median Household Income": {
@@ -77,6 +78,7 @@ export const columnsDict = {
     name: "Poverty Rate",
     column: "POVERTY_RATE",
     description: "Poverty rate",
+    colorScheme: "schemeBuPu",
     bivariate: false,
   },
   "No Healthcare (Percent)": {
@@ -87,8 +89,50 @@ export const columnsDict = {
   },
   "Percent Black or African American": {
     name: "Percent Black or African American",
-    column: "NH BLACK ALONE",
+    column: '"PCT NH BLACK"',
     description: "Percentage of population that is Black or African American",
+    bivariate: false,
+  },
+  "Percent Hispanic or Latinx": {
+    name: "Percent Hispanic or Latinx",
+    column: '"PCT HISPANIC OR LATINO"',
+    description: "Percentage of population that is Hispanic or Latinx",
+    bivariate: false,
+  },
+  "Percent American Indian": {
+    name: "Percent American Indian or Native American",
+    column: '"PCT NH AMERICAN INDIAN"',
+    description: "Percentage of population that is American Indian or Native American",
+    bivariate: false,
+  },
+  "Percent Asian": {
+    name: "Percent Asian",
+    column: '"PCT NH ASIAN"',
+    description: "Percentage of population that is Asian",
+    bivariate: false,
+  },
+  "Percent Pacific Islander": {
+    name: "Percent Pacific Islander or Native Hawaiian",
+    column: '"PCT NH PACIFIC ISLANDER"',
+    description: "Percentage of population that is Pacific Islander or Native Hawaiian",
+    bivariate: false,
+  },
+  "Percent Other": {
+    name: "Percent Other",
+    column: '"PCT NH other"',
+    description: "Percentage of population that is Other",
+    bivariate: false,
+  },
+  "Percent Two or More": {
+    name: "Percent Two or More",
+    column: '"PCT NH TWO OR MORE"',
+    description: "Percentage of population that is Two or More",
+    bivariate: false,
+  },
+  "Percent White": {
+    name: "Percent White",
+    column: '"PCT NH WHITE"',
+    description: "Percentage of population that is White",
     bivariate: false,
   },
   "Concentration & Food Access - Bivariate 2020": {
@@ -179,6 +223,13 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
       "Poverty Rate",
       "No Healthcare (Percent)",
       "Percent Black or African American",
+      "Percent Hispanic or Latinx",
+      "Percent American Indian",
+      "Percent Asian",
+      "Percent Pacific Islander",
+      "Percent Other",
+      "Percent Two or More",
+      "Percent White",
     ],
   },
   Bivariate: {

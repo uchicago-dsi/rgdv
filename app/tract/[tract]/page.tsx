@@ -146,7 +146,7 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
     100 - +data[segregationTemplate.column as keyof typeof data],
     +data[economicAdvantageTemplate.column as keyof typeof data]
   ]
-  console.log('food access', foodAccesstemplate)
+  console.log('food access', data)
   const foodAccessText = getThresholdValue(foodAccess, data, foodAccesstemplate)
   const marketPowerText = getThresholdValue(marketPower, data, marketPowerTemplate)
   const segregationText = getThresholdValue(segregation, data, segregationTemplate)
