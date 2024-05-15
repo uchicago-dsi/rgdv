@@ -3,19 +3,19 @@ import { ColumnConfig, ColumnGroups } from "./config.types"
 
 export const idColumn = "GEOID"
 
-const generateHhiConfig = (year: number) =>
+const generateHhiConfig = (year: number, ds: boolean =false) =>
   ({
     name: `Concentration Index ${year} (No Dollar Stores)`,
-    column: `hhi_${year}`, // hhi_2000, hhi_2010
+    column: `hhi_${ds ? 'ds_' : ''}${year}`, // hhi_2000, hhi_2010
     bivariate: false,
     description: `Herfindahl-Hirschman Index for ${year}`,
     colorScheme: "schemeGreens"
   }) as ColumnConfig
 
-const generateGravityConfig = (year: number, dollar_stores: boolean) =>
+const generateGravityConfig = (year: number, ds: boolean = false) =>
   ({
     name: `Gravity ${year}`,
-    column: `gravity_${year}`,
+    column: `gravity_${ds ? 'ds_' : ''}${year}`,
     bivariate: false,
     nBins: 9,
     colorScheme: "schemeSpectral",
@@ -23,15 +23,19 @@ const generateGravityConfig = (year: number, dollar_stores: boolean) =>
   }) as ColumnConfig
 
 export const columnsDict = {
-  "Concentration Index 2000 (No Dollar Stores)": generateHhiConfig(2000),
-  "Concentration Index 2010 (No Dollar Stores)": generateHhiConfig(2010),
-  "Concentration Index 2020 (No Dollar Stores)": generateHhiConfig(2020),
-  "Gravity 2000": generateGravityConfig(2000, false),
-  "Gravity 2010": generateGravityConfig(2010, false),
-  "Gravity 2020": generateGravityConfig(2020, false),
-  "Gravity 2000 (With Dollar Stores)": generateGravityConfig(2000, true),
-  "Gravity 2010 (With Dollar Stores)": generateGravityConfig(2010, true),
-  "Gravity 2020 (With Dollar Stores)": generateGravityConfig(2020, true),
+  "Market Concentration - 2000": generateHhiConfig(2000),
+  "Market Concentration - 2010": generateHhiConfig(2010),
+  "Market Concentration - 2020": generateHhiConfig(2020),
+  "Market Concentration - 2023 (Most Recent)": generateHhiConfig(2023),
+  "Market Concentration - 2000 (With Dollar Stores)": generateHhiConfig(2000, true),
+  "Market Concentration - 2010 (With Dollar Stores)": generateHhiConfig(2010, true),
+  "Market Concentration - 2020 (With Dollar Stores)": generateHhiConfig(2020, true),
+  "Food Access Supply - 2000": generateGravityConfig(2000),
+  "Food Access Supply - 2010": generateGravityConfig(2010),
+  "Food Access Supply - 2020": generateGravityConfig(2020),
+  "Food Access Supply - 2000 (With Dollar Stores)": generateGravityConfig(2000, true),
+  "Food Access Supply - 2010 (With Dollar Stores)": generateGravityConfig(2010, true),
+  "Food Access Supply - 2020 (With Dollar Stores)": generateGravityConfig(2020, true),
   "Measure of Segregation (Black/African American and White)": {
     name: "Segregation Factor ICE Hispanic NH White Alone",
     bivariate: false,
@@ -189,20 +193,24 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
   "Market Concentration": {
     description: "Concentration Metrics",
     columns: [
-      "Concentration Index 2020 (No Dollar Stores)",
-      "Concentration Index 2010 (No Dollar Stores)",
-      "Concentration Index 2000 (No Dollar Stores)",
+        "Market Concentration - 2023 (Most Recent)",
+        "Market Concentration - 2020",
+        "Market Concentration - 2010",
+        "Market Concentration - 2000",
+        "Market Concentration - 2020 (With Dollar Stores)",
+        "Market Concentration - 2010 (With Dollar Stores)",
+        "Market Concentration - 2000 (With Dollar Stores)",
     ],
   },
   "Food Access": {
     description: "Gravity",
     columns: [
-      "Gravity 2020",
-      "Gravity 2010",
-      "Gravity 2000",
-      "Gravity 2020 (With Dollar Stores)",
-      "Gravity 2010 (With Dollar Stores)",
-      "Gravity 2000 (With Dollar Stores)",
+      "Food Access Supply - 2020",
+      "Food Access Supply - 2010",
+      "Food Access Supply - 2000",
+      "Food Access Supply - 2020 (With Dollar Stores)",
+      "Food Access Supply - 2010 (With Dollar Stores)",
+      "Food Access Supply - 2000 (With Dollar Stores)",
     ],
   },
   "Racial Equity": {
@@ -256,15 +264,15 @@ export const tooltipConfig: Array<{
     section: "Food Access",
     columns: [
       {
-        col: "Gravity 2020",
+        col: "Food Access Supply - 2020",
         label: "2020",
       },
       {
-        col: "Gravity 2010",
+        col: "Food Access Supply - 2010",
         label: "2010",
       },
       {
-        col: "Gravity 2000",
+        col: "Food Access Supply - 2000",
         label: "2000",
       },
     ],
@@ -273,15 +281,19 @@ export const tooltipConfig: Array<{
     section: "Market Concentration",
     columns: [
       {
-        col: "Concentration Index 2020 (No Dollar Stores)",
+        col: "Market Concentration - 2023 (Most Recent)",
+        label: "2023",
+      },
+      {
+        col: "Market Concentration - 2020",
         label: "2020",
       },
       {
-        col: "Concentration Index 2010 (No Dollar Stores)",
+        col: "Market Concentration - 2010",
         label: "2010",
       },
       {
-        col: "Concentration Index 2000 (No Dollar Stores)",
+        col: "Market Concentration - 2000",
         label: "2000",
       },
     ],

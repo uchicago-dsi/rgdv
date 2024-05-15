@@ -2,7 +2,6 @@ import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import dynamic from "next/dynamic"
 import React from "react"
 import { TinaMarkdown, TinaMarkdownContent } from "tinacms/dist/rich-text"
-import path from "path"
 import PercentileLineChart from "components/PercentileLineChart"
 import TimeseriesChart from "components/TimeseriesChart"
 import Tooltip from "components/Tooltip"
@@ -11,11 +10,6 @@ import { getContentDirs } from "utils/contentDirs"
 import { getThresholdValue } from "utils/data/formatDataTemplate"
 import { getSummaryStats } from "utils/data/summaryStats"
 import StoreList from "components/StoreList"
-import wasmInit, {readParquet} from "parquet-wasm";
-
-import { parquetRead } from "hyparquet"
-import { readFileSync } from "fs"
-
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 
 type TractRouteProps = {
@@ -146,7 +140,7 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
     100 - +data[segregationTemplate.column as keyof typeof data],
     +data[economicAdvantageTemplate.column as keyof typeof data]
   ]
-  console.log('food access', data)
+
   const foodAccessText = getThresholdValue(foodAccess, data, foodAccesstemplate)
   const marketPowerText = getThresholdValue(marketPower, data, marketPowerTemplate)
   const segregationText = getThresholdValue(segregation, data, segregationTemplate)

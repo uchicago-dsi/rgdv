@@ -200,6 +200,8 @@ county_joined = gravity_county.merge(hhi_county, how='left', on="county")\
   .merge(county_adi, how='left', left_on="county", right_on="COUNTY")\
   .drop(columns=["COUNTY"])
 # %%
+# %%
+
 split_df_and_msgpack(
   county_joined,
   'county',
@@ -307,16 +309,16 @@ full_out = tract_joined.merge(gravity_full, how='left', on="GEOID")\
 full_out.to_parquet(path.join(data_dir, 'full_tract.parquet'), compression='gzip')
 # %%
 columnarize_msgpack(
-  tract_joined.to_dict(orient="records"), 
+  full_out.to_dict(orient="records"), 
   "GEOID", 
-  path.join(data_dir, f'tract_full.msgpack'), 
-  list(tract_joined.columns), 
+  path.join(data_dir, f'tract_full.msgpack.gz'), 
+  list(df_full.columns), 
   compress=True
 )
 # %%
 # %%
 split_df_and_msgpack(
-  tract_joined,
+  full_out,
   'GEOID',
   path.join(data_dir, 'summary', 'tract'),
   compress=True

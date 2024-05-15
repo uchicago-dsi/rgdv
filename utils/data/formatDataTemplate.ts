@@ -39,8 +39,11 @@ export const formatDataTemplate = <T extends Record<string, any>>(_template: str
           const value = data[part] as any
           return value || null
         })
-        const [value1, operator, value2] = parts
-        if (!value1 || !value2 || !operator) return
+        const [value1, operator, value2] = parts.map(part => part === null ? 0 : part)
+        if (!value1 === null || !value2 === null || !operator) {
+          template = ''
+          return 
+        }
         const result = formatter.format(handleOperator(operator, value1, value2))
         template = template.replace(match, `${result}`)
       } else {
