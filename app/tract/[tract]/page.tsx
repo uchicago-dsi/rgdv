@@ -118,6 +118,7 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
   if (!tractData.ok) {
     return <div>Sorry, we couldn&apos;t find data for that tract.</div>
   }
+  console.log(tractData.result)
   const data = tractData.result!
   // @ts-ignore
   const stats = generalStatText?.data?.statistics?.stat
@@ -138,7 +139,7 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
     +data[foodAccesstemplate.column as keyof typeof data],
     100 - +data[marketPowerTemplate.column as keyof typeof data],
     100 - +data[segregationTemplate.column as keyof typeof data],
-    +data[economicAdvantageTemplate.column as keyof typeof data]
+    100 - +data[economicAdvantageTemplate.column as keyof typeof data]
   ]
 
   const foodAccessText = getThresholdValue(foodAccess, data, foodAccesstemplate)

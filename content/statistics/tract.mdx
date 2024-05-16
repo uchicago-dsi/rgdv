@@ -95,23 +95,45 @@ overview:
       description here
     templates:
       - body: |
-          %%NAME%% is more advantaged than %%ADI\_NATRANK%%% of all tracts.
+          One of the most economically advantaged tracts.
+        threshold: 90
+      - body: |
+          Moderately advantaged
+        threshold: 70
+      - body: |
+          Neither advantaged nor disadvantaged. 
+        threshold: 40
+      - body: |
+          Moderately disadvantaged.
+        threshold: 10
+      - body: |
+          One of the most disadvantaged tracts.
+        threshold: 0
     measure: adi
   - title: Segregation
     column: segregation_2023_percentile
     tooltip: "This measure of segregation reflects how separated are people who are Black or African American and White as reported in the census. It uses a measure called the Indicators of Concentration at the Extremes, which looks at how concentrated and how separate populations live within an area. In this case, this measure reflects how segregated black or african american and white people tend to be in the tract.\n\nThis score reflects the median tract value for the tract. The score is relative to the rest of the United tracts, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
     templates:
-      - body: >
-          %%NAME%% has segregation among the
-          %%100|-|segregation\_2023\_percentile%%% most segregated counties.
+      - body: |
+          Among the most integrated census tracts.
+        threshold: 90
+      - body: |
+          Average segregation.
+        threshold: 50
+      - body: |
+          Moderately to very segregated. 
+        threshold: 25
+      - body: |
+          A  the most segregated census tracts.
+        threshold: 0
     measure: segregation
   - title: Market Power
     column: hhi_2023_percentile
     tooltip: "Market power is a measure of diversity in the marketplace. It looks at how dominant single grocery stores are in an area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThis score reflects the median tract value for the tract. The score is relative to the rest of the United tracts, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
     templates:
       - body: >
-          This tract has market power better than
-          %%100|-|hhi\_2023\_percentile%%% of all counties.
+          This tract has a lower market concentration than
+          %%100|-|hhi\_2023\_percentile%%% of all tracts.
     measure: hhi
   - title: Food Access
     column: gravity_2023_percentile
