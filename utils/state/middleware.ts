@@ -1,9 +1,10 @@
 import { createListenerMiddleware } from "@reduxjs/toolkit"
-import { mapSlice, setTooltipReady } from "utils/state/map"
+import { mapSlice, setTooltipReady, setTimeSeriesLoaded } from "utils/state/map"
 import { MapState } from "utils/state/types"
 import { globals } from "./globals"
 import { columnsDict } from "utils/data/config"
 import { BivariateColorParamteres, MonovariateColorParamteres } from "utils/data/service/types"
+import { loadTimeseriesData } from "./thunks"
 
 // Create the middleware instance and methods
 export const mapDataMiddleware = createListenerMiddleware<{ map: MapState }>()

@@ -1,8 +1,8 @@
 "use client"
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
-import { columnGroups, columnsDict, defaultColumn, defaultColumnGroup} from "utils/data/config"
-import { fetchCentroidById, initializeDb } from "utils/state/thunks"
+import { columnGroups, columnsDict, defaultColumn, defaultColumnGroup, defaultTimeseriesDataset, timeSeriesDatasets} from "utils/data/config"
+import { fetchCentroidById, initializeDb, loadTimeseriesData } from "utils/state/thunks"
 import { MapState } from "./types"
 import { globals } from "./globals"
 
@@ -16,7 +16,10 @@ const initialState: MapState = {
   snapshot: 0,
   breaks: [],
   colors: [],
-  tooltipStatus: undefined
+  tooltipStatus: undefined,
+  timeseriesDatasets: [],
+  timeseriesRequested: false,
+  currentTimeseriesDataset: defaultTimeseriesDataset,
 }
 
 export const mapSlice = createSlice({
@@ -43,6 +46,12 @@ export const mapSlice = createSlice({
     setCurrentColumn: (state, action: PayloadAction<keyof typeof columnsDict>) => {
       state.currentColumn = action.payload
       state.colorFilter = undefined
+    },
+    requestTimeseries: (state, action: PayloadAction<boolean>) => {
+      state.timeseriesRequested = true
+    },
+    setTimeSeriesLoaded: (state, action: PayloadAction<timeSeriesDatasets>) => {
+      state.timeseriesDatasets.push(action.payload)
     },
     setTooltipInfo: (state, action: PayloadAction<{ x: number; y: number; id: string } | null>) => {
       state.tooltip = action.payload
@@ -105,6 +114,9 @@ export const mapSlice = createSlice({
       }),
       builder.addCase(initializeDb.fulfilled, (state, action) => {
         state.dbStatus = action.payload
+      }),
+      builder.addCase(loadTimeseriesData.fulfilled, (state, action) => {
+        state.timeseriesDatasets.push(action.meta.arg)
       })
   },
 })
@@ -119,6 +131,8 @@ export const {
   setCurrentFilter,
   setCurrentColumnGroup,
   upcertColorFilter,
+  requestTimeseries,
+  setTimeSeriesLoaded
 } = mapSlice.actions
 
 export default mapSlice.reducer

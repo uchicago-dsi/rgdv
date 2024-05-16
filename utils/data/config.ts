@@ -174,20 +174,32 @@ export const columnsDict = {
   },
 } as const
 
+const minYear = 1997
+const maxYear = 2023
 export const timeSeriesConfig = {
   hhi: {
-    columns: new Array(2021 - 1997).fill(null).map((_, i) => i + 1997),
+    file: "concentration_metrics_wide.parquet",
+    label: "Market Concentration",
+    columns: new Array(maxYear - minYear).fill(null).map((_, i) => i + minYear),
   },
   hhiDs: {
-    columns: new Array(2021 - 1997).fill(null).map((_, i) => i + 1997),
+    file: "concentration_metrics_wide_ds.parquet",
+    label: "Market Concentration with Dollar Stores",
+    columns: new Array(maxYear - minYear).fill(null).map((_, i) => i + minYear),
   },
   gravity: {
+    file: "gravity_no_dollar_pivoted.parquet",
+    label: "Food Access",
     columns: [2000, ...new Array(2021 - 2010).fill(null).map((_, i) => i + 2010)],
   },
   gravityDs: {
+    file: "gravity_dollar_pivoted.parquet",
+    label: "Food Access with Dollar Stores",
     columns: [2000, ...new Array(2021 - 2010).fill(null).map((_, i) => i + 2010)],
   },
 } as const
+export type timeSeriesDatasets = typeof timeSeriesConfig[keyof typeof timeSeriesConfig]['file']
+export const defaultTimeseriesDataset = "concentration_metrics_wide.parquet"
 
 export const columnGroups: ColumnGroups<typeof columnsDict> = {
   "Market Concentration": {

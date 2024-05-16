@@ -48,11 +48,13 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
   }
 
   return (
-    <div className="prose max-w-full overflow-y-auto">
+    <div className="prose w-full max-w-full">
       <h3>
         Store{data?.length > 1 ? "s" : ""} in {title || "service area"}
       </h3>
-      <table className="max-h-full w-full table-auto overflow-y-auto">
+      <div className="max-h-[50vh] w-full overflow-y-auto">
+        
+      <table className="max-h-full w-full table-auto">
         <thead>
           <tr>
             {columns.map((_col, i) => {
@@ -75,6 +77,7 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   )
 }

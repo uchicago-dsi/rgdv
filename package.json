@@ -23,6 +23,7 @@
     "coupling-graph": "npx madge --extensions js,jsx,ts,tsx,css,md,mdx ./ --exclude '.next|tailwind.config.js|reset.d.ts|prettier.config.js|postcss.config.js|playwright.config.ts|next.config.js|next-env.d.ts|instrumentation.ts|e2e/|README.md|.storybook/|.eslintrc.js' --image graph.svg"
   },
   "dependencies": {
+    "@cutting/use-get-parent-size": "^2.1.13",
     "@deck.gl/geo-layers": "^8.9.34",
     "@deck.gl/layers": "^8.9.34",
     "@deck.gl/mapbox": "^8.9.34",
@@ -126,6 +127,7 @@
     "remark-mdx": "^3.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.0",
+    "resize-observer-polyfill": "^1.5.1",
     "simple-statistics": "^7.8.3",
     "ss": "^0.0.1",
     "tailwind-merge": "^2.0.0",

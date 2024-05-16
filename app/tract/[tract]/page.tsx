@@ -234,10 +234,10 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
           </ul>
         </div>
       </div>
-      {/* <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl">
-        <TimeseriesChart id={tract} />
-      </div> */}
-      <div className="my-8 h-[100vh] w-full bg-white p-8 shadow-xl overflow-y-auto">
+      <div className="my-8 w-full p-8 shadow-xl bg-white">
+        <TimeseriesChart id={tract} placeName={tractName}/>
+      </div>
+      <div className="my-8 w-full bg-white p-8 shadow-xl">
         <StoreList id={tract} />
       </div>
     </div>

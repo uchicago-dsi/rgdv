@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@cutting/use-get-parent-size':
+    specifier: ^2.1.13
+    version: 2.1.13(react-dom@18.2.0)(react@18.2.0)(resize-observer-polyfill@1.5.1)(use-debounce@10.0.0)
   '@deck.gl/geo-layers':
     specifier: ^8.9.34
     version: 8.9.34(@deck.gl/core@8.9.34)(@deck.gl/extensions@8.9.34)(@deck.gl/layers@8.9.34)(@deck.gl/mesh-layers@8.9.34)(@loaders.gl/core@3.4.14)(@loaders.gl/gltf@3.4.14)(@loaders.gl/images@3.4.14)(@luma.gl/core@8.5.21)(@luma.gl/engine@8.5.21)(@luma.gl/gltools@8.5.21)(@luma.gl/shadertools@8.5.21)(@luma.gl/webgl@8.5.21)
@@ -314,6 +317,9 @@ dependencies:
   remark-rehype:
     specifier: ^11.1.0
     version: 11.1.0
+  resize-observer-polyfill:
+    specifier: ^1.5.1
+    version: 1.5.1
   simple-statistics:
     specifier: ^7.8.3
     version: 7.8.3
@@ -2068,6 +2074,25 @@ packages:
     engines: {node: '>=0.1.90'}
     requiresBuild: true
     optional: true
+
+  /@cutting/assert@0.1.4:
+    resolution: {integrity: sha512-k1LE8tCMKllAkb7ipdwCeK9DJVZlXu1IKW4ROXnvclsxtDPLLgkBx0oFRrrZeJ6J6nIubVZjC+DK7ilMboK/5A==}
+    dev: false
+
+  /@cutting/use-get-parent-size@2.1.13(react-dom@18.2.0)(react@18.2.0)(resize-observer-polyfill@1.5.1)(use-debounce@10.0.0):
+    resolution: {integrity: sha512-IcO12FZLi43hLKCyfipvvnMkeAsV0sopTT61kOG576M5MCqUn9mJSYJb4COe/xJl5UKkGYyaGWBJ8iD5aS0hBQ==}
+    peerDependencies:
+      react: '>= 18.3.1'
+      react-dom: '>= 18.3.1'
+      resize-observer-polyfill: '>= ^1.5.x'
+      use-debounce: '>= 9.0.x'
+    dependencies:
+      '@cutting/assert': 0.1.4
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      resize-observer-polyfill: 1.5.1
+      use-debounce: 10.0.0(react@18.2.0)
+    dev: false
 
   /@deck.gl/aggregation-layers@8.9.34(@deck.gl/core@8.9.34)(@deck.gl/layers@8.9.34)(@luma.gl/core@8.5.21):
     resolution: {integrity: sha512-/JEDlj5MNFX8yHWPO5ljooGMdA2EPuZydbT6wrQD1WMydgp8dcEF+zVRLXTDWH1Mq+HLj6JHT1IhENHXN5TZFA==}
@@ -27338,6 +27363,10 @@ packages:
     resolution: {integrity: sha512-aw7jcGLDpSgNDyWBQLv2cedml85qd95/iszJjN988zX1t7AVRJi19d9kto5+W7oCfQ94gyo40dVbT6g2k4/kXg==}
     dev: false
 
+  /resize-observer-polyfill@1.5.1:
+    resolution: {integrity: sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==}
+    dev: false
+
   /resolve-cwd@3.0.0:
     resolution: {integrity: sha512-OrZaX2Mb+rJCpH/6CpSqt9xFVpN++x01XnN2ie9g6P5/3xelLAkXWVADpdz1IHD/KFfEXyE6V0U01OQ3UO2rEg==}
     engines: {node: '>=8'}
@@ -30004,6 +30033,15 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-native: 0.74.1(@babel/core@7.23.9)(@babel/preset-env@7.23.9)(@types/react@18.2.53)(react@18.2.0)
       scheduler: 0.19.0
+    dev: false
+
+  /use-debounce@10.0.0(react@18.2.0):
+    resolution: {integrity: sha512-XRjvlvCB46bah9IBXVnq/ACP2lxqXyZj0D9hj4K5OzNroMDpTEBg8Anuh1/UfRTRs7pLhQ+RiNxxwZu9+MVl1A==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /use-deep-compare@1.2.1(react@17.0.2):

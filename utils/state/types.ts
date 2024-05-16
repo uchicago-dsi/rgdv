@@ -1,4 +1,4 @@
-import { columnGroups, columnsDict } from "utils/data/config"
+import { columnGroups, columnsDict, timeSeriesConfig, timeSeriesDatasets } from "utils/data/config"
 
 export interface MapState {
   breaks: Array<number>
@@ -21,4 +21,7 @@ export interface MapState {
   } | null,
   tooltipStatus?: 'pending' | 'ready'
   snapshot: number
+  timeseriesRequested: boolean
+  timeseriesDatasets: Array<keyof typeof timeSeriesConfig>
+  currentTimeseriesDataset?: timeSeriesDatasets
 }

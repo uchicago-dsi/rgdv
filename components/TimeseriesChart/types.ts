@@ -1,3 +1,4 @@
-export type getTimeseriesChartProps = {
-  id: string
+export type TimeseriesChartProps = {
+  id: string,
+  placeName: string,
 }

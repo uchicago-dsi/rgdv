@@ -1,21 +1,19 @@
-import { timeSeriesConfig } from "utils/data/config";
+import React from "react";
 
-export interface DataRecord {
-  [key: string]: any;
+type DataType<T extends Record<string, any>> = Array<T>;
+export interface DimensionProps {
+  xMax: number;
+  yMax: number;
+  xMin: number;
+  yMin: number;
 }
 
-export type TimeseriesConfigKey = keyof typeof timeSeriesConfig;
-export type TimeseriesConfigEntry = typeof timeSeriesConfig[TimeseriesConfigKey];
-export type TimeseriesConfigColumn = TimeseriesConfigEntry["columns"][number];
-export type TimeseriesColumns = ('year' | 'median' | 'average'| 'q75'| 'q25')
-
-export interface LineChartProps {
-  data: Record<TimeseriesColumns, number>
-  dataKey: TimeseriesColumns
-  timeseriesConfigKey: TimeseriesConfigKey;
-}
-
-export interface ResponsiveXYChartProps extends LineChartProps {
-  parentWidth: number;
-  parentHeight: number;
+export interface LineChartProps<T extends Record<string, any>> {
+  data: DataType<T>
+  parentRef: React.RefObject<HTMLDivElement>
+  dataKey: keyof T
+  yearKey: keyof T
+  children?: React.ReactElement<DimensionProps> | React.ReactElement<DimensionProps>[];
+  // lowerBandKey: keyof T
+  // upperBandKey: keyof T
 }

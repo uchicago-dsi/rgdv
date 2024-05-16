@@ -25,6 +25,7 @@ export const getDecimalsFromRange = (range: number) => {
 export class DataService<DataT extends Record<string, any>> {
   data: Record<string, Record<string, Record<string | number, number>>> = {}
   dbStatus: "none" | "loading" | "loaded" | "error" = "none"
+  timeseriesTables: string[] = []
   baseURL: string = window?.location?.origin || ""
   conn?: AsyncDuckDBConnection
   tooltipResults: any = {}
@@ -300,25 +301,36 @@ export class DataService<DataT extends Record<string, any>> {
     this.tooltipResults[id] = formattedData
     return this.tooltipResults[id]
   }
+  rotate(data: Array<Record<string|number, any>>, columnLabel: string, valueLabel: string, columns: Array<string>) {
+    const rotatedData = []
+    for (const column of columns) {
+      rotatedData.push({
+        [columnLabel]: column,
+        // @ts-ignore
+        [valueLabel]: data[column]
+      })
+    }
+    return rotatedData
+  }
 
   async getTimeseries(id: string, variable: keyof typeof timeSeriesConfig) {
     if (this.timeseriesResults[id]?.[variable]) return
     const config = timeSeriesConfig[variable]
+    const file = config.file
     const columns = config.columns
-      .map(
-        (c) => `
-      sum("${c}" * "TOTAL_POPULATION") / sum("TOTAL_POPULATION") as average_${c},
-      median("${c}") as median_${c},
-      approx_quantile("${c}", 0.75) as q75_${c},
-      approx_quantile("${c}", 0.25) as q25_${c}
-    `
-      )
-      .join(", ")
-    const result = await this.runQuery(`SELECT ${columns} FROM ${dataTableName}`)
+
+    const result = await this.runQuery(`SELECT * FROM ${file} WHERE "${this.idColumn}" LIKE '${id}'`)
+
     if (!this.timeseriesResults[id]) {
       this.timeseriesResults[id] = {}
     }
-
-    this.timeseriesResults[id][variable] = result[0]
+    const rotated = this.rotate(result[0], "year", "value", columns as any[])
+    const dateParsed = rotated.map((r) => {
+      return {
+        ...r,
+        year: new Date(`01-02-${r.year}`),
+      }
+    })
+    this.timeseriesResults[id][variable] = dateParsed
   }
 }
