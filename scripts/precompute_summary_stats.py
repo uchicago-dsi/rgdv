@@ -159,18 +159,18 @@ def split_df_and_msgpack(df, id_col, outpath, compress=False):
 
 # %%
 gravity_county = generate_stats(
-  path.join(data_dir, 'gravity_dollar_pivoted.parquet'),
+  path.join(data_dir, 'gravity_no_dollar_pivoted.parquet'),
   path.join(data_dir, 'demography_tract.parquet'),
   "county",
   "county",
   "county",
-  year,
+  '2021',
   "TOTAL_POPULATION",
   "gravity",
 )
 
 hhi_county = generate_stats(
-  path.join(data_dir, 'concentration_metrics_wide_ds.parquet'),
+  path.join(data_dir, 'concentration_metrics_wide.parquet'),
   path.join(data_dir, 'demography_tract.parquet'),
   "county",
   "county",
@@ -200,8 +200,6 @@ county_joined = gravity_county.merge(hhi_county, how='left', on="county")\
   .merge(county_adi, how='left', left_on="county", right_on="COUNTY")\
   .drop(columns=["COUNTY"])
 # %%
-# %%
-
 split_df_and_msgpack(
   county_joined,
   'county',
@@ -331,7 +329,7 @@ gravity_state = generate_stats(
   "state",
   "state",
   'state',
-  year,
+  '2021',
   'TOTAL_POPULATION',
   "gravity"
 )
