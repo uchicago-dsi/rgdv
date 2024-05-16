@@ -118,7 +118,7 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
   if (!tractData.ok) {
     return <div>Sorry, we couldn&apos;t find data for that tract.</div>
   }
-  console.log(tractData.result)
+  
   const data = tractData.result!
   // @ts-ignore
   const stats = generalStatText?.data?.statistics?.stat
