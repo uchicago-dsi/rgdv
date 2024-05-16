@@ -86,6 +86,101 @@ stat:
           * Non-hispanic Some Another race: %%%100|\*|PCT NH SOME OTHER%%%
           * Non-hispanic Two or more races: %%100|\*|PCT NH TWO OR MORE%%%
 overview:
+  - title: Economic Advantage
+    column: ADI_NATRANK
+    tooltip: >
+      Economic advantage of this tract relative to the whole country ... ADI
+      description here
+    templates:
+      - body: |
+          One of the most economically advantaged tracts.
+        threshold: 90
+      - body: |
+          Moderately advantaged
+        threshold: 70
+      - body: |
+          Neither advantaged nor disadvantaged.
+        threshold: 40
+      - body: |
+          Moderately disadvantaged.
+        threshold: 10
+      - body: |
+          One of the most disadvantaged tracts.
+        threshold: 0
+    measure: adi
+  - title: Segregation
+    column: segregation_2023_percentile
+    tooltip: "This measure of segregation reflects how separated are people who are Black or African American and White as reported in the census. It uses a measure called the Indicators of Concentration at the Extremes, which looks at how concentrated and how separate populations live within an area. In this case, this measure reflects how segregated black or african american and white people tend to be in the tract.\n\nThis score reflects the median tract value for the tract. The score is relative to the rest of the United tracts, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    templates:
+      - body: |
+          Among the most integrated census tracts.
+        threshold: 90
+      - body: |
+          Average segregation.
+        threshold: 50
+      - body: |
+          Moderately to very segregated.
+        threshold: 25
+      - body: |
+          One of the most segregated census tracts.
+        threshold: 0
+    measure: segregation
+  - title: Market Power
+    column: hhi_2023_percentile
+    tooltip: "Market power is a measure of diversity in the marketplace. It looks at how dominant single grocery stores are in an area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThis score reflects the median tract value for the tract. The score is relative to the rest of the United tracts, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    templates:
+      - body: >
+          This tract has a lower market concentration than
+          %%100|-|hhi\_2023\_percentile%%% of all tracts.
+    measure: hhi
+  - title: Food Access
+    column: gravity_2023_percentile
+    tooltip: >
+      Food access reflects the amount of grocery supply available relative to
+      people living in a given area. This measure is calculated using a gravity
+      model, which estimates access to services based on the number of service
+      providers, the number of people in a given area, and how close they are
+      together.
+
+
+      The score is relative to the rest of the United States, where one hundred
+      (100) is the best food access and zero (0) is the worst food access.
+
+
+      For more information on how this measure is calculated, read our
+      [methodology](/about#methodology).
+    templates:
+      - body: "The access people have to buy groceries. %%NAME%% is in the top\_%%100|-|gravity\\_2023\\_percentile%%% of all tracts.\n"
+        threshold: 75
+      - body: >
+          The access people have to buy groceries. %%NAME%% has better food
+          access than %%100|-|gravity\_2023\_percentile%%% of counties.
+        threshold: 25
+      - body: "The access people have to buy groceries. %%NAME%% is in the bottom\_%%gravity\\_2021\\_percentile%% of all counties.\n"
+        threshold: 0
+    measure: gravity
+  - title: Economic Advantage
+    column: ADI_NATRANK
+    tooltip: >
+      Economic advantage of this county relative to the whole country ... ADI
+      description here
+    templates:
+      - body: |
+          One of the most economically advantaged counties.
+        threshold: 90
+      - body: |
+          Moderately advantaged
+        threshold: 70
+      - body: |
+          Neither advantaged nor disadvantaged.
+        threshold: 40
+      - body: |
+          Moderately disadvantaged.
+        threshold: 10
+      - body: |
+          One of the most disadvantaged counties.
+        threshold: 0
+    measure: adi
   - title: Racial Equity
     column: segregation_2021_percentile
     tooltip: "Racial equity is reflects segregation in the county. It uses a measure called ICE (Indicators of Concentration at the Extremes), which looks at how concentrated and how separate populations live within an area. In this case, the ICE metric reflects how segregated black or african american and white people tend to be in the county.\n\nThis score reflects the median tract value for the county. The score is relative to the rest of the United States, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
