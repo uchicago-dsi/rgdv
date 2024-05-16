@@ -171,6 +171,7 @@ export const columnsDict = {
     column: "ADI_NATRANK",
     description: "ADI",
     bivariate: false,
+    colorScheme: "schemeOranges",
   },
 } as const
 
