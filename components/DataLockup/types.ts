@@ -6,4 +6,5 @@ export interface DataLockupProps {
     value: number
     description: TinaMarkdownContent[] | null
     border?: boolean
+    sigFigs?: number
 }
