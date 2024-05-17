@@ -11,7 +11,8 @@ export interface DimensionProps {
 export interface LineChartProps<T extends Record<string, any>> {
   data: DataType<T>
   parentRef: React.RefObject<HTMLDivElement>
-  dataKey: keyof T
+  dataKey?: keyof T
+  aggregates?: Array<{role: keyof T}>
   yearKey: keyof T
   children?: React.ReactElement<DimensionProps> | React.ReactElement<DimensionProps>[];
   // lowerBandKey: keyof T

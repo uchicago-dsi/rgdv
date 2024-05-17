@@ -2,6 +2,7 @@ import { color } from "d3"
 import { ColumnConfig, ColumnGroups } from "./config.types"
 
 export const idColumn = "GEOID"
+export const summaryTractFile = "full_tract_normalized.parquet"
 
 const generateHhiConfig = (year: number, ds: boolean =false) =>
   ({
@@ -189,7 +190,7 @@ export const timeSeriesConfig = {
     columns: new Array(maxYear - minYear).fill(null).map((_, i) => i + minYear),
   },
   gravity: {
-    file: "gravity_no_dollar_pivoted.parquet",
+    file: "gravity_no_dollar_pivoted_normalized.parquet",
     label: "Food Access",
     columns: [2000, ...new Array(2021 - 2010).fill(null).map((_, i) => i + 2010)],
   },
@@ -201,6 +202,49 @@ export const timeSeriesConfig = {
 } as const
 export type timeSeriesDatasets = typeof timeSeriesConfig[keyof typeof timeSeriesConfig]['file']
 export const defaultTimeseriesDataset = "concentration_metrics_wide.parquet"
+
+export const timeSeriesAggregates = [
+  {
+    template: (col: string) => `AVG("${col}")`,
+    alias: (col: string) => `mean_${col}`,
+    role: "mean"
+  },
+  {
+    template: (col: string) => `approx_quantile("${col}", 0.5)`,
+    alias: (col: string) => `median_${col}`,
+    role: "median"
+  },
+  {
+    template: (col: string) => `MAX("${col}")`,
+    alias: (col: string) => `max_${col}`,
+    role: "max"
+  },
+  {
+    template: (col: string) => `MIN("${col}")`,
+    alias: (col: string) => `min_${col}`,
+    role: "min"
+  },
+  {
+    template: (col: string) => `approx_quantile("${col}", 0.95)`,
+    alias: (col: string) => `q95_${col}`,
+    role: "q95"
+  },
+  {
+    template: (col: string) => `approx_quantile("${col}", 0.75)`,
+    alias: (col: string) => `q75_${col}`,
+    role: "q75"
+  },
+  {
+    template: (col: string) => `approx_quantile("${col}", 0.25)`,
+    alias: (col: string) => `q25_${col}`,
+    role: "q25"
+  },
+  {
+    template: (col: string) => `approx_quantile("${col}", 0.05)`,
+    alias: (col: string) => `q05_${col}`,
+    role: "q05"
+  }
+]
 
 export const columnGroups: ColumnGroups<typeof columnsDict> = {
   "Market Concentration": {

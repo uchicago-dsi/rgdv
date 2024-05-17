@@ -1,5 +1,5 @@
 "use client"
-import { columnsDict, timeSeriesConfig, tooltipConfig } from "../config"
+import { columnsDict, timeSeriesAggregates, timeSeriesConfig, timeSeriesDatasets, tooltipConfig } from "../config"
 import * as d3 from "d3"
 import tinycolor from "tinycolor2"
 import { BivariateColorParamteres, MonovariateColorParamteres, d3Bivariate } from "./types"
@@ -10,7 +10,7 @@ export const dataTableName = "data.parquet"
 export const getDecimalsFromRange = (range: number) => {
   if (range < 0.01) {
     return 12
-  } else  if (range < 0.1) {
+  } else if (range < 0.1) {
     return 8
   } else if (range < 1) {
     return 5
@@ -29,6 +29,7 @@ export class DataService<DataT extends Record<string, any>> {
   baseURL: string = window?.location?.origin || ""
   conn?: AsyncDuckDBConnection
   tooltipResults: any = {}
+  connectedScatterplotResults: any = {}
   timeseriesResults: any = {}
   _dataId: keyof DataT = "GEOID"
   idColumn: string
@@ -301,36 +302,156 @@ export class DataService<DataT extends Record<string, any>> {
     this.tooltipResults[id] = formattedData
     return this.tooltipResults[id]
   }
-  rotate(data: Array<Record<string|number, any>>, columnLabel: string, valueLabel: string, columns: Array<string>) {
+  rotate(data: Array<Record<string | number, any>>, columnLabel: string, valueLabel: string, columns: Array<string>) {
     const rotatedData = []
     for (const column of columns) {
       rotatedData.push({
         [columnLabel]: column,
         // @ts-ignore
-        [valueLabel]: data[column]
+        [valueLabel]: data[column],
       })
     }
     return rotatedData
   }
+  buildAgregateTimeseriesQuery(config: any, id: string) {
+    const columns = config.columns
+    const columnQuery = columns
+      .map((col: string) => timeSeriesAggregates.map((f) => `${f.template(col)} as ${f.alias(col)}`))
+      .flat()
+      .join(", ")
+    return `SELECT ${columnQuery} FROM ${config.file} WHERE "${this.idColumn}" LIKE '${id}%'`
+  }
+
+  rotateSimple(
+    data: Array<Record<string | number, any>>,
+    columns: Array<any>,
+    columnLabel: string,
+    valueLabel: string
+  ) {
+    const rotatedData = []
+    for (const column of columns) {
+      rotatedData.push({
+        [columnLabel]: column,
+        // @ts-ignore
+        [valueLabel]: data[column],
+      })
+    }
+    return rotatedData.map((r) => ({
+      ...r,
+      year: new Date(`01-02-${r.year}`),
+    }))
+  }
+
+  rotateAggregate(data: Record<string | number, any>, columns: Array<any>, yearLabel: string) {
+    const rotatedData = []
+    for (const column of columns) {
+      const aggregates = timeSeriesAggregates.map((f) => f.alias(column))
+      const entry = {
+        [yearLabel]: new Date(`01-02-${column}`),
+      }
+      for (const aggregate of timeSeriesAggregates) {
+        const alias = aggregate.alias(column)
+        const role = aggregate.role
+        entry[role] = data[alias]
+      }
+      rotatedData.push(entry)
+    }
+    return rotatedData
+  }
+  async getScatterPlotData(id: string, var1: keyof typeof columnsDict, var2: keyof typeof columnsDict, xLabel: string, yLabel: string) {
+    const [config1, config2] = [columnsDict[var1], columnsDict[var2]]
+    const query = `SELECT 
+      "${config1.column}" as ${xLabel}, 
+      "${config2.column}" as ${yLabel},
+      "${this.idColumn}" FROM ${dataTableName}
+      WHERE "${this.idColumn}" LIKE '${id}%'`
+    const scatterData = await this.runQuery(query)
+    return scatterData
+  }
+
+  async getConnectedLineData(
+    id: string,
+    variable1: keyof typeof timeSeriesConfig,
+    variable2: keyof typeof timeSeriesConfig
+  ) {
+    const [config1, config2] = [timeSeriesConfig[variable1], timeSeriesConfig[variable2]]
+    const isTract = id.length === 11
+    const sharedColumns = config1.columns.filter((c) => config2.columns.includes(c))
+    let query = ``
+    for (const column of sharedColumns) {
+      query += `
+        SELECT var1.GEOID as GEOID, var1."${column}" as ${variable1}, '${column}' as year, var2."${column}" as ${variable2}
+        From ${config1.file} var1 LEFT JOIN ${config2.file} var2
+        ON var1.GEOID = var2.GEOID
+        WHERE var1.GEOID LIKE '${id}%' AND var2.GEOID LIKE '${id}%'
+        `
+      if (sharedColumns.indexOf(column) !== sharedColumns.length - 1) {
+        query += ` UNION ALL `
+      }
+    }
+    query += " ORDER BY GEOID, year"
+    const linesData = await this.runQuery(query)
+    const linesDataParsed = []
+    let currId = linesData[0].GEOID
+    let nextId = linesData[0].GEOID
+    let nextIdIndex = 0
+    for (let i = 1; i < linesData.length; i++) {
+      const line = linesData[i]
+      nextId = line.GEOID
+      if (currId !== nextId) {
+        linesDataParsed.push(linesData.slice(nextIdIndex, i))
+        nextIdIndex = i
+        currId = nextId
+      }
+    }
+    return linesDataParsed
+  }
+  async getConnectedScatterplotData(
+    id: string,
+    scatterVariable1: keyof typeof columnsDict,
+    scatterVariable2: keyof typeof columnsDict,
+    lineVariable1: keyof typeof timeSeriesConfig,
+    lineVariable2: keyof typeof timeSeriesConfig
+  ) {
+    const [
+      scatterData,
+      linesData,
+    ] = await Promise.all([
+      this.getScatterPlotData(id, scatterVariable1, scatterVariable2, lineVariable1, lineVariable2),
+      this.getConnectedLineData(id, lineVariable1, lineVariable2),
+    ])
+    const hash = `${scatterVariable1}-${scatterVariable2}-${lineVariable1}-${lineVariable2}-${id}`
+
+    this.connectedScatterplotResults[hash] = {
+      scatterData,
+      linesData
+    }
+  }
+
+  stringifyJsonWithBigInts(obj: any) {
+    return JSON.stringify(obj, (_, v) => (typeof v === "bigint" ? v.toString() : v), 2)
+  }
 
   async getTimeseries(id: string, variable: keyof typeof timeSeriesConfig) {
     if (this.timeseriesResults[id]?.[variable]) return
+    const isTract = id.length === 11
     const config = timeSeriesConfig[variable]
     const file = config.file
     const columns = config.columns
-
-    const result = await this.runQuery(`SELECT * FROM ${file} WHERE "${this.idColumn}" LIKE '${id}'`)
+    const query = isTract
+      ? `SELECT * FROM ${file} WHERE "${this.idColumn}" LIKE '${id}'`
+      : this.buildAgregateTimeseriesQuery(config, id)
+    const result = await this.runQuery(query)
 
     if (!this.timeseriesResults[id]) {
       this.timeseriesResults[id] = {}
     }
-    const rotated = this.rotate(result[0], "year", "value", columns as any[])
-    const dateParsed = rotated.map((r) => {
-      return {
-        ...r,
-        year: new Date(`01-02-${r.year}`),
-      }
-    })
-    this.timeseriesResults[id][variable] = dateParsed
+    const dataParsed = isTract
+      ? this.rotateSimple(result[0], columns as any[], "year", "value")
+      : this.rotateAggregate(result[0], columns as any[], "year")
+
+    console.log(dataParsed)
+
+    this.timeseriesResults[id][variable] = dataParsed
   }
 }
