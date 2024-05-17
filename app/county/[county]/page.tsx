@@ -12,6 +12,7 @@ import DataLockup from "components/DataLockup"
 import StatList from "components/StatList"
 
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
+const ComparisonOverTimeChart = dynamic(() => import("components/ComparisonOverTime"), { ssr: false })
 
 type CountyRouteParams = {
   params: {
@@ -105,6 +106,7 @@ const CountyPage: React.FC<CountyRouteParams> = async ({ params }) => {
       </div>
       <div className="my-8 w-full p-8 shadow-xl bg-white">
         <TimeseriesChart id={county} placeName={name}/>
+        {/* <ComparisonOverTimeChart id={county}  placeName="asdf"/> */}
       </div>
       <div className="my-8 w-full bg-white p-8 shadow-xl">
         <StoreList id={county} />

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { getDuckDB } from "duckdb-wasm-kit"
 import { DataService, dataTableName } from "utils/data/service/service"
-import { idColumn, timeSeriesDatasets } from "utils/data/config"
+import { idColumn, summaryTractFile, timeSeriesDatasets } from "utils/data/config"
 import { globals } from "utils/state/globals"
 import { AsyncDuckDBConnection } from "@duckdb/duckdb-wasm"
 import { timeSeriesConfig } from "utils/data/config"
@@ -38,7 +38,7 @@ export const initializeDb = createAsyncThunk("map/initDb", async () => {
   }
   const [db, buffer] = await Promise.all([
     getDuckDB(),
-    fetch(`${window.location.origin}/data/full_tract.parquet`).then((r) => r.arrayBuffer()),
+    fetch(`${window.location.origin}/data/${summaryTractFile}`).then((r) => r.arrayBuffer()),
   ])
 
   const dataArray = new Uint8Array(buffer)

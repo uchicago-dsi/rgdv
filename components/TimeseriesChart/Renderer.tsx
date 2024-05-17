@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react"
 import LineChart from "components/LineChart"
 import { TimeseriesChartProps } from "./types"
-import { timeSeriesConfig } from "utils/data/config"
+import { timeSeriesAggregates, timeSeriesConfig } from "utils/data/config"
 import { requestTimeseries } from "utils/state/map"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
 import { globals } from "utils/state/globals"
@@ -23,8 +23,10 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
 
   const tsConfig = timeSeriesConfig[tsVariable]
   const tsData = globals?.globalDs?.timeseriesResults?.[id]?.[tsVariable]
-  const ready = tsData?.length > 0
-
+  const isTract = Boolean(id.length === 11)
+  const ready = Boolean(tsData?.length > 0)
+  const isReadyTract = Boolean(ready && isTract)
+  const isReadyAggregate = Boolean(ready && !isTract)
   const dispatch = useAppDispatch()
   const timeseriesLoaded = useAppSelector((state) => state.map.timeseriesDatasets)
   const dbStatus = useAppSelector((state) => state.map.dbStatus)
@@ -55,16 +57,16 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
 
   return (
     <div>
-    <h3 className="font-sans font-bold pb-2"> 
-      {placeName} over time
-    </h3>
-      <div className="relative w-full">
+      <h3 className="pb-2 font-sans font-bold">{placeName} over time</h3>
+      <div className="relative w-full mb-4">
         <ToggleGroup.Root
           className="inline-flex space-x-px rounded bg-mauve6 shadow-[0_2px_10px] shadow-blackA4"
           type="single"
           defaultValue="hhi"
           aria-label="Text alignment"
-          onValueChange={(value) => {setTsVariable(value as keyof typeof timeSeriesConfig)}}
+          onValueChange={(value) => {
+            setTsVariable(value as keyof typeof timeSeriesConfig)
+          }}
         >
           <ToggleGroup.Item className={toggleGroupItemClasses} value="hhi" aria-label="Left aligned">
             Market Concentration
@@ -80,8 +82,9 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
           </ToggleGroup.Item>
         </ToggleGroup.Root>
       </div>
-      <div className="h-[50vh] w-full" ref={parentRef}>
-        {ready ? (
+      <div className="relative h-[50vh] w-full" ref={parentRef}>
+        {!ready && <p>Loading data please wait</p>}
+        {isReadyTract && (
           <LineChart
             data={tsData}
             dataKey={"value"}
@@ -92,10 +95,11 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
           >
             <Labels />
           </LineChart>
-        ) : !ready ? (
-          <p>Loading data please wait</p>
-        ) : (
-          <p>Failed to load data</p>
+        )}
+        {isReadyAggregate && (
+          <LineChart data={tsData} yearKey={"year"} aggregates={timeSeriesAggregates} parentRef={parentRef}>
+            <Labels />
+          </LineChart>
         )}
       </div>
     </div>
