@@ -13,6 +13,19 @@ data_dir = path.join(current_dir, '..', 'public', 'data')
 # %%
 df_full =  pd.read_parquet(path.join(data_dir, 'full_tract.parquet'))
 # %%
+normaliz_cols = [
+  'gravity_2021',
+  'gravity_2020',
+  'gravity_2010',
+  'gravity_2000',
+]
+for col in normaliz_cols:
+  df_full[col] = pd.to_numeric(df_full[col], errors='coerce').fillna(0)
+  df_full[col] = df_full[col] / df_full[col].max()
+  df_full[col] = round(df_full[col] * 100, 2)
+
+df_full.to_parquet(path.join(data_dir, 'full_tract_normalized.parquet'), compression='gzip')
+# %%
 year = '2023'
 
 def make_county_and_state_cols(filepath, id_col="GEOID"):
@@ -206,6 +219,37 @@ split_df_and_msgpack(
   path.join(data_dir, 'summary', 'county'),
   compress=True
 )
+# %%
+gravity_full = pd.read_parquet(path.join(data_dir, 'gravity_no_dollar_pivoted.parquet'))
+# normalize each column except for the GEOID
+for col in gravity_full.columns:
+  if col == 'GEOID':
+    continue
+  not_null_loc = gravity_full[col].notnull()
+  gravity_full.loc[not_null_loc, col] = gravity_full.loc[:, col] / gravity_full.loc[:, col].max()
+  gravity_full.loc[not_null_loc, col] = round(gravity_full.loc[:, col] * 100, 2)
+
+gravity_full['diff'] = gravity_full['2021'] - gravity_full['2000']
+gravity_full = gravity_full[['GEOID', '2000', '2010', '2020', '2021', 'diff']]
+
+# gravity_full.to_parquet(path.join(data_dir, 'gravity_no_dollar_pivoted_normalized.parquet'), compression='gzip')
+# %%
+hhi_full = pd.read_parquet(path.join(data_dir, 'concentration_metrics_wide.parquet'))
+hhi_full['diff'] = hhi_full['2023'] - hhi_full['2000']
+hhi_full = hhi_full[['GEOID', '2000', '2010', '2020', '2023', 'diff']]
+hhi_full['invert_diff_hhi'] = 1 - hhi_full['diff']
+merged = gravity_full.merge(hhi_full, how='outer', on="GEOID", suffixes=('_gravity', '_hhi'))
+# %%
+# run correlation analysis on diff_gravity and invert_diff_hhi scipy.stats.pearsonr
+import scipy.stats as stats
+
+def get_correlation(df, col1, col2):
+  df = df[[col1, col2]].dropna()
+  return stats.pearsonr(df[col1], df[col2])
+
+get_correlation(merged, 'diff_gravity', 'invert_diff_hhi')
+
+
 # %%
 
 gravity_tract = generate_stats(

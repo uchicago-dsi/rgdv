@@ -2,13 +2,12 @@ import React from "react"
 import { Group } from "@visx/group"
 import { LinePath } from "@visx/shape"
 import { scaleLinear } from "@visx/scale"
-import { AxisLeft, AxisBottom } from "@visx/axis"
+import { AxisBottom, AxisLeft } from "@visx/axis"
 import { Circle } from "@visx/shape"
 // @ts-ignore
 import { extent } from "d3-array"
 import { ConnectedScatterplotProps } from "./types"
 import { useParentSize } from "@cutting/use-get-parent-size"
-import { curveMonotoneX, curveMonotoneY, curveNatural, curveStep } from "@visx/curve"
 
 const ConnectedScatterplot: React.FC<ConnectedScatterplotProps<Record<string, number>>> = ({
   parentRef,
@@ -26,9 +25,7 @@ const ConnectedScatterplot: React.FC<ConnectedScatterplotProps<Record<string, nu
   },
 }) => {
   const [activeId, setActiveId] = React.useState<number | null>(null)
-  const { width: _w, height: _h } = parentRef
-    ? useParentSize(parentRef)
-    : { width: width || 800, height: height || 500 }
+  const { width: _w, height: _h } = useParentSize(parentRef!)
   const parentWidth = _w || width || 800
   const parentHeight = _h || height || 500
   const xMax = parentWidth - margin.left - margin.right
@@ -103,6 +100,7 @@ const ConnectedScatterplot: React.FC<ConnectedScatterplotProps<Record<string, nu
                 r={4}
                 fill="red"
                 opacity={!activeId ? 1 : d.GEOID === activeId ? 1 : 0.2}
+                // @ts-ignore
                 onMouseEnter={() => setActiveId(d.GEOID)}
                 onMouseLeave={() => setActiveId(null)}
               />

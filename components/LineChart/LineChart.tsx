@@ -72,7 +72,7 @@ const LineChart = <T extends Record<string, any>>({
     // when tooltip containers are scrolled, this will correctly update the Tooltip position
     scroll: true,
   })
-  console.log(tooltipData, tooltipLeft)
+
   const { width, height } = useParentSize(parentRef)
   const parentWidth = width ?? 100
   const parentHeight = height ?? 100
