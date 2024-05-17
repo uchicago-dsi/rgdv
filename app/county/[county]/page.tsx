@@ -97,20 +97,20 @@ const CountyPage: React.FC<CountyRouteParams> = async ({ params }) => {
         </div>
       </div>
       <div className="mt-8 grid gap-8 lg:grid-cols-2">
-        {/* <div className="relative h-[50vh] overflow-hidden rounded-md shadow-xl">
+        <div className="relative h-[50vh] overflow-hidden rounded-md shadow-xl">
           <Map initialFilter={county} />
         </div>
         <div className="prose max-w-full rounded-md bg-white p-4 shadow-xl">
           <StatList stats={stats} data={data} />
-        </div> */}
+        </div>
       </div>
       <div className="my-8 w-full p-8 shadow-xl bg-white">
-        {/* <TimeseriesChart id={county} placeName={name}/> */}
-        <ComparisonOverTimeChart id={county}  placeName="asdf"/>
+        <TimeseriesChart id={county} placeName={name}/>
+        {/* <ComparisonOverTimeChart id={county}  placeName="asdf"/> */}
       </div>
-      {/* <div className="my-8 w-full bg-white p-8 shadow-xl">
+      <div className="my-8 w-full bg-white p-8 shadow-xl">
         <StoreList id={county} />
-      </div> */}
+      </div>
     </div>
   )
 }
