@@ -1,6 +1,7 @@
 import { Antonio, Libre_Baskerville, Open_Sans } from 'next/font/google'
 import Nav from "components/Nav"
 import "styles/tailwind.css"
+import { WipTag } from 'components/WipTag'
  
 const antonio = Antonio({
   variable: '--font-antonio',
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Nav />
         {children}
+        <WipTag />
       </body>
     </html>
   )
