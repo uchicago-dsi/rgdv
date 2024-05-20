@@ -7,10 +7,11 @@ import { interpolateRgb } from "d3-interpolate"
 import React from "react"
 
 export type GradientLineProps = {
-  value: number
+  value: number,
+  inverted?: boolean,
 }
 
-const GradientLine: React.FC<GradientLineProps> = ({ value }) => {
+const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
   // Ensure value is within bounds
   const clampedValue = Math.min(100, Math.max(0, value))
   const { parentRef, width } = useParentSize({ debounceTime: 150 })
@@ -29,7 +30,7 @@ const GradientLine: React.FC<GradientLineProps> = ({ value }) => {
   // Color interpolator for three colors
   const colorScale = scaleLinear({
     domain: [0, 50, 100],
-    range: ["#9B415D", "#FFB44E", "#2E9FA4"],
+    range: inverted ? ["#2E9FA4", "#FFB44E", "#9B415D"] :  ["#9B415D", "#FFB44E", "#2E9FA4"],
     // @ts-ignore
     output: interpolateRgb,
   })

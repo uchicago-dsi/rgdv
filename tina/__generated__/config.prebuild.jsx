@@ -240,13 +240,27 @@ var stats_default = {
   label: "Reports",
   name: "statistics",
   path: "content/statistics",
+  descrption: "asdf",
   format: "mdx",
   fields: [
     {
       name: "body",
-      label: "Description",
+      label: "Report Main Text (Optional)",
       type: "rich-text",
       isBody: true
+    },
+    {
+      ...thresholdStatList,
+      label: "Overview",
+      name: "overview",
+      fields: [
+        ...thresholdStatList.fields,
+        {
+          label: "Measure (Don't edit this unless you are also updating the React components.)",
+          name: "measure",
+          type: "string"
+        }
+      ]
     },
     // list of "sections"
     // with section title
@@ -257,17 +271,11 @@ var stats_default = {
       name: "stat"
     },
     {
-      ...thresholdStatList,
-      label: "Overview",
-      name: "overview",
-      fields: [
-        ...thresholdStatList.fields,
-        {
-          label: "Measure",
-          name: "measure",
-          type: "string"
-        }
-      ]
+      name: "dataDescription",
+      label: "[META] Report Data Description (not rendered on page)",
+      type: "rich-text",
+      isBody: true,
+      readOnly: true
     }
   ],
   ui: {

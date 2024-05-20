@@ -32,17 +32,6 @@ fragment NavParts on Nav {
 fragment StatisticsParts on Statistics {
   __typename
   body
-  stat {
-    __typename
-    title
-    column
-    tooltip
-    templates {
-      __typename
-      body
-      threshold
-    }
-  }
   overview {
     __typename
     title
@@ -55,4 +44,16 @@ fragment StatisticsParts on Statistics {
     }
     measure
   }
+  stat {
+    __typename
+    title
+    column
+    tooltip
+    templates {
+      __typename
+      body
+      threshold
+    }
+  }
+  dataDescription
 }

@@ -43,17 +43,6 @@ export const StatisticsPartsFragmentDoc = gql`
     fragment StatisticsParts on Statistics {
   __typename
   body
-  stat {
-    __typename
-    title
-    column
-    tooltip
-    templates {
-      __typename
-      body
-      threshold
-    }
-  }
   overview {
     __typename
     title
@@ -66,6 +55,18 @@ export const StatisticsPartsFragmentDoc = gql`
     }
     measure
   }
+  stat {
+    __typename
+    title
+    column
+    tooltip
+    templates {
+      __typename
+      body
+      threshold
+    }
+  }
+  dataDescription
 }
     `;
 export const PageDocument = gql`

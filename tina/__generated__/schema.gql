@@ -212,18 +212,6 @@ type NavConnection implements Connection {
   edges: [NavConnectionEdges]
 }
 
-type StatisticsStatTemplates {
-  body: JSON
-  threshold: Float
-}
-
-type StatisticsStat {
-  title: String
-  column: String
-  tooltip: JSON
-  templates: [StatisticsStatTemplates]
-}
-
 type StatisticsOverviewTemplates {
   body: JSON
   threshold: Float
@@ -237,10 +225,23 @@ type StatisticsOverview {
   measure: String
 }
 
+type StatisticsStatTemplates {
+  body: JSON
+  threshold: Float
+}
+
+type StatisticsStat {
+  title: String
+  column: String
+  tooltip: JSON
+  templates: [StatisticsStatTemplates]
+}
+
 type Statistics implements Node & Document {
   body: JSON
-  stat: [StatisticsStat]
   overview: [StatisticsOverview]
+  stat: [StatisticsStat]
+  dataDescription: JSON
   id: ID!
   _sys: SystemInfo!
   _values: JSON!
@@ -256,18 +257,6 @@ input NumberFilter {
   in: [Float]
 }
 
-input StatisticsStatTemplatesFilter {
-  body: RichTextFilter
-  threshold: NumberFilter
-}
-
-input StatisticsStatFilter {
-  title: StringFilter
-  column: StringFilter
-  tooltip: RichTextFilter
-  templates: StatisticsStatTemplatesFilter
-}
-
 input StatisticsOverviewTemplatesFilter {
   body: RichTextFilter
   threshold: NumberFilter
@@ -281,10 +270,23 @@ input StatisticsOverviewFilter {
   measure: StringFilter
 }
 
+input StatisticsStatTemplatesFilter {
+  body: RichTextFilter
+  threshold: NumberFilter
+}
+
+input StatisticsStatFilter {
+  title: StringFilter
+  column: StringFilter
+  tooltip: RichTextFilter
+  templates: StatisticsStatTemplatesFilter
+}
+
 input StatisticsFilter {
   body: RichTextFilter
-  stat: StatisticsStatFilter
   overview: StatisticsOverviewFilter
+  stat: StatisticsStatFilter
+  dataDescription: RichTextFilter
 }
 
 type StatisticsConnectionEdges {
@@ -359,18 +361,6 @@ input NavMutation {
   links: [NavLinksMutation]
 }
 
-input StatisticsStatTemplatesMutation {
-  body: JSON
-  threshold: Float
-}
-
-input StatisticsStatMutation {
-  title: String
-  column: String
-  tooltip: JSON
-  templates: [StatisticsStatTemplatesMutation]
-}
-
 input StatisticsOverviewTemplatesMutation {
   body: JSON
   threshold: Float
@@ -384,10 +374,23 @@ input StatisticsOverviewMutation {
   measure: String
 }
 
+input StatisticsStatTemplatesMutation {
+  body: JSON
+  threshold: Float
+}
+
+input StatisticsStatMutation {
+  title: String
+  column: String
+  tooltip: JSON
+  templates: [StatisticsStatTemplatesMutation]
+}
+
 input StatisticsMutation {
   body: JSON
-  stat: [StatisticsStatMutation]
   overview: [StatisticsOverviewMutation]
+  stat: [StatisticsStatMutation]
+  dataDescription: JSON
 }
 
 schema {

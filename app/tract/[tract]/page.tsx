@@ -26,7 +26,7 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
 
   const [tractData, generalStatText] = await Promise.all([
     getSummaryStats<any>('tract', tract),
-    getMdxContent("statistics", "tract.mdx"),
+    getMdxContent("statistics", "primary.mdx"),
   ])
 
   if (!tractData.ok) {
@@ -43,7 +43,8 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
     economicAdvantage,
   } = renderReportText(
     tractData.result!,
-    generalStatText
+    generalStatText,
+    tract
   )
 
   return (
@@ -68,16 +69,17 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
             <DataLockup
               title={foodAccess.title}
               tooltip={foodAccess.tooltip}
-              value={+foodAccess.value}
+              value={foodAccess.value}
               description={foodAccess.text}
               border
             />
             <DataLockup
               title={marketPower.title}
               tooltip={marketPower.tooltip}
-              value={+marketPower.value}
+              value={marketPower.value}
               description={marketPower.text}
               border
+              inverted
             />
             <DataLockup
               title={economicAdvantage.title}
@@ -85,12 +87,14 @@ const TractPage: React.FC<TractRouteProps> = async ({ params }) => {
               value={economicAdvantage.value}
               description={economicAdvantage.text}
               border
+              inverted
             />
             <DataLockup
               title={segregation.title}
               tooltip={segregation.tooltip}
               value={segregation.value}
               description={segregation.text}
+              inverted
             />
           </div>
         </div>

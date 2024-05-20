@@ -7,4 +7,5 @@ export interface DataLockupProps {
     description: TinaMarkdownContent[] | null
     border?: boolean
     sigFigs?: number
+    inverted?: boolean
 }

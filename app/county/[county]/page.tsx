@@ -27,7 +27,7 @@ const CountyPage: React.FC<CountyRouteParams> = async ({ params }) => {
 
   const [countyData, generalStatText] = await Promise.all([
     getSummaryStats<any>('county', county),
-    getMdxContent("statistics", "county.mdx"),
+    getMdxContent("statistics", "primary.mdx"),
   ])
 
   if (!countyData.ok) {
@@ -44,7 +44,8 @@ const CountyPage: React.FC<CountyRouteParams> = async ({ params }) => {
     economicAdvantage,
   } = renderReportText(
     countyData.result!,
-    generalStatText
+    generalStatText,
+    county
   )
 
   return (
@@ -65,6 +66,10 @@ const CountyPage: React.FC<CountyRouteParams> = async ({ params }) => {
           </div>
         </div>
         <div className="col-start-2 col-end-6 py-8">
+          <div>
+
+            
+          </div>
           <div className="relative grid gap-8 lg:grid-cols-4">
             <DataLockup
               title={foodAccess.title}
@@ -76,21 +81,21 @@ const CountyPage: React.FC<CountyRouteParams> = async ({ params }) => {
             <DataLockup
               title={marketPower.title}
               tooltip={marketPower.tooltip}
-              value={+marketPower.value}
+              value={100 - +marketPower.value}
               description={marketPower.text}
               border
             />
             <DataLockup
               title={economicAdvantage.title}
               tooltip={economicAdvantage.tooltip}
-              value={economicAdvantage.value}
+              value={100 - economicAdvantage.value}
               description={economicAdvantage.text}
               border
             />
             <DataLockup
               title={segregation.title}
               tooltip={segregation.tooltip}
-              value={segregation.value}
+              value={100 - segregation.value}
               description={segregation.text}
             />
           </div>
