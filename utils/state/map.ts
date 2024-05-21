@@ -56,7 +56,7 @@ export const mapSlice = createSlice({
     setTooltipInfo: (state, action: PayloadAction<{ x: number; y: number; id: string } | null>) => {
       state.tooltip = action.payload
       const id = action.payload?.id
-      if (!!id && !globals.globalDs.tooltipResults[id]) {
+      if (!!id && !globals?.globalDs?.tooltipResults[id]) {
         state.tooltipStatus = 'pending'
       } else {
         state.tooltipStatus = 'ready'
