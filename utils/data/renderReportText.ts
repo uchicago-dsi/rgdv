@@ -62,7 +62,8 @@ export const renderReportText = (_data: Record<string, any>, generalStatText: an
   const marketPower = getStatResult(generalStatText, "hhi", data)
   const segregation = getStatResult(generalStatText, "segregation", data)
   const economicAdvantage = getStatResult(generalStatText, "adi", data)
-
+  const descriptionText = formatMarkdownTemplate(generalStatText.data.statistics.body, data)
+  
   return {
     name,
     stats,
@@ -70,6 +71,7 @@ export const renderReportText = (_data: Record<string, any>, generalStatText: an
     foodAccess,
     marketPower,
     segregation,
-    economicAdvantage
+    economicAdvantage,
+    descriptionText
   }
 }

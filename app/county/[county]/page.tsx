@@ -42,6 +42,7 @@ const CountyPage: React.FC<CountyRouteParams> = async ({ params }) => {
     marketPower,
     segregation,
     economicAdvantage,
+    descriptionText
   } = renderReportText(
     countyData.result!,
     generalStatText,
@@ -58,10 +59,10 @@ const CountyPage: React.FC<CountyRouteParams> = async ({ params }) => {
           </a>
           <div className="prose max-w-none">
             <h2 className="mb-0 text-sm font-light">COUNTY REPORT</h2>
-            <h1>{name}</h1>
-            <p>
+            <h1 className="mb-0">{name}</h1>
+            <p className="text-sm">
               {/* @ts-ignore */}
-              <TinaMarkdown content={generalStatText.data.statistics.body} />
+              <TinaMarkdown content={descriptionText} />
             </p>
           </div>
         </div>
