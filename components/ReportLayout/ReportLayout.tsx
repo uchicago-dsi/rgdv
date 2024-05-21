@@ -54,7 +54,7 @@ export const ReportLayout: React.FC<ReportLayoutProps> = async ({
     <div className="min-h-[100vh] bg-theme-canvas-500 p-4">
       <div className="lg:grid lg:gap-8 lg:grid-cols-4">
         <div className="col-span-1">
-          <a href="/county" className="align-center mb-4 flex items-center pb-2 text-sm text-gray-600">
+          <a href={`/${data.UNIT}`} className="align-center mb-4 flex items-center pb-2 text-sm text-gray-600">
             <ArrowLeftIcon className="mr-2 inline size-4" />
             Back to {data.UNIT_PLURAL}
           </a>
