@@ -4,6 +4,7 @@ export type StoreListProps<T extends any[]> = {
   title?: string
   formatters?: Record<T[number], {
     label: string
-    formatter: (value: any) => string
+    formatter?: (value: any) => string
+    formatterPreset?: 'percent' | 'currency'
   }>
 }

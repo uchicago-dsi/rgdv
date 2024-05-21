@@ -2,10 +2,16 @@
 import React, { useEffect } from "react"
 import { StoreData } from "app/api/stores/[geoid]/types"
 import { StoreListProps } from "./types"
-const percentFormatter = new Intl.NumberFormat("en-US", {
+import { globals } from "utils/state/globals"
+
+export const percentFormatter = new Intl.NumberFormat("en-US", {
   style: "percent",
   maximumFractionDigits: 1,
 })
+
+const formatterPresets = {
+  "percent": percentFormatter.format,
+} as const
 
 export const StoreList: React.FC<StoreListProps<string[]>> = ({
   id,
@@ -22,13 +28,13 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
   title,
 }) => {
   const [data, setData] = React.useState<StoreData | null | "error">(null)
-
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await fetch(`/api/stores/${id}`)
         if (response.ok) {
           const data = (await response.json()) as StoreData
+          globals.globalDs.storeListResults[id] = data
           setData(data)
         } else {
           setData("error")
@@ -56,7 +62,7 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
         
       <table className="max-h-full w-full table-auto">
         <thead>
-          <tr>
+          <tr className="max-w-[30%]">
             {columns.map((_col, i) => {
               // @ts-ignore
               const col = formatters[_col]?.label || _col
@@ -70,8 +76,11 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
               {columns.map((col, j: number) => {
                 const _val = row[col as keyof typeof row]
                 // @ts-ignore
-                const val = formatters[col]?.formatter?.(_val) ||  _val
-                return <td key={j}>{val}</td>
+                const val = formatters[col]?.formatter?.(_val) || 
+                // @ts-ignore
+                  formatterPresets?.[formatters[col]?.formatterPreset]?.(_val) ||
+                  _val
+                return <td key={j}>{val === '0%' ? '<0.1%' : val}</td>
               })}
             </tr>
           ))}
