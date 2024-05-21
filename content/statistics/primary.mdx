@@ -5,7 +5,7 @@ tooltip:
       Food access reflects the amount of grocery supply available relative to
       people living in a given area.
 overview:
-  - title: Socioeconomic disadvantage
+  - title: Socio-Economic Disadvantage
     column: ADI_NATRANK
     tooltip: >
       Economic advantage of this %%UNIT%% relative to the all other
@@ -19,19 +19,19 @@ overview:
     measure: adi
   - title: Residential Segregation
     column: segregation_2023_percentile
-    tooltip: "This measure of segregation reflects how separated are people who are Black or African American and White as reported in the census. It uses a measure called the Indicators of Concentration at the Extremes, which looks at how concentrated and how separate populations live within an area. In this case, this measure reflects how segregated black or african american and white people tend to be in the tract.\n\nThis score reflects the median tract value for the tract. The score is relative to the rest of the United tracts, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    tooltip: "The measure of residential segregation helps identify areas with significant disparities in residential neighborhoods and highlights the extremes of socio-economic conditions within that neighborhood.\n\nResidential segregation, as defined in this project by the Indicators of Concentration at the Extremes (ICE) metric, measures the extent to which a population within a geographic area is polarized at the extremes of an economic or social spectrum. This metric captures the degree of segregation by considering the concentration of two contrasting groups. Here, it measures the concentration of Black or African American people and White people, as reported in the Census.\n\nBy identifying areas with significant disparities across these populations, this measure can help inform strategies for fostering more equitable communities.\n\nThis score reflects the median value for the Census tract. The score is relative to the rest of the tracts in the United States, where 100 is the \\*most segregated, and \\*zero (0) is the *least segregated*.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
     templates:
       - body: >
           The residential segregation of this %%UNIT%% is higher than
-          %%segregation\_2023\_percentile%%% of all %%UNIT\_PLURAL%%.
+          %%segregation\_2023\_percentile%%% of all %%UNIT\_PLURAL%% in the U.S.
         threshold: 0
     measure: segregation
   - title: Market Concentration
     column: hhi_2023_percentile
-    tooltip: "Market power is a measure of diversity in the marketplace. It looks at how dominant single grocery stores are in an area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThis score reflects the median tract value for the tract. The score is relative to the rest of the United tracts, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    tooltip: "**Market concentration** is a measure of diversity in the marketplace. It looks at how dominant single grocery stores and their parent companies are in a given area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThe Market Concentration score reflects the median value for the Census tract. The score is relative to the rest of the tracts in the United States, where 100 is the *most* *competitive* marketplace and zero (0) is the \\*least competitive, \\*or a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
     templates:
       - body: >
-          This %%UNIT%% has a less concentrated grocery market than
+          This %%UNIT%% has a less concentrated grocery store market than
           %%100|-|hhi\_2023\_percentile%%% of all %%UNIT\_PLURAL%%.
           %%hhi\_2023\_percentile%%% of %%UNIT%% markets are less concentrated
           than %%NAME%%.
@@ -39,15 +39,31 @@ overview:
   - title: Food Access ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     column: gravity_2023_percentile
     tooltip: >
-      Food access reflects the amount of grocery supply available relative to
-      people living in a given area. This measure is calculated using a gravity
-      model, which estimates access to services based on the number of service
-      providers, the number of people in a given area, and how close they are
-      together.
+      ***Food access*** here considers the availability and accessibility of
+      food based on the supply (grocery stores) and demand (population) in a
+      given area. We use a gravity model to calculate a food access score. The
+      gravity model, commonly used in geography and economics, is adapted to
+      measure food access by incorporating the following key components:
 
 
-      The score is relative to the rest of the United States, where one hundred
-      (100) is the best food access and zero (0) is the worst food access.
+      1. Size of Grocery Stores: This factor accounts for the size, based on the
+      sales figures, of food resources at each grocery stores. Larger stores
+      with a wider range of fresh produce, for example, would have higher
+      'size'.
+
+      2. Distance or Travel Time: The ease of accessing food sources is
+      influenced by the distance or travel time between demand points and supply
+      points. Generally, shorter distances or quicker travel times increase the
+      accessibility of food resources.
+
+      3. Demand or Need for Food: This represents the population in a given
+      area. Areas with higher populations or greater food insecurity have higher
+      demand values.
+
+
+      The food access score is relative to all other Census tracts in the United
+      States, where 100 represents the best food access and zero (0) is the
+      worst food access.
 
 
       For more information on how this measure is calculated, read our
@@ -56,7 +72,7 @@ overview:
       - body: >
           %%NAME%% has better grocery access than %%gravity\_2023\_percentile%%%
           of %%UNIT\_PLURAL%%. %%100|-|gravity\_2023\_percentile%%% of
-          %%UNIT\_PLURAL%% have better food access.
+          %%UNIT\_PLURAL%% have better food access than %%NAME%% .
         threshold: 0
     measure: gravity
 stat:
