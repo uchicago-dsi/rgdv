@@ -8,11 +8,11 @@ import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import DataLockup from "components/DataLockup"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
 import TimeseriesChart from "components/TimeseriesChart"
-import StoreList from "components/StoreList"
 import StatList from "components/StatList"
 import dynamic from "next/dynamic"
 
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
+const StoreList = dynamic(() => import("components/StoreList"), { ssr: false })
 const ComparisonOverTimeChart = dynamic(() => import("components/ComparisonOverTime"), { ssr: false })
 
 const units = {

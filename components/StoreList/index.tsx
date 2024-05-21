@@ -1,4 +1,4 @@
-import { StoreList } from "./StoreList"
+import { StoreListOuter } from "./StoreList"
 export type { StoreListProps } from "./types"
 
-export default StoreList
+export default StoreListOuter

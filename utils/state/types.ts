@@ -24,4 +24,5 @@ export interface MapState {
   timeseriesRequested: boolean
   timeseriesDatasets: Array<keyof typeof timeSeriesConfig>
   currentTimeseriesDataset?: timeSeriesDatasets
+  storeDataId?: string
 }

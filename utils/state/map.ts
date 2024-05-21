@@ -1,8 +1,8 @@
 "use client"
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
-import { columnGroups, columnsDict, defaultColumn, defaultColumnGroup, defaultTimeseriesDataset, timeSeriesDatasets} from "utils/data/config"
-import { fetchCentroidById, initializeDb, loadTimeseriesData } from "utils/state/thunks"
+import { columnGroups, columnsDict, defaultColumn, defaultColumnGroup, defaultTimeseriesDataset, timeSeriesConfig, timeSeriesDatasets} from "utils/data/config"
+import { fetchCentroidById, fetchStoreData, initializeDb, loadTimeseriesData } from "utils/state/thunks"
 import { MapState } from "./types"
 import { globals } from "./globals"
 
@@ -20,6 +20,7 @@ const initialState: MapState = {
   timeseriesDatasets: [],
   timeseriesRequested: false,
   currentTimeseriesDataset: defaultTimeseriesDataset,
+  storeDataId: undefined
 }
 
 export const mapSlice = createSlice({
@@ -28,6 +29,9 @@ export const mapSlice = createSlice({
   reducers: {
     setBreaks: (state, action: PayloadAction<Array<number>>) => {
       state.breaks = action.payload
+    },
+    setCurrentId: (state, action: PayloadAction<string>) => {
+      state.storeDataId = action.payload
     },
     setColors: (state, action: PayloadAction<Array<Array<number>>>) => {
       state.colors = action.payload
@@ -50,7 +54,7 @@ export const mapSlice = createSlice({
     requestTimeseries: (state, action: PayloadAction<boolean>) => {
       state.timeseriesRequested = true
     },
-    setTimeSeriesLoaded: (state, action: PayloadAction<timeSeriesDatasets>) => {
+    setTimeSeriesLoaded: (state, action: PayloadAction<keyof typeof timeSeriesConfig>) => {
       state.timeseriesDatasets.push(action.payload)
     },
     setTooltipInfo: (state, action: PayloadAction<{ x: number; y: number; id: string } | null>) => {
@@ -117,6 +121,9 @@ export const mapSlice = createSlice({
       }),
       builder.addCase(loadTimeseriesData.fulfilled, (state, action) => {
         state.timeseriesDatasets.push(action.meta.arg)
+      }),
+      builder.addCase(fetchStoreData.fulfilled, (state, action) => {
+        state.storeDataId = action.meta.arg
       })
   },
 })

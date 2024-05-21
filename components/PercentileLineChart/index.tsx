@@ -69,8 +69,8 @@ const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
                 key={i}
                 stroke="black"
                 cx={x}
-                cy={0}
-                r={circleRadius/5}
+                cy={-0.5}
+                r={1}
                 fill="white"
                 strokeWidth={1.5} // Black border for the circle
               />

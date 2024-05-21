@@ -63,3 +63,16 @@ export const loadTimeseriesData = createAsyncThunk("map/loadTimeseriesData", asy
   await globals.globalDb.registerFileBuffer(file, dataArray)
   return dataset
 })
+
+export const fetchStoreData = createAsyncThunk("map/fetchStoreData", async (id: string) => {
+  if (globals.globalDs.storeListResults[id]) {
+    return id
+  }
+  const response = await fetch(`/api/stores/${id}`)
+  if (!response.ok) {
+    throw new Error("Failed to fetch store data")
+  }
+  const data = (await response.json()) as any
+  globals.globalDs.storeListResults[id] = data
+  return id
+})

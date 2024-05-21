@@ -3,6 +3,9 @@ import React, { useEffect } from "react"
 import { StoreData } from "app/api/stores/[geoid]/types"
 import { StoreListProps } from "./types"
 import { globals } from "utils/state/globals"
+import { Provider } from "react-redux"
+import { store, useAppDispatch, useAppSelector } from "utils/state/store"
+import { fetchStoreData } from "utils/state/thunks"
 
 export const percentFormatter = new Intl.NumberFormat("en-US", {
   style: "percent",
@@ -10,7 +13,7 @@ export const percentFormatter = new Intl.NumberFormat("en-US", {
 })
 
 const formatterPresets = {
-  "percent": percentFormatter.format,
+  percent: percentFormatter.format,
 } as const
 
 export const StoreList: React.FC<StoreListProps<string[]>> = ({
@@ -22,35 +25,24 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
       formatter: percentFormatter.format,
     },
     "ADDRESS LINE 1": {
-      label: "Address"
-    }
+      label: "Address",
+    },
   },
   title,
 }) => {
-  const [data, setData] = React.useState<StoreData | null | "error">(null)
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const response = await fetch(`/api/stores/${id}`)
-        if (response.ok) {
-          const data = (await response.json()) as StoreData
-          globals.globalDs.storeListResults[id] = data
-          setData(data)
-        } else {
-          setData("error")
-        }
-      } catch (e) {
-        setData("error")
-      }
-    }
-    getData()
-  }, [])
+  const storeDataId = useAppSelector((state) => state.map.storeDataId)
+  const dbStatus = useAppSelector((state) => state.map.dbStatus)
+  const dispatch = useAppDispatch()
+  const data = globals?.globalDs?.storeListResults?.[id] as any[]
 
-  if (data === null) {
+  useEffect(() => {
+    if (dbStatus === "ready" && storeDataId !== id) {
+      dispatch(fetchStoreData(id))
+    }
+  }, [dispatch, dbStatus, id, storeDataId])
+
+  if (!data) {
     return <div>Loading...</div>
-  }
-  if (data === "error") {
-    return <div>Error loading store data.</div>
   }
 
   return (
@@ -59,34 +51,41 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
         Store{data?.length > 1 ? "s" : ""} in {title || "service area"}
       </h3>
       <div className="max-h-[50vh] w-full overflow-y-auto">
-        
-      <table className="max-h-full w-full table-auto">
-        <thead>
-          <tr className="max-w-[30%]">
-            {columns.map((_col, i) => {
-              // @ts-ignore
-              const col = formatters[_col]?.label || _col
-              return <th key={i}>{col}</th>
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, i) => (
-            <tr key={i}>
-              {columns.map((col, j: number) => {
-                const _val = row[col as keyof typeof row]
+        <table className="max-h-full w-full table-auto">
+          <thead>
+            <tr className="max-w-[30%]">
+              {columns.map((_col, i) => {
                 // @ts-ignore
-                const val = formatters[col]?.formatter?.(_val) || 
-                // @ts-ignore
-                  formatterPresets?.[formatters[col]?.formatterPreset]?.(_val) ||
-                  _val
-                return <td key={j}>{val === '0%' ? '<0.1%' : val}</td>
+                const col = formatters[_col]?.label || _col
+                return <th key={i}>{col}</th>
               })}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((row, i) => (
+              <tr key={i}>
+                {columns.map((col, j: number) => {
+                  const _val = row[col as keyof typeof row]
+                  // @ts-ignore
+                  const val = formatters[col]?.formatter?.(_val) ||
+                    // @ts-ignore
+                    formatterPresets?.[formatters[col]?.formatterPreset]?.(_val) ||
+                    _val
+                  return <td key={j}>{val === "0%" ? "<0.1%" : val}</td>
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
+  )
+}
+
+export const StoreListOuter: React.FC<StoreListProps<string[]>> = (props) => {
+  return (
+    <Provider store={store}>
+      <StoreList {...props} />
+    </Provider>
   )
 }
