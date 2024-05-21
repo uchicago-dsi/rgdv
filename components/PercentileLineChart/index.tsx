@@ -17,8 +17,8 @@ const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
   const { parentRef, width } = useParentSize({ debounceTime: 150 })
   // Define the size of the canvas and the circle
   const height = 50
-  const circleRadius = 6
-  const triangleSize = 4
+  const circleRadius = 10
+  const triangleSize = 6
   const triangleHeight = (triangleSize * Math.sqrt(3)) / 2 // Height of an equilateral triangle
 
   // Scale for positioning the circle along the line
@@ -30,7 +30,7 @@ const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
   // Color interpolator for three colors
   const colorScale = scaleLinear({
     domain: [0, 50, 100],
-    range: inverted ? ["#2E9FA4", "#FFB44E", "#9B415D"] :  ["#9B415D", "#FFB44E", "#2E9FA4"],
+    range: inverted ? ["#5bb81a", "#FFB44E", "#f50000"] :  ["#f50000", "#FFB44E", "#5bb81a"],
     // @ts-ignore
     output: interpolateRgb,
   })
@@ -41,14 +41,14 @@ const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
 
   // Triangle size and coordinates for arrowheads
   const triangleLeft: [number, number][] = [
-    [circleRadius, -triangleHeight],
-    [circleRadius + triangleSize, 0],
-    [circleRadius, triangleHeight],
+    [0, -triangleHeight],
+    [0 + triangleSize, 0],
+    [0, triangleHeight],
   ]
   const triangleRight: [number, number][] = [
-    [width - circleRadius, -triangleHeight],
-    [width - circleRadius - triangleSize, 0],
-    [width - circleRadius, triangleHeight],
+    [width, -triangleHeight],
+    [width - triangleSize, 0],
+    [width, triangleHeight],
   ]
   // const triangleRight = `${width - circleRadius - triangleSize / 2},0 ${width - circleRadius + triangleSize / 2},0 ${width - circleRadius},${triangleSize}`;
   // console.log(triangleLeft)
@@ -57,11 +57,25 @@ const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
       <svg width={width} height={height}>
         <Group top={height / 2} left={0}>
           <Line
-            from={{ x: circleRadius, y: 0 }}
-            to={{ x: width - circleRadius, y: 0 }}
+            from={{ x: 0, y: 0 }}
+            to={{ x: width, y: 0 }}
             stroke="black"
             strokeWidth={1.5}
           />
+          {(new Array(8).fill(null)).map((_, i) => {
+            const x = (width / 8) * i
+            return (
+              <circle
+                key={i}
+                stroke="black"
+                cx={x}
+                cy={0}
+                r={circleRadius/5}
+                fill="white"
+                strokeWidth={1.5} // Black border for the circle
+              />
+            )
+          })}
           {/* Triangles as arrowheads */}
           <Polygon points={triangleLeft} fill="black" />
           <Polygon points={triangleRight} fill="black" />
