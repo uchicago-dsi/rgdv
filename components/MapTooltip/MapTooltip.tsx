@@ -3,7 +3,7 @@ import { useAppSelector } from "utils/state/store"
 import { MapTooltipProps } from "./types"
 import { globals } from "utils/state/globals"
 
-export const MapTooltip: React.FC<MapTooltipProps> = () => {
+export const MapTooltip: React.FC<MapTooltipProps> = ({ simpleMap }) => {
   const tooltip = useAppSelector((state) => state.map.tooltip)
   const tooltipStatus = useAppSelector((state) => state.map.tooltipStatus)
   const { x, y, id } = tooltip || {}
@@ -21,8 +21,9 @@ export const MapTooltip: React.FC<MapTooltipProps> = () => {
         top: y + 10,
       }}
     >
-      {/* @ts-ignore */}
-      {tooltipStatus === 'ready' ? (
+      {simpleMap ? (
+        <p className="pb-2">{id}</p>
+      ) : tooltipStatus === "ready" ? (
         data.map((section: any, i: number) => {
           const columns = section.columns
           return (
