@@ -95,7 +95,9 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
     currentCentroid,
     filter,
     isBivariate,
-  } = useDataService()
+    storeData,
+    storesHaveGeo,
+  } = useDataService(initialFilter)
 
   useEffect(() => {
     // pan map to centroid
@@ -138,8 +140,16 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         }
         return color
       }
-
   const layers = [
+    new ScatterplotLayer({
+      id: "stores-locations-layer",
+      data: storesHaveGeo ? storeData : [],
+      getRadius: 5,
+      radiusUnits: "pixels",
+      getPosition: (d: any) => [d.STORE_LON, d.STORE_LAT],
+      getFillColor: [0, 255, 120],
+      pickable: false,
+    }),
     new GeoJsonLayer({
       // @ts-ignore
       data: JSON.parse(clickedGeo?.geometry || "[]"),
@@ -159,7 +169,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
       pickable: false,
     }),
     new MVTLayer({
-      data: `/api/tiles/tracts/{z}/{x}/{y}`, 
+      data: `/api/tiles/tracts/{z}/{x}/{y}`,
       minZoom: 0,
       maxZoom: 14,
       getLineColor: simpleMap ? [0, 0, 0] : [192, 192, 192, 50],
