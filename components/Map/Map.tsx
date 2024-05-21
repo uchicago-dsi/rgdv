@@ -16,11 +16,7 @@ import DropdownMenuDemo from "components/Dropdown/Dropdown"
 import { SelectMenu } from "components/Select/Select"
 import { columnGroups } from "utils/data/config"
 import { useDataService } from "utils/hooks/useDataService"
-import {
-  setCurrentColumn,
-  setCurrentColumnGroup,
-  setTooltipInfo,
-} from "utils/state/map"
+import { setCurrentColumn, setCurrentColumnGroup, setTooltipInfo } from "utils/state/map"
 import { store, useAppDispatch } from "utils/state/store"
 import { zeroPopTracts } from "utils/zeroPopTracts"
 import Legend from "components/Legend"
@@ -31,6 +27,8 @@ import { fetchCentroidById } from "utils/state/thunks"
 
 export type MapProps = {
   initialFilter?: string
+  simpleMap?: boolean
+  onClick?: (info: any) => void
 }
 
 const MapOuter: React.FC<MapProps> = (props) => {
@@ -51,7 +49,7 @@ const INITIAL_VIEW_STATE = {
 }
 
 // const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
-export const Map: React.FC<MapProps> = ({ initialFilter }) => {
+export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick }) => {
   const router = useRouter()
   const [containerHeight, setContainerHeight] = useState<string | undefined>(undefined)
   const [clickedGeo, setClickedGeo] = useState<any>({
@@ -86,7 +84,6 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
     }
   }, [])
 
-
   const {
     isReady,
     colorFunction,
@@ -110,28 +107,37 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
         speed: 2,
       })
     }
-  },[currentCentroid])
+  }, [currentCentroid])
+
   const availableColumns = columnGroups[currentColumnGroup]?.columns || []
-  const getElementColor = (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
-    if (!isReady) {
-      return [120, 120, 120, 120]
-    }
-    if (zeroPopTracts.indexOf(element?.properties?.GEOID) !== -1) {
-      return [0, 0, 0, 0]
-    }
-    const id = element?.properties?.GEOID
-    if (id === undefined) {
-      return [120, 120, 120, 120]
-    }
-    const color = colorFunction(id)
-    if (colorFilter && colorFilter.length) {
-      const isInFilter = deepCompare2d1d(colorFilter, color)
-      if (!isInFilter) {
-        return [color[0], color[1], color[2], 20]
+  const getElementColor = simpleMap
+    ? (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
+        const id = element?.properties?.GEOID
+        if (id === undefined || !id.startsWith(initialFilter)) {
+          return [0, 0, 0, 0]
+        }
+        return [120, 120, 120]
       }
-    }
-    return color
-  }
+    : (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
+        if (!isReady) {
+          return [120, 120, 120, 120]
+        }
+        if (zeroPopTracts.indexOf(element?.properties?.GEOID) !== -1) {
+          return [0, 0, 0, 0]
+        }
+        const id = element?.properties?.GEOID
+        if (id === undefined) {
+          return [120, 120, 120, 120]
+        }
+        const color = colorFunction(id)
+        if (colorFilter && colorFilter.length) {
+          const isInFilter = deepCompare2d1d(colorFilter, color)
+          if (!isInFilter) {
+            return [color[0], color[1], color[2], 20]
+          }
+        }
+        return color
+      }
 
   const layers = [
     new GeoJsonLayer({
@@ -153,27 +159,34 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       pickable: false,
     }),
     new MVTLayer({
-      data: `/api/tiles/tracts/{z}/{x}/{y}`,
+      data: `/api/tiles/tracts/{z}/{x}/{y}`, 
       minZoom: 0,
       maxZoom: 14,
-      getLineColor: [192, 192, 192, 50],
+      getLineColor: simpleMap ? [0, 0, 0] : [192, 192, 192, 50],
       getFillColor: getElementColor,
       autoHighlight: true,
       updateTriggers: {
         getFillColor: [isReady, currentColumnSpec.name, colorFunction, colorFilter],
       },
       onClick: (info, event) => {
+        if (onClick) {
+          onClick(info)
+        }
+        dispatch(setTooltipInfo(null))
         if (event?.srcEvent?.altKey) {
           router.push(`/tract/${info.object?.properties?.GEOID}`)
         } else {
           setClickedGeo({ geoid: info.object?.properties?.GEOID })
         }
       },
-      onHover: (info: any) => {
+      onHover: (info: any, event: any) => {
+        const x = event?.srcEvent?.clientX
+        const y = event?.srcEvent?.clientY
+        const id = info.object?.properties?.GEOID
         const isZeroPop = zeroPopTracts.indexOf(info.object?.properties?.GEOID) !== -1
         const isFiltered = filter && info.object?.properties?.GEOID?.startsWith(filter) === false
         if (info?.x && info?.y && info?.object && !isFiltered && !isZeroPop) {
-          dispatch(setTooltipInfo({ x: info.x, y: info.y, id: info.object?.properties?.GEOID }))
+          dispatch(setTooltipInfo({ x, y, id }))
         } else {
           dispatch(setTooltipInfo(null))
         }
@@ -190,7 +203,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
 
   // ACTIONS
   const dispatch = useAppDispatch()
-  const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col))
+  const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col as any))
   const handleSetColumnGroup = (group: string) => dispatch(setCurrentColumnGroup(group))
   const handleSetFilter = (filter: string) => dispatch(fetchCentroidById(filter))
 
@@ -231,69 +244,77 @@ export const Map: React.FC<MapProps> = ({ initialFilter }) => {
       }}
     >
       <div style={{ position: "absolute", bottom: "2rem", right: "1rem", zIndex: 1000 }}>
-        {/* @ts-ignore */}
-        <Legend column={currentColumnSpec} colors={colors} breaks={breaks as any} isBivariate={isBivariate as any} />
+        {!simpleMap && (
+          <Legend
+            column={currentColumnSpec as any}
+            colors={colors}
+            breaks={breaks as any}
+            isBivariate={isBivariate as any}
+          />
+        )}
       </div>
-      <div className="absolute left-4 top-4 z-30 max-w-[50vw]">
-        <DropdownMenuDemo>
-          <div className="max-w-[100vw] p-4">
-            <p>Choose a topic</p>
-            <hr />
-            <div
-              style={{
-                maxWidth: "30vw",
-              }}
-            >
-              <SelectMenu
-                title="Choose a topic"
-                value={currentColumnGroup || ""}
-                onValueChange={(e) => handleSetColumnGroup(e)}
+      {!simpleMap && (
+        <div className="absolute left-4 top-4 z-30 max-w-[50vw]">
+          <DropdownMenuDemo>
+            <div className="max-w-[100vw] p-4">
+              <p>Choose a topic</p>
+              <hr />
+              <div
+                style={{
+                  maxWidth: "30vw",
+                }}
               >
-                <>
-                  {Object.keys(columnGroups).map((group, i) => (
-                    <Select.Item className="SelectItem" value={group} key={i}>
-                      <Select.ItemText>{group || "Choose a topic"}</Select.ItemText>
-                      <Select.ItemIndicator className="SelectItemIndicator">
-                        <CheckboxIcon />
-                      </Select.ItemIndicator>
-                    </Select.Item>
-                  ))}
-                </>
-              </SelectMenu>
-            </div>
-            <hr className="my-2" />
-            <p>Available data</p>
+                <SelectMenu
+                  title="Choose a topic"
+                  value={currentColumnGroup || ""}
+                  onValueChange={(e) => handleSetColumnGroup(e)}
+                >
+                  <>
+                    {Object.keys(columnGroups).map((group, i) => (
+                      <Select.Item className="SelectItem" value={group} key={i}>
+                        <Select.ItemText>{group || "Choose a topic"}</Select.ItemText>
+                        <Select.ItemIndicator className="SelectItemIndicator">
+                          <CheckboxIcon />
+                        </Select.ItemIndicator>
+                      </Select.Item>
+                    ))}
+                  </>
+                </SelectMenu>
+              </div>
+              <hr className="my-2" />
+              <p>Available data</p>
 
-            <div
-              style={{
-                maxWidth: "30vw",
-              }}
-            >
-              <SelectMenu
-                title="Choose a map variable"
-                value={currentColumnSpec.name}
-                onValueChange={(e) => handleSetColumn(e)}
+              <div
+                style={{
+                  maxWidth: "30vw",
+                }}
               >
-                <>
-                  {availableColumns.map((c, i) => (
-                    <Select.Item className="SelectItem" value={c} key={i}>
-                      <Select.ItemText>{c || "Variable"}</Select.ItemText>
-                      <Select.ItemIndicator className="SelectItemIndicator">
-                        <CheckboxIcon />
-                      </Select.ItemIndicator>
-                    </Select.Item>
-                  ))}
-                </>
-              </SelectMenu>
+                <SelectMenu
+                  title="Choose a map variable"
+                  value={currentColumnSpec.name}
+                  onValueChange={(e) => handleSetColumn(e)}
+                >
+                  <>
+                    {availableColumns.map((c, i) => (
+                      <Select.Item className="SelectItem" value={c} key={i}>
+                        <Select.ItemText>{c || "Variable"}</Select.ItemText>
+                        <Select.ItemIndicator className="SelectItemIndicator">
+                          <CheckboxIcon />
+                        </Select.ItemIndicator>
+                      </Select.Item>
+                    ))}
+                  </>
+                </SelectMenu>
+              </div>
+              {/* text input */}
+              <hr className="my-2" />
+              <p>Filter</p>
+              <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
             </div>
-            {/* text input */}
-            <hr className="my-2" />
-            <p>Filter</p>
-            <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
-          </div>
-        </DropdownMenuDemo>
-      </div>
-      <MapTooltip />
+          </DropdownMenuDemo>
+        </div>
+      )}
+      <MapTooltip simpleMap={simpleMap} />
       <GlMap
         // hash={true}
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
