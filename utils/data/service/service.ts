@@ -30,6 +30,7 @@ export class DataService<DataT extends Record<string, any>> {
   conn?: AsyncDuckDBConnection
   tooltipResults: any = {}
   connectedScatterplotResults: any = {}
+  storeListResults: Record<string, any> = {}
   timeseriesResults: any = {}
   _dataId: keyof DataT = "GEOID"
   idColumn: string
@@ -449,8 +450,6 @@ export class DataService<DataT extends Record<string, any>> {
     const dataParsed = isTract
       ? this.rotateSimple(result[0], columns as any[], "year", "value")
       : this.rotateAggregate(result[0], columns as any[], "year")
-
-    console.log(dataParsed)
 
     this.timeseriesResults[id][variable] = dataParsed
   }
