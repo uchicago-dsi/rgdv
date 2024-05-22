@@ -1,3 +1,4 @@
+"use client"
 import React, { useMemo } from "react"
 import { Group } from "@visx/group"
 import { Pie } from "@visx/shape"
@@ -8,6 +9,7 @@ import { LegendOrdinal } from "@visx/legend"
 import { toCase } from "utils/display/toCase"
 import { TooltipWithBounds, useTooltip } from "@visx/tooltip"
 import { formatValue, percentFormatter } from "utils/display/formatValue"
+import { useParentSize } from "@visx/responsive"
 
 const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   data,
@@ -15,8 +17,15 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   dataKey,
   labelKey,
   tooltipFields = [],
-  tooltipFormatters = {}
+  tooltipFormatters = {},
 }) => {
+  const { parentRef, width: _width } = useParentSize({ debounceTime: 150 })
+  const vw = (document?.documentElement?.clientWidth) / 100
+  const [maxWidth, maxHeight] = [50*vw, 400]
+  const width = Math.min(_width/2, maxWidth)
+  const height = Math.min(_width/2, maxHeight)
+  const minDimension = Math.min(width, height)
+
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } =
     useTooltip<Record<typeof labelKey | typeof dataKey, string | number>>()
   const cleanResults = useMemo(() => {
@@ -37,8 +46,11 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
         sumTotal += d[dataKey]
         sums[d[labelKey]] = (sums[d[labelKey]] || 0) + d[dataKey]
       })
+      Object.keys(sums).forEach((key) => {
+        sums[key] = sums[key]! / sumTotal
+      })
       return {
-        cleanData,
+        cleanData: data,
         sums,
         sumTotal,
       }
@@ -75,14 +87,14 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   })
 
   return (
-    <div className="flex items-center lg:flex-row">
-      <svg width={400} height={400}>
-        <Group top={200} left={200}>
+    <div className="flex items-center justify-center content-center lg:flex-row w-full max-h-[40vh]" ref={parentRef}>
+      <svg width={width} height={height}>
+        <Group top={height/2} left={width/2}>
           <Pie
             data={cleanData}
             pieValue={(d) => d[dataKey]}
-            outerRadius={150}
-            innerRadius={50}
+            outerRadius={minDimension/2.2}
+            innerRadius={minDimension/6}
             padAngle={0.01}
             cornerRadius={3}
           >
@@ -122,6 +134,7 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
       </svg>
       <LegendOrdinal
         scale={colorScale}
+        className="max-w-[50%]"
         labelFormat={(label) => {
           const sum = sums[label] ? ` (${percentFormatter.format(sums[label]!)})` : ``
           return `${toCase(label, "title")}${sum}`
@@ -136,9 +149,17 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
           {tooltipFields.map((field) => {
             const val = tooltipData[field]
             if (val === undefined) return null
-            return <div key={field}>
-              {toCase(field, 'title')}: {formatValue(tooltipData, field, tooltipFormatters)}
-            </div>
+            return (
+              <div key={field}>
+                {toCase(field, "title")}:{" "}
+                {formatValue({
+                  key: field,
+                  row: tooltipData,
+                  value: Number.isNaN(+val) ? val : (+val) / sumTotal,
+                  formatters: tooltipFormatters,
+                })}
+              </div>
+            )
           })}
         </TooltipWithBounds>
       )}

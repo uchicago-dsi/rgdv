@@ -10,10 +10,13 @@ import { TinaMarkdown } from "tinacms/dist/rich-text"
 import TimeseriesChart from "components/TimeseriesChart"
 import StatList from "components/StatList"
 import dynamic from "next/dynamic"
+import TabsComponent from "components/Tabs/Tabs"
+
 
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 const StoreList = dynamic(() => import("components/StoreList"), { ssr: false })
 const ComparisonOverTimeChart = dynamic(() => import("components/ComparisonOverTime"), { ssr: false })
+const PieChart = dynamic(() => import("components/PieChart/PieChart"), { ssr: false })
 
 const units = {
   2: 'state',
@@ -43,12 +46,14 @@ export const ReportLayout: React.FC<ReportLayoutProps> = async ({
     marketPower,
     segregation,
     economicAdvantage,
-    descriptionText
+    descriptionText,
+    raceData
   } = renderReportText(
     _data.result!,
     statText,
     id
   )
+  console.log(raceData)
   
   return (
     <div className="min-h-[100vh] bg-theme-canvas-500 p-4">
@@ -111,7 +116,14 @@ export const ReportLayout: React.FC<ReportLayoutProps> = async ({
         </div>
         <div className="prose max-w-full rounded-md bg-white p-4 shadow-xl">
           <h3>Additional Data for {name}</h3>
-          <StatList stats={stats} data={data} />
+          <TabsComponent>
+            <div data-tab-id="Key Statistics">
+              <StatList stats={stats} data={data} />
+            </div>
+            <div data-tab-id="Race and Ethnicity">
+              <PieChart data={raceData} dataKey="value" labelKey="raceEthnicity" />
+            </div>
+          </TabsComponent>
         </div>
       </div>
       <div className="my-8 w-full p-8 shadow-xl bg-white">

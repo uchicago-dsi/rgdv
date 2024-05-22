@@ -62,8 +62,8 @@ const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
             stroke="black"
             strokeWidth={1.5}
           />
-          {(new Array(8).fill(null)).map((_, i) => {
-            const x = (width / 8) * i
+          {(new Array(10).fill(null)).map((_, i) => {
+            const x = (width / 10) * i
             return (
               <circle
                 key={i}

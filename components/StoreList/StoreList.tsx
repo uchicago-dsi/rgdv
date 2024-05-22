@@ -69,8 +69,8 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
           <tbody>
             {data.map((row, i) => (
               <tr key={i}>
-                {columns.map((col, j: number) => {
-                  const value = formatValue(row, col, formatters)
+                {columns.map((key, j: number) => {
+                  const value = formatValue({row, key, formatters})
                   return <td key={j}>{value === "0%" ? "<0.1%" : value}</td>
                 })}
               </tr>
