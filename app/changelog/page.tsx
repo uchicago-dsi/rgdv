@@ -9,13 +9,13 @@ const log = {
 export default function Page() {
   return (
     <div className="prose px-4">
-      {Object.keys(log).map((date) => (
-        <div>
+      {Object.keys(log).map((date,i) => (
+        <div key={i}>
           <h2>{date}</h2>
           <ul>
             {/* @ts-ignore */}
-            {log[date].map((item) => (
-              <li>{item}</li>
+            {log[date].map((item,j) => (
+              <li key={`${i}${j}`}>{item}</li>
             ))}
           </ul>
         </div>
