@@ -9,12 +9,19 @@ export const formatterPresets = {
 
 type FormatterFunction = (s: string) => string
 
-export const formatValue = <T extends object>(
-  row: T,
-  key: keyof T,
+export const formatValue = <T extends object>({
+  row,
+  key,
+  formatters,
+  value,
+}: {
+  row: T
+  key: keyof T
   formatters?: Record<keyof T, { formatterPreset?: keyof typeof formatterPresets; formatter?: FormatterFunction }>
-) => {
-  const val = row[key]
+  value?: number | string
+}) => {
+  const val = value === undefined ? row[key] : value
+if (Number.isNaN(+val)) return String(val)
   if (val === undefined) return String(val)
   const rowFormatter = formatters?.[key as keyof typeof formatters]
   const formatter = rowFormatter?.hasOwnProperty("formatter")
