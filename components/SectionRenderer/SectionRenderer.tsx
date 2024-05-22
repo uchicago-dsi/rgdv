@@ -1,5 +1,4 @@
-import Image from "next/image"
-import { PageProps } from "./types"
+import { PageProps } from "../Pages/types"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
 
 export const SectionRenderer: React.FC<PageProps> = ({
