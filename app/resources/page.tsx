@@ -2,11 +2,11 @@ import SectionRenderer from "components/SectionRenderer";
 import { getMdxContent } from "hooks/useMdxContent";
 
 export const metadata = {
-  title: "Changelog :: Feeding Fairness"
+  title: "Resources :: Feeding Fairness"
 }
 
-export default async function ChangelogPage() {
-  const pageInfo = await getMdxContent("page", "changelog.mdx")
+export default async function ResourcesPage() {
+  const pageInfo = await getMdxContent("page", "resources.mdx")
   return (
     <>
       {pageInfo && <SectionRenderer pageInfo={pageInfo} />}

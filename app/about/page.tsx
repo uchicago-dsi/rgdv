@@ -1,4 +1,4 @@
-import About from "components/Pages/About";
+import SectionRenderer from "components/SectionRenderer";
 import { getMdxContent } from "hooks/useMdxContent";
 
 export const metadata = {
@@ -9,7 +9,7 @@ export default async function AboutPage() {
   const pageInfo = await getMdxContent("page", "about.mdx")
   return (
     <>
-      {pageInfo && <About pageInfo={pageInfo} />}
+      {pageInfo && <SectionRenderer pageInfo={pageInfo} />}
     </>
   )
 }
