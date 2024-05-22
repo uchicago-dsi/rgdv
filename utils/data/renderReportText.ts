@@ -21,11 +21,16 @@ const nullResultText = {
 } as any as TinaMarkdownContent
 
 const NULL_RESULTS: Record<string, any> = {
-  value: 'Value not found',
+  value: '--',
   text: nullResultText,
   tooltip: nullResultText,
   title: 'Title Not Found',
 }
+
+const getNullResults = (overrides: object) => ({
+  ...NULL_RESULTS,
+  ...overrides,
+})
 
 const getStatResult = (
   generalStatText: any,
@@ -35,7 +40,7 @@ const getStatResult = (
   const template = generalStatText?.data?.statistics?.overview?.find((f: any) => f.measure === measure)
   if (!template) return NULL_RESULTS
   const value = Number(data[template.column as keyof typeof data])
-  if (isNaN(value)) return NULL_RESULTS
+  if (isNaN(value)) return getNullResults({ title: template.title })
   const text = getThresholdValue(value, data, template) || NULL_RESULTS.text
   const tooltip = formatMarkdownTemplate(template.tooltip, data) || NULL_RESULTS.tooltip
   const title = formatMarkdownTemplate(template.title, data) || NULL_RESULTS.title
@@ -76,7 +81,7 @@ export const renderReportText = (_data: Record<string, any>, generalStatText: an
   const segregation = getStatResult(generalStatText, "segregation", data)
   const economicAdvantage = getStatResult(generalStatText, "adi", data)
   const descriptionText = formatMarkdownTemplate(generalStatText.data.statistics.body, data)
-  
+
   let raceData: Array<{value: number, raceEthnicity: string}> = []
 
   raceEthnicityColumns.forEach((column) => {

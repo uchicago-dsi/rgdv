@@ -13,6 +13,7 @@ export type GradientLineProps = {
 
 const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
   // Ensure value is within bounds
+  const valueIsNull = Number.isNaN(+value) || value === null
   const clampedValue = Math.min(100, Math.max(0, value))
   const { parentRef, width } = useParentSize({ debounceTime: 150 })
   // Define the size of the canvas and the circle
@@ -79,14 +80,14 @@ const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
           {/* Triangles as arrowheads */}
           <Polygon points={triangleLeft} fill="black" />
           <Polygon points={triangleRight} fill="black" />
-          <circle
+          {!valueIsNull && <circle
             cx={circleX}
             cy={0}
             r={circleRadius}
             fill={circleColor}
             stroke="black"
             strokeWidth={1.5} // Black border for the circle
-          />
+          />}
         </Group>
       </svg>
     </div>
