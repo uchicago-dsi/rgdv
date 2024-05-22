@@ -24,6 +24,7 @@ import MapTooltip from "components/MapTooltip"
 import { deepCompare2d1d } from "utils/data/compareArrayElements"
 import { MemoryMonitor } from "components/dev/MemoryMonitor"
 import { fetchCentroidById } from "utils/state/thunks"
+import { formatterPresets } from "utils/display/formatValue"
 
 export type MapProps = {
   initialFilter?: string
@@ -141,15 +142,6 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         return color
       }
   const layers = [
-    new ScatterplotLayer({
-      id: "stores-locations-layer",
-      data: storesHaveGeo ? storeData : [],
-      getRadius: 5,
-      radiusUnits: "pixels",
-      getPosition: (d: any) => [d.STORE_LON, d.STORE_LAT],
-      getFillColor: [0, 255, 120],
-      pickable: false,
-    }),
     new GeoJsonLayer({
       // @ts-ignore
       data: JSON.parse(clickedGeo?.geometry || "[]"),
@@ -205,6 +197,66 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
       filled: true,
       stroked: true,
       beforeId: "water",
+      pickable: true,
+    }),
+
+    new ScatterplotLayer({
+      id: "stores-locations-layer",
+      data: storesHaveGeo ? storeData : [],
+      getRadius: 5,
+      radiusUnits: "pixels",
+      getPosition: (d: any) => [d.STORE_LON, d.STORE_LAT],
+      getFillColor: [0, 255, 120],
+      onHover: (info: any, event: any) => {
+        if (info?.object) {
+          const x = event?.srcEvent?.clientX
+          const y = event?.srcEvent?.clientY
+          const id = info.object?.GEOID
+          const data = [{
+            section: "Store Info",
+            columns: [
+              {
+                label: "Store",
+                data: info.object?.COMPANY,
+                col: "" 
+              },
+              {
+                label: "Address",
+                data: info.object?.['ADDRESS LINE 1'],
+                col: ""
+              },
+              {
+                label: "City",
+                data: info.object?.CITY,
+                col: ""
+              },
+              {
+                label: "State",
+                data: info.object?.STATE,
+                col: ""
+              },
+              {
+                label: "Zipcode",
+                data: info.object?.ZIPCODE,
+                col: ""
+              },
+              {
+                label: "Parent Company",
+                data: info.object?.["PARENT COMPANY"],
+                col: ""
+              },
+              {
+                label: "Percent of area sales",
+                data: formatterPresets.percent(info.object?.["PCT OF TRACT SALES"]),
+                col: ""
+              }
+            ]
+          }]
+          dispatch(setTooltipInfo({ x, y, id, data  }))
+        } else {
+          dispatch(setTooltipInfo(null))
+        }
+      },
       pickable: true,
     }),
   ]

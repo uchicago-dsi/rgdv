@@ -57,10 +57,12 @@ export const mapSlice = createSlice({
     setTimeSeriesLoaded: (state, action: PayloadAction<keyof typeof timeSeriesConfig>) => {
       state.timeseriesDatasets.push(action.payload)
     },
-    setTooltipInfo: (state, action: PayloadAction<{ x: number; y: number; id: string } | null>) => {
+    setTooltipInfo: (state, action: PayloadAction<MapState['tooltip'] | null>) => {
       state.tooltip = action.payload
       const id = action.payload?.id
-      if (!!id && !globals?.globalDs?.tooltipResults[id]) {
+      if (action.payload?.data) {
+        // chill
+      } else if (!!id && !globals?.globalDs?.tooltipResults[id]) {
         state.tooltipStatus = 'pending'
       } else {
         state.tooltipStatus = 'ready'

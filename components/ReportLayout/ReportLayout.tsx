@@ -53,7 +53,6 @@ export const ReportLayout: React.FC<ReportLayoutProps> = async ({
     statText,
     id
   )
-  console.log(raceData)
   
   return (
     <div className="min-h-[100vh] bg-theme-canvas-500 p-4">
