@@ -62,7 +62,6 @@ export const ReportLayout: React.FC<ReportLayoutProps> = async ({
             <h2 className="mb-0 text-sm font-light uppercase">{data.UNIT} REPORT</h2>
             <h1 className="mb-0">{name}</h1>
             <p className="text-sm">
-              {/* @ts-ignore */}
               <TinaMarkdown content={descriptionText} />
             </p>
           </div>
@@ -117,7 +116,6 @@ export const ReportLayout: React.FC<ReportLayoutProps> = async ({
       </div>
       <div className="my-8 w-full p-8 shadow-xl bg-white">
         <TimeseriesChart id={id} placeName={name}/>
-        {/* <ComparisonOverTimeChart id={id}  placeName="asdf"/> */}
       </div>
       <div className="my-8 w-full bg-white p-8 shadow-xl">
         <StoreList id={id} 

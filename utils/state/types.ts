@@ -13,16 +13,22 @@ export interface MapState {
     y: number
     z: number
   }
-  colorFilter?: number[][]
+  colorFilter?: Array<Array<number>>
   tooltip: {
     x: number
     y: number
     id: string
-  } | null,
-  tooltipStatus?: 'pending' | 'ready'
+    data?: TooltipData
+  } | null
+  tooltipStatus?: "pending" | "ready"
   snapshot: number
   timeseriesRequested: boolean
   timeseriesDatasets: Array<keyof typeof timeSeriesConfig>
   currentTimeseriesDataset?: timeSeriesDatasets
   storeDataId?: string
 }
+
+export type TooltipData = Array<{
+  section: string
+  columns: Array<{ label: string; col: string; data: string | number }>
+}>

@@ -1,3 +1,5 @@
+import { formatterPresets } from "utils/display/formatValue"
+
 export type StoreListProps<T extends any[]> = {
   id: string
   columns?: T
@@ -5,6 +7,6 @@ export type StoreListProps<T extends any[]> = {
   formatters?: Record<T[number], {
     label: string
     formatter?: (value: any) => string
-    formatterPreset?: 'percent' | 'currency'
+    formatterPreset?: keyof typeof formatterPresets
   }>
 }

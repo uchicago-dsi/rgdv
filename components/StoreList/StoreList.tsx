@@ -1,20 +1,12 @@
 "use client"
 import React, { useEffect } from "react"
-import { StoreData } from "app/api/stores/[geoid]/types"
 import { StoreListProps } from "./types"
 import { globals } from "utils/state/globals"
 import { Provider } from "react-redux"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
-import { fetchStoreData } from "utils/state/thunks"
-
-export const percentFormatter = new Intl.NumberFormat("en-US", {
-  style: "percent",
-  maximumFractionDigits: 1,
-})
-
-const formatterPresets = {
-  percent: percentFormatter.format,
-} as const
+import { fetchStoreData, initializeDb } from "utils/state/thunks"
+import PieChart from "components/PieChart/PieChart"
+import { formatValue, percentFormatter } from "utils/display/formatValue"
 
 export const StoreList: React.FC<StoreListProps<string[]>> = ({
   id,
@@ -27,17 +19,21 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
     "ADDRESS LINE 1": {
       label: "Address",
     },
-  },
+  } as StoreListProps<string[]>["formatters"],
   title,
 }) => {
   const storeDataId = useAppSelector((state) => state.map.storeDataId)
   const dbStatus = useAppSelector((state) => state.map.dbStatus)
   const dispatch = useAppDispatch()
   const data = globals?.globalDs?.storeListResults?.[id] as any[]
+  const salesCol = columns.find((col) => col.includes("SALES"))!
+  const labelCol = columns.includes('COMPANY') ? 'COMPANY' : 'PARENT COMPANY'
 
   useEffect(() => {
     if (dbStatus === "ready" && storeDataId !== id) {
       dispatch(fetchStoreData(id))
+    } else if (dbStatus === "uninitialized") {
+      dispatch(initializeDb())
     }
   }, [dispatch, dbStatus, id, storeDataId])
 
@@ -46,17 +42,26 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
   }
 
   return (
-    <div className="prose w-full max-w-full">
-      <h3>
-        Store{data?.length > 1 ? "s" : ""} in {title || "service area"}
+    <div className="prose flex w-full max-w-full flex-col items-center">
+      <h3 className="w-full text-2xl">
+        Grocery Store{data?.length > 1 ? "s" : ""} in {title || "service area"}
       </h3>
+      {data && (
+        <PieChart
+          data={data}
+          dataKey={salesCol}
+          labelKey={labelCol}
+          minThreshold={0.01}
+          tooltipFields={columns}
+          tooltipFormatters={formatters}
+        />
+      )}
       <div className="max-h-[50vh] w-full overflow-y-auto">
         <table className="max-h-full w-full table-auto">
           <thead>
             <tr className="max-w-[30%]">
               {columns.map((_col, i) => {
-                // @ts-ignore
-                const col = formatters[_col]?.label || _col
+                const col = formatters?.[_col]?.label || _col
                 return <th key={i}>{col}</th>
               })}
             </tr>
@@ -65,13 +70,8 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
             {data.map((row, i) => (
               <tr key={i}>
                 {columns.map((col, j: number) => {
-                  const _val = row[col as keyof typeof row]
-                  // @ts-ignore
-                  const val = formatters[col]?.formatter?.(_val) ||
-                    // @ts-ignore
-                    formatterPresets?.[formatters[col]?.formatterPreset]?.(_val) ||
-                    _val
-                  return <td key={j}>{val === "0%" ? "<0.1%" : val}</td>
+                  const value = formatValue(row, col, formatters)
+                  return <td key={j}>{value === "0%" ? "<0.1%" : value}</td>
                 })}
               </tr>
             ))}
