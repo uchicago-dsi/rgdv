@@ -1,5 +1,6 @@
 export type LinkSpec = {  title: string;
-  path: string}
+  path: string
+}
 
 export type NavProps = { 
   navInfo: 
@@ -9,7 +10,7 @@ export type NavProps = {
     data: {
       nav:{ 
         title: string;
-        links: Array<LinkSpec & {subLinks: Array<LinkSpec>}>
+        links: Array<LinkSpec & {sublinks: Array<LinkSpec>}>
       }
     }
   }

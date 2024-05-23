@@ -1,20 +1,20 @@
+import { InteractiveNav } from "./Interactive"
 import { SubNavList } from "./SubNavList"
 import { NavProps } from "./types"
 
-export const NavRenderer: React.FC<NavProps> = ({ navInfo }) => {
+export const DesktopNavStatic: React.FC<NavProps> = ({ navInfo }) => {
   const links = navInfo.data.nav.links
   // horizontal sticky div
   // right aligned list of items
   // render subLinks as dropdown
   return (
-    <div className="sticky top-0 z-50 mt-0 bg-white/85 p-4 text-neutral-950 shadow-md" id="top-nav">
-      <div className="flex items-center justify-between">
-        <span className="font-display prose m-0 p-0">
+    <div className="bg-white/85 p-4 text-neutral-950 shadow-md " id="top-nav">
+        <div className="font-display prose m-0 p-0">
           <a href="/" className="m-0 p-0 line-height-0 no-underline">
             <h1 className="m-0 p-0">{navInfo.data.nav.title}</h1>
           </a>
-        </span>
-        <ul className="flex justify-end">
+        </div>
+        <ul className="justify-end hidden md:flex">
           {links.map((link, li) => {
             // @ts-ignore
             if (link.sublinks?.length > 0) {
@@ -37,6 +37,14 @@ export const NavRenderer: React.FC<NavProps> = ({ navInfo }) => {
           })}
         </ul>
       </div>
-    </div>
   )
+}
+
+
+export const NavRenderer: React.FC<NavProps> = ({ navInfo }) => {
+  if (typeof window === "undefined") {
+    return <DesktopNavStatic navInfo={navInfo} />
+  } else {
+    return <InteractiveNav navInfo={navInfo} />
+  }
 }

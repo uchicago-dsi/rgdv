@@ -52,7 +52,7 @@ export const Renderer: React.FC<HomeProps> = () => {
         <hr />
         {/* 4 div flex layout equal widths */}
         {/* reports, trends, toolkit, about */}
-        <div className="my-4 flex flex-row justify-between gap-4">
+        <div className="my-4 flex flex-col md:flex-row justify-between gap-4">
           <div className="flex flex-col border-2 p-4">
             <h1>Reports</h1>
             <p>Find reports on food access, market concentration, and structural racism.</p>

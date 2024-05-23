@@ -87,7 +87,7 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   })
 
   return (
-    <div className="flex items-center justify-center content-center lg:flex-row w-full max-h-[40vh]" ref={parentRef}>
+    <div className="flex items-center justify-center content-center flex-col lg:flex-row w-full lg:max-h-[40vh]" ref={parentRef}>
       <svg width={width} height={height}>
         <Group top={height/2} left={width/2}>
           <Pie
@@ -134,7 +134,7 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
       </svg>
       <LegendOrdinal
         scale={colorScale}
-        className="max-w-[50%]"
+        className="lg:max-w-[50%] max-h-[100%] overflow-y-auto "
         labelFormat={(label) => {
           const sum = sums[label] ? ` (${percentFormatter.format(sums[label]!)})` : ``
           return `${toCase(label, "title")}${sum}`

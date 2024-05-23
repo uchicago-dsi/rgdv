@@ -161,6 +161,9 @@ dependencies:
   '@types/papaparse':
     specifier: ^5.3.14
     version: 5.3.14
+  '@types/react-icons':
+    specifier: ^3.0.0
+    version: 3.0.0(react@18.2.0)
   '@types/tinycolor2':
     specifier: ^1.4.6
     version: 1.4.6
@@ -245,6 +248,9 @@ dependencies:
   gray-matter:
     specifier: ^4.0.3
     version: 4.0.3
+  hi:
+    specifier: link:@types/react-icons/hi
+    version: link:@types/react-icons/hi
   http-server:
     specifier: ^14.1.1
     version: 14.1.1
@@ -296,6 +302,9 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
+  react-icons:
+    specifier: ^5.2.1
+    version: 5.2.1(react@18.2.0)
   react-map-gl:
     specifier: ^7.1.7
     version: 7.1.7(mapbox-gl@3.1.2)(react-dom@18.2.0)(react@18.2.0)
@@ -10195,6 +10204,15 @@ packages:
     resolution: {integrity: sha512-TJxDm6OfAX2KJWJdMEVTwWke5Sc/E/RlnPGvGfS0W7+6ocy2xhDVQVh/KvC2Uf7kACs+gDytdusDSdWfWkaNzw==}
     dependencies:
       '@types/react': 18.2.53
+
+  /@types/react-icons@3.0.0(react@18.2.0):
+    resolution: {integrity: sha512-Vefs6LkLqF61vfV7AiAqls+vpR94q67gunhMueDznG+msAkrYgRxl7gYjNem/kZ+as2l2mNChmF1jRZzzQQtMg==}
+    deprecated: This is a stub types definition. react-icons provides its own type definitions, so you do not need this installed.
+    dependencies:
+      react-icons: 5.2.1(react@18.2.0)
+    transitivePeerDependencies:
+      - react
+    dev: false
 
   /@types/react-redux@7.1.33:
     resolution: {integrity: sha512-NF8m5AjWCkert+fosDsN3hAlHzpjSiXlVy9EgQEmLoBhaNXbmyeGs/aj5dQzKuF+/q+S7JQagorGDW8pJ28Hmg==}
@@ -26406,6 +26424,14 @@ packages:
 
   /react-icons@4.12.0(react@18.2.0):
     resolution: {integrity: sha512-IBaDuHiShdZqmfc/TwHu6+d6k2ltNCf3AszxNmjJc1KUfXdEeRJOKyNvLmAHaarhzGmTSVygNdyu8/opXv2gaw==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /react-icons@5.2.1(react@18.2.0):
+    resolution: {integrity: sha512-zdbW5GstTzXaVKvGSyTaBalt7HSfuK5ovrzlpyiWHAFXndXTdd/1hdDHI4xBM1Mn7YriT6aqESucFl9kEXzrdw==}
     peerDependencies:
       react: '*'
     dependencies:
