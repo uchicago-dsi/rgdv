@@ -1,6 +1,7 @@
 import React from "react"
 import ReportLayout from "components/ReportLayout"
 import { getContentDirs } from "utils/contentDirs"
+import Head from "next/head"
 
 type TractRouteParams = {
   params: {
@@ -10,7 +11,16 @@ type TractRouteParams = {
 
 const TractPage: React.FC<TractRouteParams> = async ({ params }) => {
   getContentDirs()
-  return <ReportLayout id={params.tract} />
+  return <>
+  <Head>
+    <title>Tract Report</title>
+    <meta
+      property="og:image"
+      content="/api/og"
+    />
+  </Head>
+  <ReportLayout id={params.tract} />
+  </>
 }
 
 export default TractPage

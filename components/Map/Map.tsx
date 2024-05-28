@@ -103,6 +103,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
     snapshot,
     colors,
     breaks,
+    currentColumn,
     currentColumnSpec,
     colorFilter,
     currentColumnGroup,
@@ -407,7 +408,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
                   key={i}
                   onClick={() => handleSetColumn(c)}
                   label={c}
-                  selected={currentColumnSpec.name === c}
+                  selected={currentColumn === c}
                 />
               ))}
             </MenuSection>
