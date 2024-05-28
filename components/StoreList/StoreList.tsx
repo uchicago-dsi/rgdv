@@ -25,7 +25,7 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
   const storeDataId = useAppSelector((state) => state.map.storeDataId)
   const dbStatus = useAppSelector((state) => state.map.dbStatus)
   const dispatch = useAppDispatch()
-  const data = globals?.globalDs?.storeListResults?.[id] as any[]
+  const data = globals.ds.storeListResults?.[id] as any[]
   const salesCol = columns.find((col) => col.includes("SALES"))!
   const labelCol = columns.includes('COMPANY') ? 'COMPANY' : 'PARENT COMPANY'
 

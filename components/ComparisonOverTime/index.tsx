@@ -43,7 +43,7 @@ const ComparisonOverTimeChart: React.FC<any> = ({ id, placeName }) => {
   const [variableSet2, setVariableSet2] = useState<keyof typeof configs>("HHI")
   const [config1, config2] = [configs[variableSet1]!, configs[variableSet2]!]
   const hash = `${config1?.scatterConfig}-${config2?.scatterConfig}-${config1?.timeseriesConfig}-${config2?.timeseriesConfig}-${id}`
-  const data = globals?.globalDs?.connectedScatterplotResults?.[hash]
+  const data = globals.ds.connectedScatterplotResults?.[hash]
   const ready = Boolean(data)
   const dispatch = useAppDispatch()
   const timeseriesLoaded = useAppSelector((state) => state.map.timeseriesDatasets)
@@ -57,7 +57,7 @@ const ComparisonOverTimeChart: React.FC<any> = ({ id, placeName }) => {
   useEffect(() => {
     if (timeseriesLoaded.includes(config1.timeseriesConfig) && timeseriesLoaded.includes(config2.timeseriesConfig)) {
       const main = async () => {
-        globals.globalDs.getConnectedScatterplotData(
+        globals.ds.getConnectedScatterplotData(
           id, 
           config1.scatterConfig,
           config2.scatterConfig,

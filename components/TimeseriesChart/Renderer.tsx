@@ -22,7 +22,7 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
   const [tsVariable, setTsVariable] = useState<keyof typeof timeSeriesConfig>("hhi")
 
   const tsConfig = timeSeriesConfig[tsVariable]
-  const tsData = globals?.globalDs?.timeseriesResults?.[id]?.[tsVariable]
+  const tsData = globals.ds.timeseriesResults?.[id]?.[tsVariable]
   const isTract = Boolean(id.length === 11)
   const ready = Boolean(tsData?.length > 0)
   const isReadyTract = Boolean(ready && isTract)
@@ -39,7 +39,7 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
   useEffect(() => {
     if (timeseriesLoaded.includes(tsVariable)) {
       const main = async () => {
-        globals.globalDs.getTimeseries(id, tsVariable).then(() => {
+        globals.ds.getTimeseries(id, tsVariable).then(() => {
           setSnapshot(performance.now())
         })
       }

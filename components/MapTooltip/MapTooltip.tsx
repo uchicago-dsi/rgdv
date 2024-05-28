@@ -26,7 +26,7 @@ export const MapTooltipInner: React.FC<
   MapTooltipProps & { tooltipStatus: MapState["tooltipStatus"]; tooltip: MapState["tooltip"] }
 > = ({ simpleMap, tooltipStatus, tooltip }) => {
   const { id, data: tooltipData } = tooltip || { id: "", data: [] }
-  const data = globals?.globalDs?.tooltipResults[id]
+  const data = globals.ds.tooltipResults[id]
 
   if (simpleMap) {
     return <p className="pb-2">{id}</p>
