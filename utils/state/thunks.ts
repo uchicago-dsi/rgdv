@@ -33,7 +33,7 @@ export const fetchCentroidById = createAsyncThunk("map/setCentroid", async (id: 
 })
 
 export const initializeDb = createAsyncThunk("map/initDb", async () => {
-  if (globals.globalConn) {
+  if (globals.ready) {
     return "ready"
   }
   const [db, buffer] = await Promise.all([
@@ -52,6 +52,7 @@ export const initializeDb = createAsyncThunk("map/initDb", async () => {
     conn,
     db,
     ds: new DataService(conn, idColumn),
+    ready: true
   })
   return "ready"
 })
@@ -60,12 +61,12 @@ export const loadTimeseriesData = createAsyncThunk("map/loadTimeseriesData", asy
   const file = timeSeriesConfig[dataset].file
   const buffer = await fetch(`${window.location.origin}/data/${file}`).then((r) => r.arrayBuffer())
   const dataArray = new Uint8Array(buffer)
-  await globals.globalDb.registerFileBuffer(file, dataArray)
+  await globals.db.registerFileBuffer(file, dataArray)
   return dataset
 })
 
 export const fetchStoreData = createAsyncThunk("map/fetchStoreData", async (id: string) => {
-  if (globals.globalDs.storeListResults[id]) {
+  if (globals.ds.storeListResults[id]) {
     return id
   }
   const response = await fetch(`/api/stores/${id}`)
@@ -73,6 +74,6 @@ export const fetchStoreData = createAsyncThunk("map/fetchStoreData", async (id: 
     throw new Error("Failed to fetch store data")
   }
   const data = (await response.json()) as any
-  globals.globalDs.storeListResults[id] = data
+  globals.ds.storeListResults[id] = data
   return id
 })

@@ -1,10 +1,20 @@
 "use client"
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
-import { columnGroups, columnsDict, defaultColumn, defaultColumnGroup, defaultTimeseriesDataset, timeSeriesConfig, timeSeriesDatasets} from "utils/data/config"
+import {
+  columnGroups,
+  columnsDict,
+  defaultColumn,
+  defaultColumnGroup,
+  defaultTimeseriesDataset,
+  highlightConfig,
+  timeSeriesConfig,
+  timeSeriesDatasets,
+} from "utils/data/config"
 import { fetchCentroidById, fetchStoreData, initializeDb, loadTimeseriesData } from "utils/state/thunks"
 import { MapState } from "./types"
 import { globals } from "./globals"
+import tinycolor from "tinycolor2"
 
 const initialState: MapState = {
   dbStatus: "uninitialized",
@@ -13,14 +23,17 @@ const initialState: MapState = {
   tooltip: null,
   idFilter: undefined,
   colorFilter: undefined,
-  snapshot: 0,
+  snapshot: {},
   breaks: [],
   colors: [],
   tooltipStatus: undefined,
   timeseriesDatasets: [],
   timeseriesRequested: false,
   currentTimeseriesDataset: defaultTimeseriesDataset,
-  storeDataId: undefined
+  storeDataId: undefined,
+  highlight: undefined,
+  highlightValue: undefined,
+  highlightColor: undefined,
 }
 
 export const mapSlice = createSlice({
@@ -51,32 +64,64 @@ export const mapSlice = createSlice({
       state.currentColumn = action.payload
       state.colorFilter = undefined
     },
+    setHighlight: (state, action: PayloadAction<MapState["highlight"]>) => {
+      if (action.payload) {
+        state.highlight = action.payload
+        const config = highlightConfig[action.payload]
+        state.highlightValue = config.default as any
+        if (config.color) {
+          const tcColor = tinycolor(config.color)
+          if (!tcColor.isValid()) {
+            throw new Error(`Invalid color: ${config.color}`)
+          }
+          const tcRgb = tcColor.toRgb()
+          state.highlightColor = [tcRgb.r, tcRgb.g, tcRgb.b]
+        } else {
+          state.highlightColor = [255, 255, 0]
+        }
+      } else {
+        state.highlight = undefined
+        state.highlightValue = undefined
+      }
+    },
+    setHighlightValue: (state, action: PayloadAction<MapState["highlightValue"]>) => {
+      state.highlightValue = action.payload as any
+    },
+    setHighlightColor: (state, action: PayloadAction<string>) => {
+      const tcColor = tinycolor(action.payload)
+      if (!tcColor.isValid()) {
+        throw new Error(`Invalid color: ${action.payload}`)
+      }
+      const tcRgb = tcColor.toRgb()
+      state.highlightColor = [tcRgb.r, tcRgb.g, tcRgb.b]
+    },
     requestTimeseries: (state, action: PayloadAction<boolean>) => {
       state.timeseriesRequested = true
     },
     setTimeSeriesLoaded: (state, action: PayloadAction<keyof typeof timeSeriesConfig>) => {
       state.timeseriesDatasets.push(action.payload)
     },
-    setTooltipInfo: (state, action: PayloadAction<MapState['tooltip'] | null>) => {
+    setTooltipInfo: (state, action: PayloadAction<MapState["tooltip"] | null>) => {
       state.tooltip = action.payload
       const id = action.payload?.id
       if (action.payload?.data) {
         // chill
-      } else if (!!id && !globals?.globalDs?.tooltipResults[id]) {
-        state.tooltipStatus = 'pending'
+      } else if (!!id && !globals.ds.tooltipResults[id]) {
+        state.tooltipStatus = "pending"
       } else {
-        state.tooltipStatus = 'ready'
+        state.tooltipStatus = "ready"
       }
     },
     setTooltipReady: (state, action: PayloadAction<string>) => {
       if (state.tooltip?.id === action.payload) {
-        state.tooltipStatus = 'ready'
+        state.tooltipStatus = "ready"
       }
     },
     setCurrentFilter: (state, action: PayloadAction<string>) => {
       state.idFilter = action.payload
     },
     upcertColorFilter: (state, action: PayloadAction<number[]>) => {
+      state.snapshot.fill = performance.now() 
       if (!state.colorFilter) {
         state.colorFilter = [action.payload]
         return
@@ -93,16 +138,18 @@ export const mapSlice = createSlice({
     },
     setMapBreaksColors: (
       state,
-      action: PayloadAction<{ 
-        breaks: number[]; 
+      action: PayloadAction<{
+        breaks: number[]
         colors: number[][]
-        snapshot: number 
       }>
     ) => {
-      state.snapshot = action.payload.snapshot
       state.breaks = action.payload.breaks
       state.colors = action.payload.colors
-    }
+      state.snapshot.fill = performance.now()
+    },
+    setSnapshot: (state, action: PayloadAction<string>) => {
+      state.snapshot[action.payload] = performance.now()
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCentroidById.pending, (state, action) => {
@@ -141,7 +188,10 @@ export const {
   setCurrentColumnGroup,
   upcertColorFilter,
   requestTimeseries,
-  setTimeSeriesLoaded
+  setTimeSeriesLoaded,
+  setHighlight,
+  setHighlightValue,
+  setHighlightColor,
 } = mapSlice.actions
 
 export default mapSlice.reducer

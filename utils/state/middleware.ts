@@ -2,7 +2,7 @@ import { createListenerMiddleware } from "@reduxjs/toolkit"
 import { mapSlice, setTooltipReady, setTimeSeriesLoaded } from "utils/state/map"
 import { MapState } from "utils/state/types"
 import { globals } from "./globals"
-import { columnsDict } from "utils/data/config"
+import { highlightConfig, columnsDict } from "utils/data/config"
 import { BivariateColorParamteres, MonovariateColorParamteres } from "utils/data/service/types"
 import { loadTimeseriesData } from "./thunks"
 
@@ -22,7 +22,7 @@ mapDataMiddleware.startListening({
   effect: async (_action, listenerApi) => {
     const state = listenerApi.getState()
     const dispatch = listenerApi.dispatch
-    const ds = globals.globalDs
+    const ds = globals.ds
     const columnConfig = columnsDict[state.map.currentColumn]
     const filter = state.map.idFilter
     if (!ds || !columnConfig) {
@@ -66,13 +66,63 @@ mapDataMiddleware.startListening({
       globals.set({
         colorFunction: result.value.colorFunction,
       })
-      const snapshot = performance.now()
 
       dispatch(mapSlice.actions.setMapBreaksColors({
-        breaks: result.value.breaks,
+        breaks: result.value.breaks as number[],
         colors: result.value.colors,
-        snapshot
       }))
+    }
+  },
+})
+mapDataMiddleware.startListening({
+  // Can match against actions _or_ state changes/contents
+  predicate: (action, currentState, previousState) => {
+    const [highlightChanged, highlightThresholdChanged, highlightColorChanged] = [
+      currentState.map.highlight !== previousState.map.highlight,
+      currentState.map.highlightValue !== previousState.map.highlightValue,
+      currentState.map.highlightColor !== previousState.map.highlightColor,
+    ]
+    return highlightChanged || highlightThresholdChanged || highlightColorChanged
+  },
+  // Listeners can have long-running async workflows
+  effect: async (_action, listenerApi) => {
+    const state = listenerApi.getState()
+    const dispatch = listenerApi.dispatch
+    const ds = globals.ds
+    const config = state?.map?.highlight && highlightConfig[state?.map?.highlight]
+    const value = state.map.highlightValue as any
+    if (!ds || !config) {
+      return
+    }
+    
+    // Spawn "child tasks" that can do more work and return results
+    const task = listenerApi.fork(async (forkApi) => {
+      // Can pause execution
+      const type = config.type
+      await ds.getHighlightValues(config.column, value, config.type)
+      const data = globals.ds.highlightResult
+      const activeColor = state.map.highlightColor || [255, 0, 255]
+      const nullColor = [0,0,0,0]
+      const highlightFunction: (id: string | number) => Array<number> = (_id: string | number) => {
+        const id = _id.toString()
+        if (data?.[id]) {
+          return activeColor
+        } else {
+          return nullColor
+        }
+      }
+      return {
+        highlightFunction,
+      }
+    })
+
+    // Unwrap the child result in the listener
+    const result = await task.result
+    if ("ok" == result.status && null !== result.value ) {
+      globals.set({
+        highlightFunction: result.value.highlightFunction,
+      })
+      dispatch(mapSlice.actions.setSnapshot('highlight'))
     }
   },
 })
@@ -91,7 +141,7 @@ mapDataMiddleware.startListening({
       if (!id) {
         return null
       }
-      const tooltipInfo = await globals.globalDs.getTooltipValues(id)
+      await globals.ds.getTooltipValues(id)
       return true
     })
 

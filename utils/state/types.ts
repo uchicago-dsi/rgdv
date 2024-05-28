@@ -1,4 +1,4 @@
-import { columnGroups, columnsDict, timeSeriesConfig, timeSeriesDatasets } from "utils/data/config"
+import { columnGroups, columnsDict, highlightConfig, timeSeriesConfig, timeSeriesDatasets } from "utils/data/config"
 
 export interface MapState {
   breaks: Array<number>
@@ -21,11 +21,14 @@ export interface MapState {
     data?: TooltipData
   } | null
   tooltipStatus?: "pending" | "ready"
-  snapshot: number
+  snapshot: Record<string,number>
   timeseriesRequested: boolean
   timeseriesDatasets: Array<keyof typeof timeSeriesConfig>
   currentTimeseriesDataset?: timeSeriesDatasets
   storeDataId?: string
+  highlight?: keyof typeof highlightConfig
+  highlightValue?: readonly [number, number] | readonly (number|string)[]
+  highlightColor?: [number, number, number]
 }
 
 export type TooltipData = Array<{
