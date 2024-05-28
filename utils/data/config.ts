@@ -1,8 +1,12 @@
 import { color } from "d3"
 import { ColumnConfig, ColumnGroups } from "./config.types"
+import { percentFormatter } from "utils/display/formatValue"
 
 export const idColumn = "GEOID"
 export const summaryTractFile = "full_tract_normalized.parquet"
+const minYear = 1997
+const maxYear = 2023
+export const defaultYear = 2020
 
 const generateHhiConfig = (year: number, ds: boolean =false) =>
   ({
@@ -176,8 +180,6 @@ export const columnsDict = {
   },
 } as const
 
-const minYear = 1997
-const maxYear = 2023
 export const timeSeriesConfig = {
   hhi: {
     file: "concentration_metrics_wide.parquet",
@@ -373,4 +375,37 @@ export const tooltipConfig: Array<{
 export const defaultColumnGroup: keyof typeof columnGroups = Object.entries(columnGroups).find(([_k, v]) =>
   v.columns.includes(defaultColumn)
 )![0]
-export const defaultYear = 2020
+
+export const highlightConfig = {
+  "Black or African American": {
+    column: '"PCT NH BLACK"',
+    type: "continuous",
+    default: [0.3, 1],
+    range: [0, 1],
+    step: 0.01,
+    formatter: percentFormatter.format,
+    color: '#00FF00'
+  },
+  "Hispanic or Latinx": {
+    column: '"PCT HISPANIC OR LATINO"',
+    type: "continuous",
+    default: [0.3, 1],
+    range: [0, 1],
+    step: 0.01,
+    formatter: percentFormatter.format,
+    color: '#FFFFE0'
+  },
+  "Poverty Rate": {
+    column: '"POVERTY_RATE"',
+    type: "continuous",
+    default: [0.3, 1],
+    range: [0, 1],
+    step: 0.01,
+    formatter: percentFormatter.format,
+    color: '#FF0000'
+  },
+  // median age
+  // median HH income
+  // USDA low income low access flag
+  
+} as const
