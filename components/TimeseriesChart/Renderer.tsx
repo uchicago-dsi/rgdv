@@ -1,27 +1,27 @@
 "use client"
+import * as ToggleGroup from "@radix-ui/react-toggle-group"
 import React, { useEffect, useState } from "react"
+import { Provider } from "react-redux"
 import LineChart from "components/LineChart"
-import { TimeseriesChartProps } from "./types"
+import { DimensionProps } from "components/LineChart/types"
 import { timeSeriesAggregates, timeSeriesConfig } from "utils/data/config"
+import { globals } from "utils/state/globals"
 import { requestTimeseries } from "utils/state/map"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
-import { globals } from "utils/state/globals"
 import { initializeDb, loadTimeseriesData } from "utils/state/thunks"
-import { Provider } from "react-redux"
-import { DimensionProps } from "components/LineChart/types"
-import * as ToggleGroup from "@radix-ui/react-toggle-group"
+import { TimeseriesChartProps } from "./types"
 
-const datasetOptions = Object.entries(timeSeriesConfig).map(([key, value]) => ({
-  key,
-  value,
-}))
+// const datasetOptions = Object.entries(timeSeriesConfig).map(([key, value]) => ({
+//   key,
+//   value,
+// }))
 
 const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
   const [_snap, setSnapshot] = useState<number>(0)
   const [tsVariable, setTsVariable] = useState<keyof typeof timeSeriesConfig>("hhi")
 
-  const tsConfig = timeSeriesConfig[tsVariable]
+  // const tsConfig = timeSeriesConfig[tsVariable]
   const tsData = globals.ds.timeseriesResults?.[id]?.[tsVariable]
   const isTract = Boolean(id.length === 11)
   const ready = Boolean(tsData?.length > 0)
@@ -34,6 +34,7 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
   useEffect(() => {
     dispatch(requestTimeseries(true))
     return () => {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch])
 
   useEffect(() => {
@@ -50,6 +51,7 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
       dispatch(loadTimeseriesData(tsVariable))
     }
     return () => {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, tsVariable, timeseriesLoaded, dbStatus])
   const Labels = labels[tsVariable]
   const toggleGroupItemClasses =

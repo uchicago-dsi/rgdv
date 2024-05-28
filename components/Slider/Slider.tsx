@@ -1,8 +1,8 @@
 "use client"
-import React, { useState } from "react"
 import * as Slider from "@radix-ui/react-slider"
-import { SliderRangeProps } from "./types"
 import * as Tooltip from "@radix-ui/react-tooltip"
+import React, { useState } from "react"
+import { SliderRangeProps } from "./types"
 
 const SliderRange: React.FC<SliderRangeProps> = ({
   onChange,
@@ -33,6 +33,7 @@ const SliderRange: React.FC<SliderRangeProps> = ({
       onTouchStart={() => setMouseInside(true)}
       onTouchEnd={() => setMouseInside(false)}
     >
+      {title && <p className="text-sm mb-1">{title}</p>}
       {showRange && (
         <div className="mb-1 flex w-full justify-between text-xs text-neutral-500">
           <span>{formatter ? formatter(min) : min}</span>
@@ -54,7 +55,7 @@ const SliderRange: React.FC<SliderRangeProps> = ({
           <Tooltip.Root open={mouseInside}>
             <Tooltip.Trigger asChild>
               <Slider.Thumb
-                className="block h-5 w-5 rounded-[10px] bg-primary-500 shadow-[0_2px_10px] shadow-blackA4 hover:bg-primary-900 focus:shadow-[0_0_0_5px] focus:shadow-blackA5 focus:outline-none"
+                className="block size-5 rounded-[10px] bg-primary-500 shadow-[0_2px_10px] shadow-blackA4 hover:bg-primary-900 focus:shadow-[0_0_0_5px] focus:shadow-blackA5 focus:outline-none"
                 aria-label="Minimum"
               />
             </Tooltip.Trigger>
@@ -69,7 +70,7 @@ const SliderRange: React.FC<SliderRangeProps> = ({
             <Tooltip.Root open={mouseInside}>
               <Tooltip.Trigger asChild>
                 <Slider.Thumb
-                  className="block h-5 w-5 rounded-[10px] bg-primary-500 shadow-[0_2px_10px] shadow-blackA4 hover:bg-primary-900 focus:shadow-[0_0_0_5px] focus:shadow-blackA5 focus:outline-none"
+                  className="block size-5 rounded-[10px] bg-primary-500 shadow-[0_2px_10px] shadow-blackA4 hover:bg-primary-900 focus:shadow-[0_0_0_5px] focus:shadow-blackA5 focus:outline-none"
                   aria-label="Maximum"
                 />
               </Tooltip.Trigger>

@@ -1,13 +1,12 @@
 "use client"
 import React, { useState } from "react"
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
-import { LinkSpec, NavProps } from "./types"
 import { HiMenu, HiX } from "react-icons/hi"
 import { SubNavList } from "./SubNavList"
+import { NavProps } from "./types"
 
 export const InteractiveNav: React.FC<NavProps> = ({ navInfo }) => {
   const links = navInfo.data.nav.links
-  const title = navInfo.data.nav.title
+  // const title = navInfo.data.nav.title
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const toggleMobileMenu = () => {
@@ -51,6 +50,7 @@ export const InteractiveNav: React.FC<NavProps> = ({ navInfo }) => {
           <div className="space-y-4 text-left">
             {links.map((link, idx) => (
               <div key={idx}>
+                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                 <a href={link.sublinks?.length ? '' : link.path} className="block py-2 text-2xl">
                   {link.title}
                 </a>

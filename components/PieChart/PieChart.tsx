@@ -1,15 +1,15 @@
 "use client"
-import React, { useMemo } from "react"
 import { Group } from "@visx/group"
-import { Pie } from "@visx/shape"
-import { scaleOrdinal } from "@visx/scale"
-import { PieChartProps } from "./types"
-import { schemeCategory10 } from "d3"
 import { LegendOrdinal } from "@visx/legend"
-import { toCase } from "utils/display/toCase"
-import { TooltipWithBounds, useTooltip } from "@visx/tooltip"
-import { formatValue, percentFormatter } from "utils/display/formatValue"
 import { useParentSize } from "@visx/responsive"
+import { scaleOrdinal } from "@visx/scale"
+import { Pie } from "@visx/shape"
+import { TooltipWithBounds, useTooltip } from "@visx/tooltip"
+import { schemeCategory10 } from "d3"
+import React, { useMemo } from "react"
+import { formatValue, percentFormatter } from "utils/display/formatValue"
+import { toCase } from "utils/display/toCase"
+import { PieChartProps } from "./types"
 
 const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   data,
@@ -77,6 +77,7 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
       sums,
       sumTotal,
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, dataKey])
   const cleanData = cleanResults.cleanData || []
   const sums = cleanResults.sums || {}

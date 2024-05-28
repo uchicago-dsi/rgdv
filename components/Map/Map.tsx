@@ -4,37 +4,31 @@ import { MVTLayer } from "@deck.gl/geo-layers/typed"
 import { GeoJsonLayer, ScatterplotLayer } from "@deck.gl/layers/typed"
 import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
 import "./styles.css"
-import { CheckboxIcon } from "@radix-ui/react-icons"
-import * as Select from "@radix-ui/react-select"
+import { ThickArrowLeftIcon, ThickArrowRightIcon } from "@radix-ui/react-icons"
 import { useRouter } from "next/navigation"
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react"
-import GlMap, { NavigationControl, useControl, FullscreenControl, ScaleControl } from "react-map-gl"
+import GlMap, { FullscreenControl, NavigationControl, ScaleControl, useControl  } from "react-map-gl"
 import { Provider } from "react-redux"
 import CountyFilterSelector from "components/CountyFilterSelector"
-import DropdownMenuDemo from "components/Dropdown/Dropdown"
-import { SelectMenu } from "components/Select/Select"
+import { MemoryMonitor } from "components/dev/MemoryMonitor"
+import Legend from "components/Legend"
+import MapTooltip from "components/MapTooltip"
+import { StatefulHighlightColorPicker } from "components/StatefulControls/StatefulHighlightColorPicker"
+import { StatefulHighlightForm } from "components/StatefulControls/StatefulMapFilterSlider"
+import Tooltip from "components/Tooltip"
+import { deepCompare2d1d } from "utils/data/compareArrayElements"
 import { columnGroups, highlightConfig } from "utils/data/config"
+import { formatterPresets } from "utils/display/formatValue"
 import { useDataService } from "utils/hooks/useDataService"
 import {
   setCurrentColumn,
   setCurrentColumnGroup,
   setHighlight,
-  setHighlightColor,
   setTooltipInfo,
 } from "utils/state/map"
 import { store, useAppDispatch } from "utils/state/store"
-import { zeroPopTracts } from "utils/zeroPopTracts"
-import Legend from "components/Legend"
-import MapTooltip from "components/MapTooltip"
-import { deepCompare2d1d } from "utils/data/compareArrayElements"
-import { MemoryMonitor } from "components/dev/MemoryMonitor"
 import { fetchCentroidById } from "utils/state/thunks"
-import { formatterPresets } from "utils/display/formatValue"
-import { ThickArrowRightIcon, ThickArrowLeftIcon } from "@radix-ui/react-icons"
-import Slider from "components/Slider/Slider"
-import { StatefulHighlightForm } from "components/StatefulControls/StatefulMapFilterSlider"
-import Tooltip from "components/Tooltip"
-import { StatefulHighlightColorPicker } from "components/StatefulControls/StatefulHighlightColorPicker"
+import { zeroPopTracts } from "utils/zeroPopTracts"
 export type MapProps = {
   initialFilter?: string
   simpleMap?: boolean
@@ -373,13 +367,13 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
           />
         )}
       </div>
-      <div className="relative flex h-full w-full flex-row border-4">
+      <div className="relative flex size-full flex-row border-4">
         {!settingsExpanded && (
           <button
             onClick={() => setSettingsExpanded((p) => !p)}
-            className="left-100 absolute top-[50%] z-50 h-8 w-8 bg-white p-1 shadow-xl"
+            className="left-100 absolute top-[50%] z-50 size-8 bg-white p-1 shadow-xl"
           >
-            <ThickArrowRightIcon className="h-full w-full" />
+            <ThickArrowRightIcon className="size-full" />
           </button>
         )}
         {!simpleMap && (
@@ -391,10 +385,10 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
             {settingsExpanded && (
               <button
                 onClick={() => setSettingsExpanded((p) => !p)}
-                className="absolute right-0 top-[50%] z-50 h-8 w-8 bg-white p-1 shadow-xl"
+                className="absolute right-0 top-[50%] z-50 size-8 bg-white p-1 shadow-xl"
                 style={{ transform: "translateX(100%)" }}
               >
-                <ThickArrowLeftIcon className="h-full w-full" />
+                <ThickArrowLeftIcon className="size-full" />
               </button>
             )}
             <MenuSection title="Topics">

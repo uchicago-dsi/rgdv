@@ -18,7 +18,7 @@ export function Tooltip({
   return (
     <RadixTooltip.Provider>
       <RadixTooltip.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange} delayDuration={200}>
-        <RadixTooltip.Trigger asChild className="mx-2 inline min-h-4 min-w-4 h-4 w-4">
+        <RadixTooltip.Trigger asChild className="mx-2 inline min-h-4 min-w-4 size-4">
           <InfoCircledIcon />
         </RadixTooltip.Trigger>
         <RadixTooltip.Portal>

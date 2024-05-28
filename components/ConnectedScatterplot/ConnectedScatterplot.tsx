@@ -1,13 +1,13 @@
-import React from "react"
-import { Group } from "@visx/group"
-import { LinePath } from "@visx/shape"
-import { scaleLinear } from "@visx/scale"
+import { useParentSize } from "@cutting/use-get-parent-size"
 import { AxisBottom, AxisLeft } from "@visx/axis"
+import { Group } from "@visx/group"
+import { scaleLinear } from "@visx/scale"
+import { LinePath } from "@visx/shape"
 import { Circle } from "@visx/shape"
 // @ts-ignore
 import { extent } from "d3-array"
+import React from "react"
 import { ConnectedScatterplotProps } from "./types"
-import { useParentSize } from "@cutting/use-get-parent-size"
 
 const ConnectedScatterplot: React.FC<ConnectedScatterplotProps<Record<string, number>>> = ({
   parentRef,
@@ -57,7 +57,7 @@ const ConnectedScatterplot: React.FC<ConnectedScatterplotProps<Record<string, nu
   // @ts-ignore
   const point2010 = activeLine?.find((d) => d.year === "2010")
   return (
-    <svg className="h-full w-full">
+    <svg className="size-full">
       <Group>
 
 

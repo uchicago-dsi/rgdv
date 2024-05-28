@@ -1,6 +1,6 @@
-import Tooltip from "components/Tooltip"
 import React from "react"
 import { TinaMarkdown, type TinaMarkdownContent } from "tinacms/dist/rich-text"
+import Tooltip from "components/Tooltip"
 import { getThresholdValue } from "utils/data/formatDataTemplate"
 import { StatListProps } from "./types"
 

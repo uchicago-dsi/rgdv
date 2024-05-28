@@ -18,6 +18,7 @@ export const StatefulHighlightColorPicker = () => {
     return () => {
       timeoutRef.current && clearTimeout(timeoutRef.current)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [highlightColor])
 
   return <input type="color" value={innerValue} defaultValue={innerValue} onChange={(e) => setInnerValue(e.target.value)} />

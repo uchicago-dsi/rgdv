@@ -1,21 +1,21 @@
 "use server"
+import { ArrowLeftIcon } from "@radix-ui/react-icons"
+import dynamic from "next/dynamic"
 import React from "react"
-import { ReportLayoutProps } from "./types"
-import { getSummaryStats } from "utils/data/summaryStats"
+import { TinaMarkdown } from "tinacms/dist/rich-text"
+import DataLockup from "components/DataLockup"
+import StatList from "components/StatList"
+import TabsComponent from "components/Tabs/Tabs"
+import TimeseriesChart from "components/TimeseriesChart"
 import { getMdxContent } from "hooks/useMdxContent"
 import { renderReportText } from "utils/data/renderReportText"
-import { ArrowLeftIcon } from "@radix-ui/react-icons"
-import DataLockup from "components/DataLockup"
-import { TinaMarkdown } from "tinacms/dist/rich-text"
-import TimeseriesChart from "components/TimeseriesChart"
-import StatList from "components/StatList"
-import dynamic from "next/dynamic"
-import TabsComponent from "components/Tabs/Tabs"
+import { getSummaryStats } from "utils/data/summaryStats"
+import { ReportLayoutProps } from "./types"
 
 
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 const StoreList = dynamic(() => import("components/StoreList"), { ssr: false })
-const ComparisonOverTimeChart = dynamic(() => import("components/ComparisonOverTime"), { ssr: false })
+// const ComparisonOverTimeChart = dynamic(() => import("components/ComparisonOverTime"), { ssr: false })
 const PieChart = dynamic(() => import("components/PieChart/PieChart"), { ssr: false })
 
 const units = {

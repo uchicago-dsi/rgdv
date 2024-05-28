@@ -1,6 +1,6 @@
 "use client"
-import React from "react"
 import * as Tabs from "@radix-ui/react-tabs"
+import React from "react"
 
 const TabsComponent: React.FC<{ children: any[] }> = ({ children }) => {
   return (

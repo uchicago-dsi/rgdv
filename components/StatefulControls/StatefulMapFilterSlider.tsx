@@ -1,9 +1,9 @@
 "use client"
-import { highlightConfig } from "utils/data/config"
-import SliderRange from "../Slider/Slider"
-import { useAppDispatch, useAppSelector } from "utils/state/store"
-import { setHighlightValue } from "utils/state/map"
 import { useEffect, useRef, useState } from "react"
+import { highlightConfig } from "utils/data/config"
+import { setHighlightValue } from "utils/state/map"
+import { useAppDispatch, useAppSelector } from "utils/state/store"
+import SliderRange from "../Slider/Slider"
 
 export const StatefulHighlightForm = () => {
   const dispatch = useAppDispatch()
@@ -18,6 +18,7 @@ export const StatefulHighlightForm = () => {
     if (_highlightValue && JSON.stringify(_highlightValue) !== JSON.stringify(innerValue)) {
       setInnerValue(_highlightValue as [number] | [number, number])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_highlightValue])
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export const StatefulHighlightForm = () => {
     return () => {
       timeoutRef.current && clearTimeout(timeoutRef.current)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [innerValue])
 
   if (!highlightConfigValue) {
@@ -38,8 +40,8 @@ export const StatefulHighlightForm = () => {
   }
 
   if (highlightConfigValue.type === "continuous") {
-    const highlightValue =
-      _highlightValue?.length === 1 ? (_highlightValue as [number]) : (_highlightValue as [number, number])
+    // const highlightValue =
+    //   _highlightValue?.length === 1 ? (_highlightValue as [number]) : (_highlightValue as [number, number])
 
     return (
       <SliderRange

@@ -1,7 +1,7 @@
-import { useAppSelector } from "utils/state/store"
-import { MapTooltipProps } from "./types"
 import { globals } from "utils/state/globals"
+import { useAppSelector } from "utils/state/store"
 import { MapState, TooltipData } from "utils/state/types"
+import { MapTooltipProps } from "./types"
 
 export const TooltipSectionsRenderer: React.FC<{ sections: TooltipData }> = ({ sections }) => {
   return (

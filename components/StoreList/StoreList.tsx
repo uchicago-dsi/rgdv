@@ -1,12 +1,12 @@
 "use client"
 import React, { useEffect } from "react"
-import { StoreListProps } from "./types"
-import { globals } from "utils/state/globals"
 import { Provider } from "react-redux"
-import { store, useAppDispatch, useAppSelector } from "utils/state/store"
-import { fetchStoreData, initializeDb } from "utils/state/thunks"
 import PieChart from "components/PieChart/PieChart"
 import { formatValue, percentFormatter } from "utils/display/formatValue"
+import { globals } from "utils/state/globals"
+import { store, useAppDispatch, useAppSelector } from "utils/state/store"
+import { fetchStoreData, initializeDb } from "utils/state/thunks"
+import { StoreListProps } from "./types"
 
 export const StoreList: React.FC<StoreListProps<string[]>> = ({
   id,

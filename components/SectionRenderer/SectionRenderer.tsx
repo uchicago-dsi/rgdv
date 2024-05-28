@@ -1,5 +1,5 @@
-import { PageProps } from "../Pages/types"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
+import { PageProps } from "../Pages/types"
 
 export const SectionRenderer: React.FC<PageProps> = ({
   pageInfo

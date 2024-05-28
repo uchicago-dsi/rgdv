@@ -1,13 +1,12 @@
 "use client"
 import React, { useEffect, useState } from "react"
+import { Provider } from "react-redux"
+import ConnectedScatterplot from "components/ConnectedScatterplot"
+import { columnsDict, timeSeriesConfig } from "utils/data/config"
+import { globals } from "utils/state/globals"
 import { requestTimeseries } from "utils/state/map"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
-import { globals } from "utils/state/globals"
 import { initializeDb, loadTimeseriesData } from "utils/state/thunks"
-import { Provider } from "react-redux"
-import * as ToggleGroup from "@radix-ui/react-toggle-group"
-import { columnsDict, timeSeriesConfig } from "utils/data/config"
-import ConnectedScatterplot from "components/ConnectedScatterplot"
 
 const configs: Record<string, {
   label: string,
@@ -39,8 +38,8 @@ const configs: Record<string, {
 const ComparisonOverTimeChart: React.FC<any> = ({ id, placeName }) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
   const [_snap, setSnapshot] = useState<number>(0)
-  const [variableSet1, setVariableSet1] = useState<keyof typeof configs>("Gravity")
-  const [variableSet2, setVariableSet2] = useState<keyof typeof configs>("HHI")
+  const [variableSet1, _setVariableSet1] = useState<keyof typeof configs>("Gravity")
+  const [variableSet2, _setVariableSet2] = useState<keyof typeof configs>("HHI")
   const [config1, config2] = [configs[variableSet1]!, configs[variableSet2]!]
   const hash = `${config1?.scatterConfig}-${config2?.scatterConfig}-${config1?.timeseriesConfig}-${config2?.timeseriesConfig}-${id}`
   const data = globals.ds.connectedScatterplotResults?.[hash]
@@ -52,6 +51,7 @@ const ComparisonOverTimeChart: React.FC<any> = ({ id, placeName }) => {
   useEffect(() => {
     dispatch(requestTimeseries(true))
     return () => {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch])
 
   useEffect(() => {
@@ -75,6 +75,7 @@ const ComparisonOverTimeChart: React.FC<any> = ({ id, placeName }) => {
       dispatch(loadTimeseriesData(config2.timeseriesConfig))
     }
     return () => {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, config1, config2, timeseriesLoaded, dbStatus])
 
   // const toggleGroupItemClasses =

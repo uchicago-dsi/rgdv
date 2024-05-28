@@ -1,7 +1,7 @@
-import { formatNumber } from "utils/display/formatNumber"
-import { LegendBreakTextProps } from "./types"
 import { deepCompare2d1d } from "utils/data/compareArrayElements"
 import { getDecimalsFromRange } from "utils/data/service/service"
+import { formatNumber } from "utils/display/formatNumber"
+import { LegendBreakTextProps } from "./types"
 
 export const LegendBreakText: React.FC<LegendBreakTextProps> = ({ breaks, index, colors, onClick, colorFilter }) => {
   // @ts-ignore
@@ -22,7 +22,7 @@ export const LegendBreakText: React.FC<LegendBreakTextProps> = ({ breaks, index,
   return (
     <div className="ColorRow">
       <button
-        className={`inline-block w-6 h-6 mr-2 ${isOpaque ? 'opactiy-100' : 'opacity-10'}`}
+        className={`inline-block size-6 mr-2 ${isOpaque ? 'opactiy-100' : 'opacity-10'}`}
         onClick={() => onClick && onClick(color, index)}
         style={{ background: `rgb(${color.join(",")})` }}
       ></button>

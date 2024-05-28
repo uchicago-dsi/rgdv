@@ -1,6 +1,6 @@
 import React from "react"
-import { getContentDirs } from "utils/contentDirs"
 import ReportLayout from "components/ReportLayout"
+import { getContentDirs } from "utils/contentDirs"
 
 type CountyRouteParams = {
   params: {

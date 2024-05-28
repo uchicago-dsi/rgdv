@@ -1,15 +1,13 @@
 "use client"
-import React, { useEffect, useState } from "react"
-import CountyFilterSelector from "components/CountyFilterSelector"
 import { useRouter } from "next/navigation"
-import { SelectMenu } from "components/Select/Select"
-import * as Select from "@radix-ui/react-select"
+import React, { useState } from "react"
+import CountyFilterSelector from "components/CountyFilterSelector"
 import MapComponent from "components/Map/Map"
 
 const StatePage: React.FC = () => {
   const [filter, setFilter] = useState<string>("")
-  const [tracts, setTracts] = useState<any[]>([])
-  const [loadingStatus, setLoadingStatus] = useState<boolean>(false)
+  // const [tracts, setTracts] = useState<any[]>([])
+  // const [loadingStatus, setLoadingStatus] = useState<boolean>(false)
   const router = useRouter()
   const isTractId = !!(filter?.length === 11)
   const isCountyFilter = Boolean(filter?.length === 5)

@@ -1,17 +1,17 @@
 "use client"
-import LegendBreakText from "components/LegendBreakText"
-import { LegendProps } from "./types"
 import { useEffect, useState } from "react"
-import { useAppDispatch, useAppSelector } from "utils/state/store"
+import LegendBreakText from "components/LegendBreakText"
+import { deepCompare2d1d } from "utils/data/compareArrayElements"
 import { upcertColorFilter } from "utils/state/map"
-import { deepCompare2d1d, deepCompareArray } from "utils/data/compareArrayElements"
+import { useAppDispatch, useAppSelector } from "utils/state/store"
+import { LegendProps } from "./types"
 
 export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, breaks }) => {
   const colorFilter = useAppSelector((state) => state.map.colorFilter)
   const dispatch = useAppDispatch()
 
   const [legendtooltip, setLegendTooltip] = useState<number[]>([])
-  const [legendClicked, setLegendClicked] = useState(false)
+  // const [legendClicked, setLegendClicked] = useState(false)
   const [clearLegendTimeout, setClearLegendTimeout] = useState<null | ReturnType<typeof setTimeout>>(null)
 
   useEffect(() => {
@@ -23,15 +23,16 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
     return () => {
       clearLegendTimeout && clearTimeout(clearLegendTimeout)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [legendtooltip])
 
   if (isBivariate && Array.isArray(colors?.[0]?.[0])) {
     return (
       <div className="ColorLegend">
         <h3 className="mb-4">{column.name}</h3>
-        <div className="relative mb-8 h-full w-full">
+        <div className="relative mb-8 size-full">
           <div
-            className="arrow-border relative mx-auto my-0 mb-8 flex h-24 w-24 translate-x-4 translate-y-4 flex-row"
+            className="arrow-border relative mx-auto my-0 mb-8 flex size-24 translate-x-4 translate-y-4 flex-row"
             style={{
               transform: "translate(0,1rem) rotate(-135deg)",
               borderWidth: "2px 0px 0px 2px",
@@ -46,7 +47,7 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
                       onClick={() => dispatch(upcertColorFilter(c))}
                       onMouseEnter={() => setLegendTooltip([i, j])}
                       onMouseLeave={() => setLegendTooltip([])}
-                      className={`h-8 w-8 ${
+                      className={`size-8 ${
                         legendtooltip[0] === i && legendtooltip[1] === j
                           ? "opacity-100 shadow-sm"
                           : legendtooltip?.length > 0 || (colorFilter?.length && !deepCompare2d1d(colorFilter, c))

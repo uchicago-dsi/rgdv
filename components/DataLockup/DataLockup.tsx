@@ -1,7 +1,7 @@
-import PercentileLineChart from "components/PercentileLineChart"
-import { DataLockupProps } from "./types"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
+import PercentileLineChart from "components/PercentileLineChart"
 import Tooltip from "components/Tooltip"
+import { DataLockupProps } from "./types"
 
 export const DataLockup: React.FC<DataLockupProps> = ({ title, tooltip, value, description, border, sigFigs, inverted}) => {
   const pow = Math.pow(10, sigFigs || 0)

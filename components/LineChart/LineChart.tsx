@@ -1,17 +1,16 @@
 "use client"
-import { scaleLinear, scaleTime } from "@visx/scale"
-import { Axis, Tooltip } from "@visx/xychart"
-import React, { useCallback, useRef } from "react"
-import { LineChartProps } from "./types"
-import { timeSeriesConfig } from "utils/data/config"
-import { Threshold } from "@visx/threshold"
-import { LinePath } from "@visx/shape"
-import { AxisBottom, AxisLeft } from "@visx/axis"
-import { localPoint } from "@visx/event"
-import { bisector } from "@visx/vendor/d3-array"
 import { useParentSize } from "@cutting/use-get-parent-size"
-import { curveLinear, curveMonotoneX, curveStep } from "@visx/curve"
+import { AxisBottom, AxisLeft } from "@visx/axis"
+import { curveMonotoneX } from "@visx/curve"
+import { localPoint } from "@visx/event"
+import { scaleLinear, scaleTime } from "@visx/scale"
+import { LinePath } from "@visx/shape"
+import { Threshold } from "@visx/threshold"
 import { useTooltip, useTooltipInPortal } from "@visx/tooltip"
+import { bisector } from "@visx/vendor/d3-array"
+import { Axis} from "@visx/xychart"
+import React, { useCallback } from "react"
+import { LineChartProps } from "./types"
 
 const bisectDate = bisector<any, Date>((d: any) => new Date(d.date)).left
 
@@ -64,7 +63,7 @@ const LineChart = <T extends Record<string, any>>({
   children,
   aggregates,
 }: LineChartProps<T>) => {
-  const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } = useTooltip()
+  const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } = useTooltip()
 
   const { containerRef, TooltipInPortal } = useTooltipInPortal({
     // use TooltipWithBounds
@@ -124,11 +123,8 @@ const LineChart = <T extends Record<string, any>>({
         tooltipData: d
       });
     },
-    [
-      showTooltip,
-      valueScale,
-      dateScale,
-    ]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [showTooltip,valueScale,dateScale]
   )
 
   return (
@@ -259,11 +255,11 @@ const LineChart = <T extends Record<string, any>>({
           <p>Median Tract</p>
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <span className="h-4 w-4 border-2 border-dashed border-black bg-gray-900 bg-opacity-35"></span>
+          <span className="size-4 border-2 border-dashed border-black bg-gray-900/35"></span>
           <p>50% of tracts (Quantile 25 to 75)</p>
         </div>
         <div className="flex flex-row items-center space-x-2">
-          <span className="h-4 w-4 border-2 border-dashed border-black bg-gray-900 bg-opacity-15"></span>
+          <span className="size-4 border-2 border-dashed border-black bg-gray-900/35"></span>
           <p>90% of tracts (Quantile 5 to 95)</p>
         </div>
       </div>
