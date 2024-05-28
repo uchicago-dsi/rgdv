@@ -1,5 +1,5 @@
 "use client"
-import { columnsDict, timeSeriesAggregates, timeSeriesConfig, timeSeriesDatasets, tooltipConfig } from "../config"
+import { columnsDict, idColumn, timeSeriesAggregates, timeSeriesConfig, timeSeriesDatasets, tooltipConfig } from "../config"
 import * as d3 from "d3"
 import tinycolor from "tinycolor2"
 import { BivariateColorParamteres, MonovariateColorParamteres, d3Bivariate } from "./types"
@@ -30,6 +30,7 @@ export class DataService<DataT extends Record<string, any>> {
   conn?: AsyncDuckDBConnection
   tooltipResults: any = {}
   connectedScatterplotResults: any = {}
+  highlightResult: Record<string, boolean> = {}
   storeListResults: Record<string, any> = {}
   timeseriesResults: any = {}
   _dataId: keyof DataT = "GEOID"
@@ -271,6 +272,35 @@ export class DataService<DataT extends Record<string, any>> {
       // @ts-ignore
       return this.getMonovariateColorValues({ colorScheme, column, nBins, reversed, filter, range })
     }
+  }
+
+  async getHighlightValues(
+    column: string | number,
+    value: [number,number] | Array<string | number>,
+    type: "categorical" | "continuous"
+  ){
+    let r: any;
+    if (type === 'continuous') {
+      const queryVal = value as [number, number]
+      const min = Math.min(...queryVal)
+      const max = Math.max(...queryVal)
+      const query = `SELECT ${idColumn} FROM ${dataTableName} WHERE ${column} BETWEEN ${min} AND ${max};`
+      r = await this.runQuery(query)
+    } else if (type === 'categorical') {
+      const queryVal = value as Array<string | number>
+      const query = `SELECT ${idColumn} FROM ${dataTableName} WHERE ${column} IN (${queryVal.join(",")});`
+      r = await this.runQuery(query)
+    }
+    if (!r || r.length === 0) {
+      console.error(`No results for highlight query: ${value}`)
+      return []
+    }
+    const resultDict: Record<string, boolean> = {}
+    for (const entry of r) {
+      resultDict[entry[idColumn]] = true
+    }
+    this.highlightResult = resultDict
+    return performance.now()
   }
 
   async getTooltipValues(id: string) {

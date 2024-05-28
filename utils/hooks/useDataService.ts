@@ -17,12 +17,14 @@ export const useDataService = (
   const currentColumnSpec = columnsDict[currentColumn]
   const isBivariate = currentColumnSpec?.bivariate || false
   const colorFunction = globals.colorFunction
-  const _snapshot = useAppSelector((state) => state.map.snapshot)
+  const highlightFunction = globals.highlightFunction
+  const snapshot = useAppSelector((state) => state.map.snapshot)
   const _storeDataLoaded = useAppSelector((state) => state.map.storeDataId === id)
   const breaks = useAppSelector((state) => state.map.breaks)
   const colors = useAppSelector((state) => state.map.colors)
-  const storeData = id ? globals?.globalDs?.storeListResults?.[id] || [] : []
+  const storeData = id ? globals.ds.storeListResults?.[id] || [] : []
   const storesHaveGeo = storeData.length > 0 && storeData[0].hasOwnProperty('STORE_LAT')
+  const highlight = useAppSelector((state) => state.map.highlight)
 
   useEffect(() => {
     dbStatus === 'uninitialized' && dispatch(initializeDb())
@@ -32,6 +34,8 @@ export const useDataService = (
     isReady: dbStatus === 'ready',
     currentColumn,
     colorFunction,
+    highlightFunction,
+    snapshot,
     colorFilter,
     breaks,
     colors,
@@ -41,6 +45,7 @@ export const useDataService = (
     filter,
     isBivariate,
     storeData,
-    storesHaveGeo
+    storesHaveGeo,
+    highlight
   }
 }
