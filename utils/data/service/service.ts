@@ -186,8 +186,19 @@ export class DataService<DataT extends Record<string, any>> {
   }
 
   async getMonovariateColorValues({ colorScheme, column, nBins, reversed, filter, range }: MonovariateColorParamteres) {
+    let dataNote = ''
     const cleanColumn = typeof column === "string" ? column : `"${column}"`
-    const n = nBins || 5
+    const binsToGenerate = nBins || 5
+    const _values =
+      range === "categorical"
+        ? await this.getUniqueValues(cleanColumn, filter)
+        : await this.getQuantiles(cleanColumn, binsToGenerate, filter)
+    // filter unique
+    const values = _values.filter((v, i, a) => a.indexOf(v) === i)
+    const n = Math.min(values.length+1, binsToGenerate)
+    if (n !== binsToGenerate) {
+      dataNote = `Some quantiles had the same values and were combined.`
+    }
     const cleanColorScheme = colorScheme || "schemeYlGn"
     // @ts-ignore
     const d3Colors = d3[cleanColorScheme]?.[n]
@@ -197,6 +208,7 @@ export class DataService<DataT extends Record<string, any>> {
         colorMap: {},
         breaks: [],
         colors: [],
+        dataNote
       }
     }
     let rgbColors = d3Colors.map((c: any) => {
@@ -206,10 +218,6 @@ export class DataService<DataT extends Record<string, any>> {
     if (reversed) {
       rgbColors.reverse()
     }
-    const values =
-      range === "categorical"
-        ? await this.getUniqueValues(cleanColumn, filter)
-        : await this.getQuantiles(cleanColumn, n, filter)
 
     let query = ``
     if (!range || range === "continuous") {
@@ -242,6 +250,7 @@ export class DataService<DataT extends Record<string, any>> {
       colorMap,
       breaks: values,
       colors: rgbColors,
+      dataNote
     }
   }
   async getColorValues(
