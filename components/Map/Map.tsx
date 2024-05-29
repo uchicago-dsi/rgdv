@@ -35,6 +35,7 @@ export type MapProps = {
   onClick?: (info: any) => void
   sidebarOpen?: boolean
 }
+import { useParentSize } from "@visx/responsive"
 
 const MapOuter: React.FC<MapProps> = (props) => {
   return (
@@ -65,9 +66,11 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
     geometry: null,
     centroid: null,
   })
-  // on window resize, update the height of the container
+  const { parentRef, width, height } = useParentSize({ debounceTime: 150 })
 
   const handleResize = () => {
+    // @ts-ignore
+    mapRef.current?.resize()
     if (typeof window === "undefined" || typeof document === "undefined") {
       return
     }
@@ -92,9 +95,10 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
       }
     }
   }, [])
-  useLayoutEffect(() => {
-    setTimeout(() => handleResize(), 150)
-  }, [settingsExpanded])
+
+  useEffect(() => {
+    handleResize()
+  }, [width, height])
 
   const {
     isReady,
@@ -379,7 +383,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         )}
         {!simpleMap && (
           <div
-            className={`relative h-full max-w-[50%] ${settingsExpanded && "border-r-2"} border-neutral-950 ${
+            className={`relative h-full  bg-white max-w-[50%] ${settingsExpanded && "border-r-2"} border-neutral-950 ${
               settingsExpanded ? "w-96" : "w-0"
             } flex flex-col`}
           >
@@ -501,6 +505,12 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
             </DropdownMenuDemo> */}
           </div>
         )}
+        <div 
+        
+      ref={parentRef}
+      className="w-full h-full relative"
+        >
+
         <GlMap
           // hash={true}
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
@@ -510,12 +520,13 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
           projection={"mercator"}
           ref={mapRef}
           reuseMaps={true}
-        >
+          >
           <ScaleControl unit="imperial" />
           <FullscreenControl containerId={mapId.current} />
           <NavigationControl />
           <DeckGLOverlay layers={layers} interleaved={true} />
         </GlMap>
+          </div>
       </div>
       <MapTooltip simpleMap={simpleMap} />
       <MemoryMonitor />
