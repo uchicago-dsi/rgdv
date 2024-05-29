@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback, useRef } from "react"
-import { TextField, Box } from "@radix-ui/themes"
+import { Box, TextField } from "@radix-ui/themes"
 import debounce from "lodash.debounce"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 
 interface AutoCompleteProps {
   dataCallback: (s: string) => Promise<Array<Record<string, unknown>>>
@@ -25,6 +25,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const [isFocused, setIsFocused] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchResults = useCallback(
     debounce(async (searchText: string) => {
       if (searchText) {
@@ -41,6 +42,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         setResults([])
       }
     }, delay),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [debounce, dataCallback]
   )
 
@@ -67,8 +69,8 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         className="
           w-full max-w-none rounded border border-gray-300 bg-none p-2 
           [&>*]:w-full
-          [&>input]:bg-black/0
           [&>*]:text-white
+          [&>input]:bg-black/0
           
           "
       >
@@ -76,13 +78,13 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
       </TextField.Root>
       {isFocused &&
         (isLoading ? (
-          <Box className="absolute mt-1 w-full rounded border bg-neutral-900 border-gray-300 p-2">Loading...</Box>
+          <Box className="absolute mt-1 w-full rounded border border-gray-300 bg-neutral-900 p-2">Loading...</Box>
         ) : (
           results.length > 0 && (
-            <Box className="absolute mt-1 w-full rounded border bg-neutral-900 border-gray-300 p-2">
+            <Box className="absolute mt-1 w-full rounded border border-gray-300 bg-neutral-900 p-2">
               <ul>
                 {results.map((item, index) => (
-                  <li key={index} className="hover:bg-primary-500 cursor-pointer p-1">
+                  <li key={index} className="cursor-pointer p-1 hover:bg-primary-500">
                     <button
                       onClick={() => {
                         setQuery(item[listTitleProperty] as string)

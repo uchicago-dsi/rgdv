@@ -1,7 +1,7 @@
+import Head from "next/head"
 import React from "react"
 import ReportLayout from "components/ReportLayout"
 import { getContentDirs } from "utils/contentDirs"
-import Head from "next/head"
 
 type TractRouteParams = {
   params: {

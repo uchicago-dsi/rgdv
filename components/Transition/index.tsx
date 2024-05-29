@@ -6,9 +6,9 @@ import {
   MouseEventHandler,
   PropsWithChildren,
   use,
-  useEffect,
+  // useEffect,
   useLayoutEffect,
-  useRef,
+  // useRef,
   useState,
   useTransition,
 } from "react"
@@ -47,7 +47,6 @@ export default function Transitions({ children, className }: Props) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
-  const currLoaded = useRef(pathname)
 
   useLayoutEffect(() => {
     setIsLoading(false)
@@ -99,7 +98,7 @@ export function Animate({ children, className }: Props) {
 
 const Loader = () => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-500/25 bg-opacity-75">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-500/75">
       <div className="text-center">
         <div className="text-2xl text-neutral-500">Loading...</div>
         {/* <div className="loader mt-4"></div> */}

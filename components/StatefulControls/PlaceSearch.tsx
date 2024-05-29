@@ -1,6 +1,6 @@
 "use client"
-import AutoComplete from "components/AutoComplete/AutoComplete"
 import { useRouter } from "next/navigation"
+import AutoComplete from "components/AutoComplete/AutoComplete"
 
 const fetchData = (s: string) => fetch(`/api/names?search=${s}`).then((res) => res.json() as any)
 

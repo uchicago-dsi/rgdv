@@ -1,6 +1,6 @@
 import Image from "next/image"
-import { HomeProps } from "./types"
 import { PlaceSearch } from "components/StatefulControls/PlaceSearch"
+import { HomeProps } from "./types"
 
 export const Renderer: React.FC<HomeProps> = () => {
   // const sections = pageInfo.data.page.sections || []

@@ -407,7 +407,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
                 <MenuButton
                   key={i}
                   onClick={() => handleSetColumn(c)}
-                  label={c}
+                  label={c} 
                   selected={currentColumn === c}
                 />
               ))}
