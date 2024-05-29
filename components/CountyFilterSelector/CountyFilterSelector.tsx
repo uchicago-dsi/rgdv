@@ -31,7 +31,7 @@ export const CountyFilterSelector: React.FC<CountyFilterSelectorProps> = ({ hand
               </Select.ItemIndicator>
             </Select.Item>
           {CountyList.map((state, i) => (
-            <Select.Item className="SelectItem" value={state.statefp as string} key={i}>
+            <Select.Item className="text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1" value={state.statefp as string} key={i}>
               <Select.ItemText>{state.state}</Select.ItemText>
               <Select.ItemIndicator className="SelectItemIndicator">
                 <CheckboxIcon />
