@@ -15,7 +15,7 @@ export const SelectMenu: React.FC<SelectProps> = ({ title, value, children, onVa
       h-[35px] items-center justify-center gap-[5px]
       z-0 mb-[-1px] mr-[-1px] max-w-full border-[1px] border-solid border-neutral-300 p-1 text-sm
       focus:border-b-4 focus:shadow-[0_0_-5px_5px] focus:shadow-blackA5 focus:outline-none
-      bg-white px-[15px] text-[13px] leading-none text-neutral-700 shadow-[0_2px_10px] shadow-black/10 outline-none hover:bg-mauve3  data-[placeholder]:text-violet9"
+      bg-white px-[15px] leading-none text-neutral-700 shadow-[0_2px_10px] shadow-black/10 outline-none hover:bg-mauve3  data-[placeholder]:text-violet9"
       aria-label="Food"
     >
       <Select.Value placeholder={value || title} />

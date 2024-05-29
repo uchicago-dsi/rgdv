@@ -3,7 +3,7 @@ import "mapbox-gl/dist/mapbox-gl.css"
 import { MVTLayer } from "@deck.gl/geo-layers/typed"
 import { GeoJsonLayer, ScatterplotLayer } from "@deck.gl/layers/typed"
 import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
-import "./styles.css"
+import { useParentSize } from "@visx/responsive"
 import { ThickArrowLeftIcon, ThickArrowRightIcon } from "@radix-ui/react-icons"
 import { useRouter } from "next/navigation"
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react"
@@ -29,13 +29,13 @@ import {
 import { store, useAppDispatch } from "utils/state/store"
 import { fetchCentroidById } from "utils/state/thunks"
 import { zeroPopTracts } from "utils/zeroPopTracts"
+import "./styles.css"
 export type MapProps = {
   initialFilter?: string
   simpleMap?: boolean
   onClick?: (info: any) => void
   sidebarOpen?: boolean
 }
-import { useParentSize } from "@visx/responsive"
 
 const MapOuter: React.FC<MapProps> = (props) => {
   return (
