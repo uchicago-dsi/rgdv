@@ -169,7 +169,31 @@ def split_df_and_msgpack(df, id_col, outpath, compress=False):
   for state in unique_states:
     state_data = df[df['state'] == state].to_dict(orient='records')
     columnarize_msgpack(state_data, id_col, path.join(outpath, f'{state}.msgpack'), columns, compress=compress)
+# %%
 
+county_demography = pd.read_parquet(path.join(data_dir, 'demography_county.parquet'))
+state_demography = pd.read_parquet(path.join(data_dir, 'demography_state.parquet'))
+name_cols = [
+  'GEOID',
+  'NAME'
+]
+summary_names = df_full[name_cols]
+summary_names['UNIT'] = 'Tract'
+summary_names['LEVEL'] = 2
+county_names = county_demography[name_cols]
+county_names['UNIT'] = 'County'
+county_names['LEVEL'] = 1
+state_names = state_demography[name_cols]
+state_names['UNIT'] = 'State'
+state_names['LEVEL'] = 0
+summary_names = pd.concat([summary_names, county_names, state_names])
+summary_names = summary_names.drop_duplicates()
+summary_names = summary_names.sort_values(by=['LEVEL', 'NAME'])
+summary_names = summary_names.reset_index(drop=True)
+summary_names = summary_names[['GEOID', 'NAME', 'UNIT']]
+summary_names['NAME'] = summary_names['NAME'].fillna(summary_names['GEOID'])
+# %%
+write_msgpack(summary_names.to_dict(orient='records'), path.join(data_dir, 'names.msgpack'), compress=True)
 # %%
 gravity_county = generate_stats(
   path.join(data_dir, 'gravity_no_dollar_pivoted.parquet'),

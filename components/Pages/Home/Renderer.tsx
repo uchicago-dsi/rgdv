@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { HomeProps } from "./types"
+import { PlaceSearch } from "components/StatefulControls/PlaceSearch"
 
 export const Renderer: React.FC<HomeProps> = () => {
   // const sections = pageInfo.data.page.sections || []
@@ -20,7 +21,7 @@ export const Renderer: React.FC<HomeProps> = () => {
           <div className="absolute inset-x-0 bottom-0 h-[30vh] bg-theme-navy-500"></div>
           <div className="flex h-full flex-col justify-end p-4 text-theme-canvas-500">
             <div className="z-20 grid grid-flow-col grid-rows-2 lg:mb-12 lg:grid-cols-2 lg:grid-rows-1">
-              <div>
+              <div className="invisible md:visible">
                 <h1 className="text-[13vw] font-bold leading-[13vw]" style={{ WebkitTextStroke: "2px #00152c" }}>
                   Feeding{" "}
                   <span className="block text-theme-navy-500" style={{ WebkitTextStroke: "2px white" }}>
@@ -44,11 +45,12 @@ export const Renderer: React.FC<HomeProps> = () => {
               <div>
                 Know where you want to see? Search for a state, county, or address below to see a report on food access,
                 market concentration, and structural racism:
+                <PlaceSearch />
               </div>
             </div>
         </div>
       </div>
-      <div className="border-top-1 h-[50vh] bg-[#00152c] p-4 text-theme-canvas-500">
+      <div className="border-top-1 lg:h-[50vh] bg-[#00152c] p-4 text-theme-canvas-500">
         <hr />
         {/* 4 div flex layout equal widths */}
         {/* reports, trends, toolkit, about */}
