@@ -3,10 +3,10 @@ import "mapbox-gl/dist/mapbox-gl.css"
 import { MVTLayer } from "@deck.gl/geo-layers/typed"
 import { GeoJsonLayer, ScatterplotLayer } from "@deck.gl/layers/typed"
 import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
-import { useParentSize } from "@visx/responsive"
 import { ThickArrowLeftIcon, ThickArrowRightIcon } from "@radix-ui/react-icons"
+import { useParentSize } from "@visx/responsive"
 import { useRouter } from "next/navigation"
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import GlMap, { FullscreenControl, NavigationControl, ScaleControl, useControl  } from "react-map-gl"
 import { Provider } from "react-redux"
 import CountyFilterSelector from "components/CountyFilterSelector"
@@ -30,6 +30,7 @@ import { store, useAppDispatch } from "utils/state/store"
 import { fetchCentroidById } from "utils/state/thunks"
 import { zeroPopTracts } from "utils/zeroPopTracts"
 import "./styles.css"
+
 export type MapProps = {
   initialFilter?: string
   simpleMap?: boolean
@@ -508,7 +509,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         <div 
         
       ref={parentRef}
-      className="w-full h-full relative"
+      className="size-full relative"
         >
 
         <GlMap

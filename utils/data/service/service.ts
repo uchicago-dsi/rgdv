@@ -133,6 +133,11 @@ export class DataService<DataT extends Record<string, any>> {
 
   async getBivariateColorValues({ colorScheme, column, filter, reversed, colorFilter }: BivariateColorParamteres) {
     const cleanColumns = column.map((c) => (typeof c === "string" && c.startsWith('"') ? c : `"${c}"`))
+    const breaks = await Promise.all([
+      this.getQuantiles(cleanColumns[0]!, 3, filter),
+      this.getQuantiles(cleanColumns[1]!, 3, filter),
+    ])
+
     const legendColors = d3Bivariate[colorScheme]?.map((row: any) =>
       row.map((c: any) => {
         const tc = tinycolor(c).toRgb()
@@ -155,11 +160,6 @@ export class DataService<DataT extends Record<string, any>> {
         }
       }
     }
-
-    const breaks = await Promise.all([
-      this.getQuantiles(cleanColumns[0]!, 3, filter),
-      this.getQuantiles(cleanColumns[1]!, 3, filter),
-    ])
 
     let query = `SELECT ${this.idColumn}, `
     query += `${this.getQuantileCaseClause(`${cleanColumns[0]}`, breaks[0], "q0")}, `
