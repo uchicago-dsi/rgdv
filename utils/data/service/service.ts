@@ -1,5 +1,12 @@
 "use client"
-import { columnsDict, idColumn, timeSeriesAggregates, timeSeriesConfig, timeSeriesDatasets, tooltipConfig } from "../config"
+import {
+  columnsDict,
+  idColumn,
+  timeSeriesAggregates,
+  timeSeriesConfig,
+  timeSeriesDatasets,
+  tooltipConfig,
+} from "../config"
 import * as d3 from "d3"
 import tinycolor from "tinycolor2"
 import { BivariateColorParamteres, MonovariateColorParamteres, d3Bivariate } from "./types"
@@ -186,7 +193,7 @@ export class DataService<DataT extends Record<string, any>> {
   }
 
   async getMonovariateColorValues({ colorScheme, column, nBins, reversed, filter, range }: MonovariateColorParamteres) {
-    let dataNote = ''
+    let dataNote = ""
     const cleanColumn = typeof column === "string" ? column : `"${column}"`
     const binsToGenerate = nBins || 5
     const _values =
@@ -195,7 +202,7 @@ export class DataService<DataT extends Record<string, any>> {
         : await this.getQuantiles(cleanColumn, binsToGenerate, filter)
     // filter unique
     const values = _values.filter((v, i, a) => a.indexOf(v) === i)
-    const n = Math.min(values.length+1, binsToGenerate)
+    const n = Math.min(values.length + 1, binsToGenerate)
     if (n !== binsToGenerate) {
       dataNote = `Some quantiles had the same values and were combined.`
     }
@@ -208,7 +215,7 @@ export class DataService<DataT extends Record<string, any>> {
         colorMap: {},
         breaks: [],
         colors: [],
-        dataNote
+        dataNote,
       }
     }
     let rgbColors = d3Colors.map((c: any) => {
@@ -250,7 +257,7 @@ export class DataService<DataT extends Record<string, any>> {
       colorMap,
       breaks: values,
       colors: rgbColors,
-      dataNote
+      dataNote,
     }
   }
   async getColorValues(
@@ -285,17 +292,17 @@ export class DataService<DataT extends Record<string, any>> {
 
   async getHighlightValues(
     column: string | number,
-    value: [number,number] | Array<string | number>,
+    value: [number, number] | Array<string | number>,
     type: "categorical" | "continuous"
-  ){
-    let r: any;
-    if (type === 'continuous') {
+  ) {
+    let r: any
+    if (type === "continuous") {
       const queryVal = value as [number, number]
       const min = Math.min(...queryVal)
       const max = Math.max(...queryVal)
       const query = `SELECT ${idColumn} FROM ${dataTableName} WHERE ${column} BETWEEN ${min} AND ${max};`
       r = await this.runQuery(query)
-    } else if (type === 'categorical') {
+    } else if (type === "categorical") {
       const queryVal = value as Array<string | number>
       const query = `SELECT ${idColumn} FROM ${dataTableName} WHERE ${column} IN (${queryVal.join(",")});`
       r = await this.runQuery(query)
@@ -398,7 +405,13 @@ export class DataService<DataT extends Record<string, any>> {
     }
     return rotatedData
   }
-  async getScatterPlotData(id: string, var1: keyof typeof columnsDict, var2: keyof typeof columnsDict, xLabel: string, yLabel: string) {
+  async getScatterPlotData(
+    id: string,
+    var1: keyof typeof columnsDict,
+    var2: keyof typeof columnsDict,
+    xLabel: string,
+    yLabel: string
+  ) {
     const [config1, config2] = [columnsDict[var1], columnsDict[var2]]
     const query = `SELECT 
       "${config1.column}" as ${xLabel}, 
@@ -453,10 +466,7 @@ export class DataService<DataT extends Record<string, any>> {
     lineVariable1: keyof typeof timeSeriesConfig,
     lineVariable2: keyof typeof timeSeriesConfig
   ) {
-    const [
-      scatterData,
-      linesData,
-    ] = await Promise.all([
+    const [scatterData, linesData] = await Promise.all([
       this.getScatterPlotData(id, scatterVariable1, scatterVariable2, lineVariable1, lineVariable2),
       this.getConnectedLineData(id, lineVariable1, lineVariable2),
     ])
@@ -464,7 +474,7 @@ export class DataService<DataT extends Record<string, any>> {
 
     this.connectedScatterplotResults[hash] = {
       scatterData,
-      linesData
+      linesData,
     }
   }
 
@@ -491,5 +501,116 @@ export class DataService<DataT extends Record<string, any>> {
       : this.rotateAggregate(result[0], columns as any[], "year")
 
     this.timeseriesResults[id][variable] = dataParsed
+  }
+  async getHistogramData({
+    variable,
+    filters,
+    fixedBins,
+    nBins,
+  }: {
+    variable: string
+    filters?: { column: string; operator: string; value: string | string[] | number }[]
+    fixedBins?: { binStart: number; binEnd: number; bin: number }[]
+    nBins?: number
+  }) {
+    let query = ""
+    if (!fixedBins) {
+      query += `WITH data AS (
+        SELECT "${variable}" as value FROM "${dataTableName}"
+        `
+    } else {
+      // use case to match bins
+      query += `
+        SELECT COUNT(*) as count, (
+          CASE 
+          ${fixedBins
+            .map((b, i) => `WHEN "${variable}" BETWEEN ${b.binStart} AND ${b.binEnd} THEN ${b.bin}`)
+            .join("\n")}
+          ELSE ${fixedBins.length}
+          END
+        ) as bin,
+        FROM "${dataTableName}"`
+    }
+    if (filters) {
+      for (let i = 0; i < filters.length; i++) {
+        const filter = filters[i]!
+        query += ` ${i === 0 ? "WHERE" : "AND"} ${filter.column} ${filter.operator}`
+        switch (filter.operator) {
+          case "IN":
+          case "NOT IN":
+            query += `(${(filter.value as string[] | number[]).join(",")})`
+            break
+          case "BETWEEN":
+            query += `${(filter.value as any as [number, number])[0]} AND ${
+              (filter.value as any as [number, number])[1]
+            }`
+            break
+          default:
+            query += ` ${filter.value}`
+            break
+        }
+      }
+    }
+    if (!fixedBins) {
+      query += `), bounds AS (SELECT MIN(value) AS min, MAX(value) AS max FROM data),
+            info AS (SELECT min, max, (max - min) / ${nBins}.0 AS width FROM bounds),
+            bins AS (SELECT value, min, width, FLOOR((value - min) / width) AS bin FROM data, info),
+            counts AS (
+              SELECT bin, MIN(min + bin * width) AS binStart, MIN(min + (bin + 1) * width) AS binEnd, 
+              COUNT(*) AS count FROM bins GROUP BY bin, width, min
+            )
+      SELECT bin, binStart, binEnd, count
+      FROM counts
+      ORDER BY bin;`
+    } else {
+      query += ` GROUP BY bin;`
+    }
+    const result = await this.runQuery(query)
+    const output = fixedBins
+      ? fixedBins.map((b) => {
+          const entry = result.find((r) => r.bin === b.bin)
+          return {
+            ...b,
+            count: entry ? parseInt(entry.count) : 0,
+          }
+        })
+      : result.map((r) => ({...r, count: parseInt(r.count)}))
+    return output
+  }
+  async getComparableHistogramData({
+    variable,
+    mainFilters,
+    subPopulationFilters,
+    nBins,
+    includeNational = true,
+    fixedBins,
+  }: {
+    variable: string
+    mainFilters?: { column: string; operator: string; value: string | string[] | number }[]
+    subPopulationFilters?: { column: string; operator: string; value: string | string[] | number }[]
+    fixedBins?: { binStart: number; binEnd: number; bin: number }[]
+    nBins?: number
+    includeNational?: boolean
+  }) {
+    if (!includeNational) {
+      return this.getHistogramData({ variable, filters: mainFilters, nBins, fixedBins })
+    } else if (mainFilters && subPopulationFilters) {
+      const nationalResults = await this.getHistogramData({ variable, fixedBins, filters: mainFilters, nBins })
+
+      const filtered = await this.getHistogramData({
+        variable,
+        filters: [...mainFilters, ...subPopulationFilters],
+        fixedBins: fixedBins || nationalResults,
+      })
+
+      const merged = nationalResults.map((r, i) => {
+        const subPopRow = filtered.find((f) => f.bin === r.bin)
+        return {
+          ...r,
+          subPopulationCount: subPopRow?.count || 0,
+        }
+      })
+      return merged
+    }
   }
 }
