@@ -102,11 +102,11 @@ export const mapSlice = createSlice({
       state.timeseriesDatasets.push(action.payload)
     },
     setTooltipInfo: (state, action: PayloadAction<MapState["tooltip"] | null>) => {
-      state.tooltip = action.payload
-      const id = action.payload?.id
-      if (action.payload?.data) {
+      state.tooltip = action?.payload
+      const id = action?.payload?.id
+      if (action?.payload?.data) {
         // chill
-      } else if (!!id && !globals.ds.tooltipResults[id]) {
+      } else if (!!id && !globals?.ds?.tooltipResults?.[id]) {
         state.tooltipStatus = "pending"
       } else {
         state.tooltipStatus = "ready"
@@ -121,7 +121,7 @@ export const mapSlice = createSlice({
       state.idFilter = action.payload
     },
     upcertColorFilter: (state, action: PayloadAction<number[]>) => {
-      state.snapshot.fill = performance.now() 
+      state.snapshot.fill = performance.now()
       if (!state.colorFilter) {
         state.colorFilter = [action.payload]
         return
