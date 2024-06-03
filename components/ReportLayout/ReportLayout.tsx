@@ -15,8 +15,8 @@ const units = {
 
 const comparability = {
   2: ["national"],
-  5: ["state", "national"],
-  11: ["county", "state", "national"],
+  5: ["national", "state"],
+  11: ["national", "state", "county"],
 } as const
 
 export const ReportLayout: React.FC<ReportLayoutProps> = async ({ id }) => {

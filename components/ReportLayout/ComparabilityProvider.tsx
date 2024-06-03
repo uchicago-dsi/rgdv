@@ -1,5 +1,6 @@
 "use client"
 import { createContext, useContext, useState } from "react"
+import { useLocalStorage } from "@uidotdev/usehooks"
 
 export const ComparabilityContext = createContext({
   comparability: "national",
@@ -8,8 +9,10 @@ export const ComparabilityContext = createContext({
 })
 
 export default function ComparabilityProvider({ comparabilityOptions, children }: { comparabilityOptions: readonly string[], children: React.ReactNode }) {
-  const [comparability, setComparability] = useState("national")
+  const [_comparability, setComparability] = useLocalStorage<string>("national")
   const [options] = useState(comparabilityOptions)
+  const comparability = !_comparability ? "national" : !options.includes(_comparability) ? options[0]! : _comparability!
+
   return (
     <ComparabilityContext.Provider
       value={{
