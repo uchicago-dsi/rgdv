@@ -87,6 +87,10 @@ const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
             fill={circleColor}
             stroke="black"
             strokeWidth={1.5} // Black border for the circle
+            // transition cx and fill
+            style={{
+              transition: "cx 1s, fill 1s",
+            }}
           />}
         </Group>
       </svg>

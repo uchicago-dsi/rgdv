@@ -254,12 +254,29 @@ var stats_default = {
       label: "Overview",
       name: "overview",
       fields: [
-        ...thresholdStatList.fields,
+        thresholdStatList.fields.find((f) => f.name === "title"),
         {
           label: "Measure (Don't edit this unless you are also updating the React components.)",
           name: "measure",
           type: "string"
-        }
+        },
+        {
+          name: "column_national",
+          label: "National Comparability Data Column (Neighborhood, County, State)",
+          type: "string"
+        },
+        {
+          name: "column_state",
+          label: "State Comparability Data Column (Neighborhood, County)",
+          type: "string"
+        },
+        {
+          name: "column_county",
+          label: "County Comparability Data Column (Neighborhood only)",
+          type: "string"
+        },
+        thresholdStatList.fields.find((f) => f.name === "tooltip"),
+        thresholdStatList.fields.find((f) => f.name === "templates")
       ]
     },
     // list of "sections"

@@ -46,14 +46,16 @@ export const StatisticsPartsFragmentDoc = gql`
   overview {
     __typename
     title
-    column
+    measure
+    column_national
+    column_state
+    column_county
     tooltip
     templates {
       __typename
       body
       threshold
     }
-    measure
   }
   stat {
     __typename

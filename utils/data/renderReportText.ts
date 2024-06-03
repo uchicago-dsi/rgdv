@@ -35,11 +35,15 @@ const getNullResults = (overrides: object) => ({
 const getStatResult = (
   generalStatText: any,
   measure: string,
-  data: any
+  data: any,
+  comparability: string = "national"
 ) => {
   const template = generalStatText?.data?.statistics?.overview?.find((f: any) => f.measure === measure)
   if (!template) return NULL_RESULTS
-  const value = Number(data[template.column as keyof typeof data])
+  const _templateColumn = template[`column_${comparability}` as keyof typeof template]
+  const templateColumn = _templateColumn || template?.[Object.keys(template).find((key) => key.startsWith("column_"))!]
+  if (!templateColumn) return getNullResults({ title: template.title })
+  const value = Number(data[templateColumn])
   if (isNaN(value)) return getNullResults({ title: template.title })
   const text = getThresholdValue(value, data, template) || NULL_RESULTS.text
   const tooltip = formatMarkdownTemplate(template.tooltip, data) || NULL_RESULTS.tooltip
@@ -66,7 +70,12 @@ const raceEthnicityColumns = [
   "NH TWO OR MORE EXCLUDING SOME OTHER",
 ]
 
-export const renderReportText = (_data: Record<string, any>, generalStatText: any, id: string) => {
+export const renderReportText = (
+  _data: Record<string, any>, 
+  generalStatText: any, 
+  id: string,
+  comparability: string = "national"
+) => {
   // @ts-ignore
   const unitInfo = UNIT_INFO[id.length]
   const data = {
@@ -76,10 +85,10 @@ export const renderReportText = (_data: Record<string, any>, generalStatText: an
   const stats = generalStatText?.data?.statistics?.stat
   const name = data.NAME.toLowerCase().includes("tract") ? data.NAME : `${data.NAME}`
 
-  const foodAccess = getStatResult(generalStatText, "gravity", data)
-  const marketPower = getStatResult(generalStatText, "hhi", data)
-  const segregation = getStatResult(generalStatText, "segregation", data)
-  const economicAdvantage = getStatResult(generalStatText, "adi", data)
+  const foodAccess = getStatResult(generalStatText, "gravity", data, comparability)
+  const marketPower = getStatResult(generalStatText, "hhi", data, comparability)
+  const segregation = getStatResult(generalStatText, "segregation", data, comparability)
+  const economicAdvantage = getStatResult(generalStatText, "adi", data, comparability)
   const descriptionText = formatMarkdownTemplate(generalStatText.data.statistics.body, data)
 
   let raceData: Array<{value: number, raceEthnicity: string}> = []

@@ -219,10 +219,12 @@ type StatisticsOverviewTemplates {
 
 type StatisticsOverview {
   title: String
-  column: String
+  measure: String
+  column_national: String
+  column_state: String
+  column_county: String
   tooltip: JSON
   templates: [StatisticsOverviewTemplates]
-  measure: String
 }
 
 type StatisticsStatTemplates {
@@ -264,10 +266,12 @@ input StatisticsOverviewTemplatesFilter {
 
 input StatisticsOverviewFilter {
   title: StringFilter
-  column: StringFilter
+  measure: StringFilter
+  column_national: StringFilter
+  column_state: StringFilter
+  column_county: StringFilter
   tooltip: RichTextFilter
   templates: StatisticsOverviewTemplatesFilter
-  measure: StringFilter
 }
 
 input StatisticsStatTemplatesFilter {
@@ -368,10 +372,12 @@ input StatisticsOverviewTemplatesMutation {
 
 input StatisticsOverviewMutation {
   title: String
-  column: String
+  measure: String
+  column_national: String
+  column_state: String
+  column_county: String
   tooltip: JSON
   templates: [StatisticsOverviewTemplatesMutation]
-  measure: String
 }
 
 input StatisticsStatTemplatesMutation {

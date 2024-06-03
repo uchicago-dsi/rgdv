@@ -105,7 +105,7 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
                 const { startAngle, endAngle } = arc
                 const hasSpaceForLabel = endAngle - startAngle >= 0.1
                 return (
-                  <g key={`arc-${arc.data.label}`}>
+                  <g key={`arc-${i}`}>
                     <path
                       key={i}
                       d={pie.path(arc)!}

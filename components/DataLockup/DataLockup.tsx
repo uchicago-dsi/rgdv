@@ -6,6 +6,7 @@ import { DataLockupProps } from "./types"
 export const DataLockup: React.FC<DataLockupProps> = ({ title, tooltip, value, description, border, sigFigs, inverted}) => {
   const pow = Math.pow(10, sigFigs || 0)
   const cleanedUpValue = Number.isNaN(+value)? value : Math.round(value*pow)/pow
+
   return (
     <div className={`${border ? "border-solid border-r-neutral-500 lg:border-r-2" : ""} lg:pr-8`}>
       <div className="flex items-start justify-start">
