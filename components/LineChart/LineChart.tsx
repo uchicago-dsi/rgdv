@@ -1,7 +1,7 @@
 "use client"
 import { useParentSize } from "@cutting/use-get-parent-size"
 import { AxisBottom, AxisLeft } from "@visx/axis"
-import { curveMonotoneX } from "@visx/curve"
+// import { curveMonotoneX } from "@visx/curve"
 import { localPoint } from "@visx/event"
 import { scaleLinear, scaleTime } from "@visx/scale"
 import { LinePath } from "@visx/shape"
@@ -142,7 +142,7 @@ const LineChart = <T extends Record<string, any>>({
             data={data}
             x={(d) => dateScale(d[yearKey]) ?? 0}
             y={(d) => valueScale(d[dataKey]) ?? 0}
-            curve={curveMonotoneX}
+            // curve={curveMonotoneX}
             shapeRendering="geometricPrecision"
           />
         )}
@@ -154,7 +154,7 @@ const LineChart = <T extends Record<string, any>>({
               data={data}
               x={(d) => dateScale(d[yearKey]) ?? 0}
               y={(d) => valueScale(d["median"]) ?? 0}
-              curve={curveMonotoneX}
+              // curve={curveMonotoneX}
               shapeRendering="geometricPrecision"
             />
             {/* threshold of q75 and q25 */}
@@ -166,7 +166,7 @@ const LineChart = <T extends Record<string, any>>({
               y1={(d) => valueScale(d["q25"]) ?? 0}
               clipAboveTo={(d) => valueScale(d["q75"]) ?? 0}
               clipBelowTo={(d) => valueScale(d["q25"]) ?? 0}
-              curve={curveMonotoneX}
+              // curve={curveMonotoneX}
               belowAreaProps={{
                 fill: "violet",
                 fillOpacity: 0,
