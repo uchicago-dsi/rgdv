@@ -16,7 +16,7 @@ export const ClientReportRenderer: React.FC<{
     <>
       <ReportRenderer {...props} comparability={comparability}>
         {/* options on chagne set comparability */}
-        <div className="prose">
+        {!!(options?.length > 1) && <div className="prose">
           <h3>Comparability</h3>
           <p>
             <i>
@@ -33,7 +33,7 @@ export const ClientReportRenderer: React.FC<{
             </span>
           ))}
 
-        </div>
+        </div>}
       </ReportRenderer>
       {isServer && props.children}
     </>
