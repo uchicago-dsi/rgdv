@@ -180,6 +180,8 @@ export const columnsDict = {
   },
 } as const
 
+export type DataColumns = keyof typeof columnsDict
+
 export const timeSeriesConfig = {
   hhi: {
     file: "concentration_metrics_wide.parquet",
@@ -309,12 +311,12 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
   },
 } as const
 
-export const defaultColumn: keyof typeof columnsDict = "Concentration & Food Access - Bivariate 2020"
+export const defaultColumn: DataColumns = "Concentration & Food Access - Bivariate 2020"
 
 export const tooltipConfig: Array<{
   section?: string
   columns: Array<{
-    col: keyof typeof columnsDict
+    col: DataColumns
     label?: string
     format?: string
   }>

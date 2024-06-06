@@ -194,9 +194,15 @@ dependencies:
   '@visx/group':
     specifier: ^3.3.0
     version: 3.3.0(react@18.2.0)
+  '@visx/heatmap':
+    specifier: ^3.3.0
+    version: 3.3.0(react@18.2.0)
   '@visx/legend':
     specifier: ^3.10.3
     version: 3.10.3(react@18.2.0)
+  '@visx/mock-data':
+    specifier: ^3.3.0
+    version: 3.3.0
   '@visx/responsive':
     specifier: ^3.10.2
     version: 3.10.2(react@18.2.0)

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react"
 import { Provider } from "react-redux"
 import ConnectedScatterplot from "components/ConnectedScatterplot"
-import { columnsDict, timeSeriesConfig } from "utils/data/config"
+import { DataColumns, timeSeriesConfig } from "utils/data/config"
 import { globals } from "utils/state/globals"
 import { requestTimeseries } from "utils/state/map"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
@@ -11,7 +11,7 @@ import { initializeDb, loadTimeseriesData } from "utils/state/thunks"
 const configs: Record<string, {
   label: string,
   timeseriesConfig: keyof typeof timeSeriesConfig,
-  scatterConfig: keyof typeof columnsDict
+  scatterConfig: DataColumns
 }> = {
   "HHI": {
     timeseriesConfig: "hhi",

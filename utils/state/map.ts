@@ -2,6 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 import {
+  DataColumns,
   columnGroups,
   columnsDict,
   defaultColumn,
@@ -60,7 +61,7 @@ export const mapSlice = createSlice({
         state.currentColumn = columnGroup.columns[0]!
       }
     },
-    setCurrentColumn: (state, action: PayloadAction<keyof typeof columnsDict>) => {
+    setCurrentColumn: (state, action: PayloadAction<DataColumns>) => {
       state.currentColumn = action.payload
       state.colorFilter = undefined
     },
@@ -166,7 +167,7 @@ export const mapSlice = createSlice({
         state.dbStatus = "loading"
       }),
       builder.addCase(initializeDb.fulfilled, (state, action) => {
-        state.dbStatus = action.payload
+        state.dbStatus = action.payload as MapState["dbStatus"]
       }),
       builder.addCase(loadTimeseriesData.fulfilled, (state, action) => {
         state.timeseriesDatasets.push(action.meta.arg)

@@ -1,11 +1,11 @@
-import { columnGroups, columnsDict, highlightConfig, timeSeriesConfig, timeSeriesDatasets } from "utils/data/config"
+import { DataColumns, columnGroups, columnsDict, highlightConfig, timeSeriesConfig, timeSeriesDatasets } from "utils/data/config"
 
 export interface MapState {
   breaks: Array<number>
   colors: Array<Array<number>>
-  dbStatus?: string
+  dbStatus?: 'uninitialized' | 'loading' | 'ready' | 'error'
   // currentData: string,
-  currentColumn: keyof typeof columnsDict
+  currentColumn: DataColumns
   currentColumnGroup: keyof typeof columnGroups
   idFilter?: string
   centroid?: {
