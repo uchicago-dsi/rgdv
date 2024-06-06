@@ -338,7 +338,7 @@ export class DataService<DataT extends Record<string, any>> {
     const columnFilter: FilterSpec[] | undefined = props.filter ? [{
       column: idColumn,
       operator: "LIKE",
-      value: props.filter,
+      value: `'${props.filter}%'`,
     }] : undefined
 
     const bivariate = props.bivariate
