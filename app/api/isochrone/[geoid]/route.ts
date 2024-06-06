@@ -25,7 +25,7 @@ const getIsochrone = async (geoid: string) => {
 export async function GET(_req: Request, reqParams: ReqParams) {
   const geoid = reqParams.params.geoid
   if (!geoid || geoid === 'null') {
-    return new Response("Not found", { status: 404 });
+    return new Response("{}", { status: 404 });
   }
   const data = await getIsochrone(geoid);
   // console.log(data)
