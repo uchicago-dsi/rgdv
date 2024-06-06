@@ -2,11 +2,13 @@ import React from "react"
 import dynamic from "next/dynamic"
 import StatList from "components/StatList"
 import TimeseriesChart from "components/TimeseriesChart"
+import { columnsDict, type DataColumns } from "utils/data/config"
 
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 const StoreList = dynamic(() => import("components/StoreList"), { ssr: false })
 // const ComparisonOverTimeChart = dynamic(() => import("components/ComparisonOverTime"), { ssr: false })
 const PieChart = dynamic(() => import("components/PieChart/PieChart"), { ssr: false })
+const ScatterplotStatefulWrapper = dynamic(() => import("components/ScatterPlot/ScaterplotStatefulWrapper"), { ssr: false })
 
 export const Sections = [
   {
@@ -33,6 +35,11 @@ export const Sections = [
     key: "Change Over Time",
     Component: "Timeseries",
     id: "timeseries",
+  },
+  {
+    key: "Scatterplot",
+    Component: "Scatterplot",
+    id: "scatterplot",
   },
 ]
 
@@ -92,6 +99,12 @@ export const ReportSections: React.FC<{
                   }
             }
           />
+        </div>
+      )
+    case "Scatterplot":
+      return (
+        <div id={divId} className="h-auto w-full">
+          <ScatterplotStatefulWrapper options={Object.keys(columnsDict) as DataColumns[]} id={id} initialXVar="Market Concentration - 2023 (Most Recent)" initialYVar="Food Access Supply - 2020" />
         </div>
       )
     default:

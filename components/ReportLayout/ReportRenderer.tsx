@@ -30,9 +30,9 @@ export const ReportRenderer: React.FC<{
           <div className="prose max-w-none">
             <h2 className="mb-0 text-sm font-light uppercase">{data.UNIT} REPORT</h2>
             <h1 className="mb-0">{name}</h1>
-            <p className="text-sm">
+            <div className="text-sm">
               <TinaMarkdown content={descriptionText} />
-            </p>
+            </div>
             {children && children}
           </div>
         </div>

@@ -23,14 +23,14 @@ export const ClientReportRenderer: React.FC<{
               You can view data in relation to the whole country, the state of this place, or the county of this place. By default, we compare to the whole country.
             </i>
           </p>
-          {options.map((option) => (
-            <>
-            <label key={option} htmlFor={option}>
+          {options.map((option, i) => (
+            <span key={i}>
+            <label htmlFor={option}>
               <input type="radio" id={option} name="comparability" value={option} checked={comparability === option} onChange={() => setComparability(option)} />
               {" "}{option.charAt(0).toUpperCase() + option.slice(1)}
             </label>
             <br/>
-            </>
+            </span>
           ))}
 
         </div>
