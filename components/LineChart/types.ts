@@ -15,6 +15,7 @@ export interface LineChartProps<T extends Record<string, any>> {
   aggregates?: Array<{role: keyof T}>
   yearKey: keyof T
   children?: React.ReactElement<DimensionProps> | React.ReactElement<DimensionProps>[];
+  fixedRange?: [number, number]
   // lowerBandKey: keyof T
   // upperBandKey: keyof T
 }
