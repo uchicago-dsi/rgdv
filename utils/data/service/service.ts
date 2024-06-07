@@ -428,7 +428,13 @@ export class DataService<DataT extends Record<string, any>> {
       .map((col: string) => timeSeriesAggregates.map((f) => `${f.template(col)} as ${f.alias(col)}`))
       .flat()
       .join(", ")
-    return `SELECT ${columnQuery} FROM ${config.file} WHERE "${this.idColumn}" LIKE '${id}%'`
+    
+    let q = `SELECT ${columnQuery} FROM ${config.file}`
+    if (id.length >= 2){
+      q += `WHERE "${this.idColumn}" LIKE '${id}%'`
+    }
+    return q
+
   }
 
   rotateSimple(

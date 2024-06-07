@@ -14,14 +14,15 @@ export const ReportRenderer: React.FC<{
   unit: string
   comparability?: string
   children?: React.ReactNode
-}> = ({ _data, statText, id, unit, comparability, children }) => {
+  showHeader?: boolean
+}> = ({ _data, statText, id, unit, comparability, children, showHeader }) => {
   const { stats, name, data, foodAccess, marketPower, segregation, economicAdvantage, descriptionText, raceData } =
     renderReportText(_data.result!, statText, id, comparability)
 
   return (
     <div className="min-h-[100vh] bg-theme-canvas-500 p-4">
       {/* button to add to current url query param comparability = state */}
-      <div className="lg:grid lg:grid-cols-4 lg:gap-8">
+      {!!showHeader && <div className="lg:grid lg:grid-cols-4 lg:gap-8">
         <div className="col-span-1">
           <a href={`/${data.UNIT}`} className="align-center mb-4 flex items-center pb-2 text-sm text-gray-600">
             <ArrowLeftIcon className="mr-2 inline size-4" />
@@ -71,7 +72,7 @@ export const ReportRenderer: React.FC<{
             />
           </div>
         </div>
-      </div>
+      </div>}
       <div className="mt-8 grid gap-8 lg:grid-cols-4">
         {/* first grid col */}
         <div className="prose sticky top-0 col-span-1 h-min bg-white/50 p-4 shadow-xl">

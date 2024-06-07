@@ -5,8 +5,9 @@ import { columnsDict } from "utils/data/config"
 import { globals } from "utils/state/globals"
 
 export const useDataService = (
-  id?: string
+  _id?: string
 ) => {
+  const id = _id?.length !== undefined && _id.length >= 2 ? _id : undefined
   const dispatch = useAppDispatch()
   const dbStatus = useAppSelector((state) => state.map.dbStatus)
   const filter = useAppSelector((state) => state.map.idFilter)

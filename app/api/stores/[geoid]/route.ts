@@ -9,25 +9,46 @@ export type ReqParams = {
   }
 }
 
-const cache: Record<'county'|'state'|'tract', any> = {
+type units = "county" | "state" | "tract" | "national"
+
+const cache: Record<units, any> = {
   county: {},
   state: {},
   tract: {},
+  national: {}
 }
 
-let columns: Record<'county'|'state'|'tract', any>  = {
+let columns: Record<units, any>  = {
   county: [],
   state: [],
   tract: [],
+  national: []
 }
 
 const getStores = async (geoid: string) => {
-  const queryType = geoid.length === 2 ? 'state' : geoid.length === 5 ? 'county' : 'tract'
+  let queryType: keyof typeof cache = 'tract'
+  switch (geoid.length) {
+    case 1:
+      queryType = 'national'
+      break
+    case 2:
+      queryType = 'state'
+      break
+    case 5:
+      queryType = 'county'
+      break
+    case 11:
+      queryType = 'tract'
+      break
+  }
+
   const county = geoid.slice(0, 5) as keyof typeof cache
   const state = geoid.slice(0, 2) as keyof typeof cache
   const filename = queryType === 'tract' ? county : state
+
   if (cache[queryType][filename] === undefined) {
-    const data = await readRemoteMsgPackFile<Record<string, Record<string, StoreEntry>>>(`${process.env.DATA_ENDPOINT}stores/${queryType}/${filename}.msgpack.gz`, true)
+    const url = `${process.env.DATA_ENDPOINT}stores/${queryType}/${filename}.msgpack.gz`
+    const data = await readRemoteMsgPackFile<Record<string, Record<string, StoreEntry>>>(url, true)
     if (Array.isArray(data)) {
       if (cache[queryType][filename] === undefined) {
         cache[queryType][filename] = {}
@@ -42,6 +63,7 @@ const getStores = async (geoid: string) => {
       columns[queryType] = data.columns
     }
   }
+  
   if (!cache[queryType][filename]?.[geoid]) {
     return []
   }

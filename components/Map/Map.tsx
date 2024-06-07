@@ -58,6 +58,7 @@ const INITIAL_VIEW_STATE = {
 const randomString = () => Math.random().toString(36).substring(7)
 // const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
 export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick, sidebarOpen = true }) => {
+  const _initialFilter = initialFilter && initialFilter.length >= 2 ? initialFilter : undefined
   const mapId = useRef(randomString())
   const router = useRouter()
   const [containerHeight, setContainerHeight] = useState<string | undefined>(undefined)
@@ -118,7 +119,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
     storeData,
     storesHaveGeo,
     highlight,
-  } = useDataService(initialFilter)
+  } = useDataService(_initialFilter)
 
   useEffect(() => {
     // pan map to centroid
@@ -137,7 +138,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
   const getElementColor = simpleMap
     ? (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
         const id = element?.properties?.GEOID
-        if (id === undefined || !id.startsWith(initialFilter)) {
+        if (id === undefined || !id.startsWith(_initialFilter)) {
           return [0, 0, 0, 0]
         }
         return [120, 120, 120]
@@ -327,11 +328,11 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
   const handleSetFilter = (filter: string) => dispatch(fetchCentroidById(filter))
 
   useEffect(() => {
-    if (initialFilter) {
-      dispatch(fetchCentroidById(initialFilter))
+    if (_initialFilter) {
+      dispatch(fetchCentroidById(_initialFilter))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialFilter])
+  }, [_initialFilter])
 
   useEffect(() => {
     const fetchData = async () => {

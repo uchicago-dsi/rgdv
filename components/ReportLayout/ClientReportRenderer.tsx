@@ -9,6 +9,7 @@ export const ClientReportRenderer: React.FC<{
   statText: any
   unit: string
   children: React.ReactNode
+  showHeader?: boolean
 }> = (props) => {
   const { comparability, setComparability, options } = useComparability()
   const isServer = typeof window === "undefined"

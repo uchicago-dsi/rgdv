@@ -83,16 +83,24 @@ export const ReportSections: React.FC<{
         </div>
       )
     case "Store List":
+      let dataColumns: string[] | undefined = ["PARENT COMPANY", `PCT OF ${data?.UNIT?.toUpperCase() || ''} SALES`]
+      if (unit === "tract") {
+        dataColumns = undefined
+      }
+      if (unit === "national"){
+        dataColumns = ["PARENT COMPANY", "PCT OF NATIONAL SALES"]
+      }
+
       return (
         <div id={divId}>
           <StoreList
             id={id}
-            columns={unit === "tract" ? undefined : ["PARENT COMPANY", `PCT OF ${data.UNIT.toUpperCase()} SALES`]}
+            columns={dataColumns}
             formatters={
               unit === "tract"
                 ? undefined
                 : {
-                    [`PCT OF ${data.UNIT.toUpperCase()} SALES`]: {
+                    [`PCT OF ${data?.UNIT?.toUpperCase() || ''} SALES`]: {
                       label: "Estimated Percent of Grocery Sales in " + data.name,
                       formatterPreset: "percent",
                     },
