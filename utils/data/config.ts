@@ -199,7 +199,7 @@ export const timeSeriesConfig = {
     columns: [2000, ...new Array(2021 - 2010).fill(null).map((_, i) => i + 2010)],
   },
   gravityDs: {
-    file: "gravity_dollar_pivoted.parquet",
+    file: "gravity_dollar_pivoted_normalized.parquet",
     label: "Food Access with Dollar Stores",
     columns: [2000, ...new Array(2021 - 2010).fill(null).map((_, i) => i + 2010)],
   },
