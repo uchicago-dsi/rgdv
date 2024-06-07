@@ -5,7 +5,6 @@ export const getSummaryStats = async <T extends Record<string, unknown>>(level: 
   try {
     const filepath = join(process.cwd(), "public", "data", "summary", level, `${id.slice(0,2)}.min.msgpack.gz`) 
     const data = await readMsgPackFile<any>(filepath, true)
-    console.log(data)
     const entry = data[id]
     const columns = data.columns
     if (!entry || !columns) {

@@ -28,15 +28,16 @@ export const ReportLayout: React.FC<ReportLayoutProps> = async ({ id, showHeader
     getSummaryStats<any>(unit, id),
     getMdxContent("statistics", "primary.mdx"),
   ])
+  
   if (!_data.ok) {
     return <div>Sorry, we couldn&apos;t find data for that place.</div>
   }
-
+  const Wrapper = comparabilityOptions.length > 1 ? ComparabilityProvider : React.Fragment
   return (
-    <ComparabilityProvider comparabilityOptions={comparabilityOptions}>
+    <Wrapper comparabilityOptions={comparabilityOptions}>
       <ClientReportRenderer id={id} _data={_data} statText={statText} unit={unit} showHeader={showHeader} >
         <ReportRenderer id={id} _data={_data} statText={statText} unit={unit} showHeader={showHeader} />
       </ClientReportRenderer>
-    </ComparabilityProvider>
+    </Wrapper>
   )
 }

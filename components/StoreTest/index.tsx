@@ -10,7 +10,7 @@ const Outer = () => {
 
 const StoreTest = () => {
   const store = useAppSelector(s => s)
-  console.log(store)
+  // console.log(store)
   return null
 }
 
