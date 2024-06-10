@@ -429,7 +429,7 @@ export class DataService<DataT extends Record<string, any>> {
       .flat()
       .join(", ")
     
-    let q = `SELECT ${columnQuery} FROM ${config.file}`
+    let q = `SELECT ${columnQuery} FROM "${config.file}" `
     if (id.length >= 2){
       q += `WHERE "${this.idColumn}" LIKE '${id}%'`
     }
@@ -561,7 +561,7 @@ export class DataService<DataT extends Record<string, any>> {
     const file = config.file
     const columns = config.columns
     const query = isTract
-      ? `SELECT * FROM ${file} WHERE "${this.idColumn}" LIKE '${id}'`
+      ? `SELECT * FROM "${file}" WHERE "${this.idColumn}" LIKE '${id}'`
       : this.buildAgregateTimeseriesQuery(config, id)
     const result = await this.runQuery(query)
 
