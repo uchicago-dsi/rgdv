@@ -15,7 +15,7 @@ import { deepCompare2d1d } from "utils/data/compareArrayElements"
 import { formatterPresets } from "utils/display/formatValue"
 import { useDataService } from "utils/hooks/useDataService"
 import { setClickInfo, setTooltipInfo } from "utils/state/map"
-import { store, useAppDispatch } from "utils/state/store"
+import { store, useAppDispatch, useAppSelector } from "utils/state/store"
 import { fetchCentroidById } from "utils/state/thunks"
 import { zeroPopTracts } from "utils/zeroPopTracts"
 import { MapSettings } from "components/MapSettings/MapSettings"
@@ -53,6 +53,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
   const _initialFilter = initialFilter && initialFilter.length >= 2 ? initialFilter : undefined
   const mapId = useRef(randomString())
   const router = useRouter()
+  const clickedId = useAppSelector((state) => state.map.clicked?.id)
   const [containerHeight, setContainerHeight] = useState<string | undefined>(undefined)
 
   const [clickedGeo, setClickedGeo] = useState<any>({
@@ -153,6 +154,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         }
         return color
       }
+
   const getElementLine = simpleMap
     ? (_e: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
         return [0, 0, 0]
@@ -192,12 +194,20 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
       data: `/api/tiles/tracts/{z}/{x}/{y}`,
       minZoom: 0,
       maxZoom: 14,
-      getLineColor: getElementLine,
+      // @ts-ignore
+      getLineColor: ({properties}) => {
+        const id = properties?.GEOID
+        if (id && clickedId && id === clickedId) {
+          return [255, 120, 0]
+        }
+        return [0,0,0,0]
+      },
       getFillColor: getElementColor,
       getlineWidth: 1,
-      lineWidthMinPixels: 0,
+      lineWidthMinPixels: 6,
       autoHighlight: true,
       updateTriggers: {
+        getLineColor: [clickedId],
         getFillColor: [isReady, snapshot.fill],
       },
       onClick: (info, event) => {
@@ -243,7 +253,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
       visible: !!highlight,
       updateTriggers: {
         visible: [highlight],
-        getLineColor: [isReady, snapshot.highlight],
+        getLineColor: [isReady, snapshot.highlight, clickedId],
       },
       pickable: false,
     }),
