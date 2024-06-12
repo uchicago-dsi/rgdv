@@ -385,7 +385,7 @@ export const defaultColumnGroup: keyof typeof columnGroups = Object.entries(colu
   v.columns.includes(defaultColumn)
 )![0]
 
-export const highlightConfig = {
+export const communityHighlightConfig = {
   "Black or African American": {
     column: '"PCT NH BLACK"',
     type: "continuous",
@@ -417,4 +417,20 @@ export const highlightConfig = {
   // median HH income
   // USDA low income low access flag
   
+} as const
+export const parentCompanyHighlightConfig = {
+  "Walmart": {
+    column: '"WALMART INC"',
+    type: "continuous",
+    default: [0.3, 1],
+    range: [0, 1],
+    step: 0.01,
+    formatter: percentFormatter.format,
+    color: '#0071ce'
+  },
+} as const
+
+export const combinedHighlightConfig = {
+  ...communityHighlightConfig,
+  ...parentCompanyHighlightConfig,
 } as const

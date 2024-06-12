@@ -2,7 +2,7 @@ import { createListenerMiddleware } from "@reduxjs/toolkit"
 import { mapSlice, setTooltipReady, setTimeSeriesLoaded, setTooltipInfo } from "utils/state/map"
 import { MapState } from "utils/state/types"
 import { globals } from "./globals"
-import { highlightConfig, columnsDict } from "utils/data/config"
+import { combinedHighlightConfig, columnsDict } from "utils/data/config"
 import { BivariateColorParamteres, MonovariateColorParamteres } from "utils/data/service/types"
 import { loadTimeseriesData } from "./thunks"
 
@@ -89,7 +89,8 @@ mapDataMiddleware.startListening({
     const state = listenerApi.getState()
     const dispatch = listenerApi.dispatch
     const ds = globals.ds
-    const config = state?.map?.highlight && highlightConfig[state?.map?.highlight]
+    // @ts-ignore
+    const config = state?.map?.highlight && combinedHighlightConfig[state?.map?.highlight]
     const value = state.map.highlightValue as any
     if (!ds || !config) {
       return

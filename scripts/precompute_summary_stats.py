@@ -12,19 +12,7 @@ current_dir = path.dirname(path.abspath(__file__))
 data_dir = path.join(current_dir, '..', 'public', 'data')
 # %%
 df_full =  pd.read_parquet(path.join(data_dir, 'full_tract.parquet'))
-# %%
-normaliz_cols = [
-  'gravity_2021',
-  'gravity_2020',
-  'gravity_2010',
-  'gravity_2000',
-]
-for col in normaliz_cols:
-  df_full[col] = pd.to_numeric(df_full[col], errors='coerce').fillna(0)
-  df_full[col] = df_full[col] / df_full[col].max()
-  df_full[col] = round(df_full[col] * 100, 2)
 
-df_full.to_parquet(path.join(data_dir, 'full_tract_normalized.parquet'), compression='gzip')
 # %%
 year = '2023'
 
@@ -118,7 +106,7 @@ def generate_stats(
 
   if level == 'tract':
     df_agg = get_county_percentile(df_agg, weighted_col, id_col)
-  print(df_agg.columns)
+
   df_agg.columns = out_cols[:len(df_agg.columns)]
   return df_agg
 
@@ -195,19 +183,25 @@ summary_names['NAME'] = summary_names['NAME'].fillna(summary_names['GEOID'])
 # %%
 write_msgpack(summary_names.to_dict(orient='records'), path.join(data_dir, 'names.msgpack'), compress=True)
 # %%
+gravity_file = path.join(data_dir, 'gravity_no_dollar_pivoted_normalized.parquet')
+gravity_ds_file = path.join(data_dir, 'gravity_dollar_pivoted_normalized.parquet')
+hhi_file = path.join(data_dir, 'concentration_metrics_wide.parquet')
+hhi_ds_file = path.join(data_dir, 'concentration_metrics_wide_ds.parquet')
+
+# %%
 gravity_county = generate_stats(
-  path.join(data_dir, 'gravity_no_dollar_pivoted.parquet'),
+  gravity_file,
   path.join(data_dir, 'demography_tract.parquet'),
   "county",
   "county",
   "county",
-  '2021',
+  '2023',
   "TOTAL_POPULATION",
   "gravity",
 )
 
 hhi_county = generate_stats(
-  path.join(data_dir, 'concentration_metrics_wide.parquet'),
+  hhi_file,
   path.join(data_dir, 'demography_tract.parquet'),
   "county",
   "county",
@@ -244,50 +238,18 @@ split_df_and_msgpack(
   compress=True
 )
 # %%
-gravity_full = pd.read_parquet(path.join(data_dir, 'gravity_no_dollar_pivoted.parquet'))
-# normalize each column except for the GEOID
-for col in gravity_full.columns:
-  if col == 'GEOID':
-    continue
-  not_null_loc = gravity_full[col].notnull()
-  gravity_full.loc[not_null_loc, col] = gravity_full.loc[:, col] / gravity_full.loc[:, col].max()
-  gravity_full.loc[not_null_loc, col] = round(gravity_full.loc[:, col] * 100, 2)
-
-gravity_full['diff'] = gravity_full['2021'] - gravity_full['2000']
-gravity_full = gravity_full[['GEOID', '2000', '2010', '2020', '2021', 'diff']]
-
-# gravity_full.to_parquet(path.join(data_dir, 'gravity_no_dollar_pivoted_normalized.parquet'), compression='gzip')
-# %%
-hhi_full = pd.read_parquet(path.join(data_dir, 'concentration_metrics_wide.parquet'))
-hhi_full['diff'] = hhi_full['2023'] - hhi_full['2000']
-hhi_full = hhi_full[['GEOID', '2000', '2010', '2020', '2023', 'diff']]
-hhi_full['invert_diff_hhi'] = 1 - hhi_full['diff']
-merged = gravity_full.merge(hhi_full, how='outer', on="GEOID", suffixes=('_gravity', '_hhi'))
-# %%
-# run correlation analysis on diff_gravity and invert_diff_hhi scipy.stats.pearsonr
-import scipy.stats as stats
-
-def get_correlation(df, col1, col2):
-  df = df[[col1, col2]].dropna()
-  return stats.pearsonr(df[col1], df[col2])
-
-get_correlation(merged, 'diff_gravity', 'invert_diff_hhi')
-
-
-# %%
-
 gravity_tract = generate_stats(
-  path.join(data_dir, 'gravity_no_dollar_pivoted.parquet'),
+  gravity_file,
   path.join(data_dir, 'demography_tract.parquet'),
   "tract",
   "GEOID",
   "GEOID",
-  '2021',
+  '2023',
   "TOTAL_POPULATION",
   "gravity"
 )
 hhi_tract = generate_stats(
-  path.join(data_dir, 'concentration_metrics_wide.parquet'),
+  hhi_file,
   path.join(data_dir, 'demography_tract.parquet'),
   "tract",
   "GEOID",
@@ -324,7 +286,7 @@ def get_full_data(path, column_dict, out_cols=["GEOID"]):
   return df[cols_out]
 
 gravity_full_ds = get_full_data(
-  path.join(data_dir, 'gravity_dollar_pivoted.parquet'),
+  gravity_ds_file,
   {
     '2000': 'gravity_ds_2000',
     '2010': 'gravity_ds_2010',
@@ -333,7 +295,7 @@ gravity_full_ds = get_full_data(
 )
 
 gravity_full = get_full_data(
-  path.join(data_dir, 'gravity_no_dollar_pivoted.parquet'),
+  gravity_file,
   {
     '2000': 'gravity_2000',
     '2010': 'gravity_2010',
@@ -341,7 +303,7 @@ gravity_full = get_full_data(
   }
 )
 hhi_full_ds = get_full_data(
-  path.join(data_dir, 'concentration_metrics_wide_ds.parquet'),
+  hhi_ds_file,
   {
     '2000': 'hhi_ds_2000',
     '2010': 'hhi_ds_2010',
@@ -350,7 +312,7 @@ hhi_full_ds = get_full_data(
 )
 
 hhi_full = get_full_data(
-  path.join(data_dir, 'concentration_metrics_wide.parquet'),
+  hhi_file,
   {
     '2000': 'hhi_2000',
     '2010': 'hhi_2010',
@@ -365,11 +327,14 @@ sdoh_full = get_full_data(
   }
 )
 # %%
+market_share = pd.read_parquet(path.join(data_dir, 'national_chain_share_output.parquet'))
+# %%
 full_out = tract_joined.merge(gravity_full, how='left', on="GEOID")\
   .merge(gravity_full_ds, how='left', on="GEOID")\
   .merge(hhi_full_ds, how='left', on="GEOID")\
   .merge(hhi_full, how='left', on="GEOID")\
   .merge(sdoh_full, how='left', on="GEOID")\
+  .merge(market_share, how="left", on="GEOID")\
   .drop(columns=["FIPS"])
 # %%
 full_out.to_parquet(path.join(data_dir, 'full_tract.parquet'), compression='gzip')
@@ -382,7 +347,6 @@ columnarize_msgpack(
   compress=True
 )
 # %%
-# %%
 split_df_and_msgpack(
   full_out,
   'GEOID',
@@ -392,17 +356,17 @@ split_df_and_msgpack(
 # %%
 
 gravity_state = generate_stats(
-  path.join(data_dir, 'gravity_dollar_pivoted.parquet'),
+  gravity_file,
   path.join(data_dir, 'demography_tract.parquet'),
   "state",
   "state",
   'state',
-  '2021',
+  '2023',
   'TOTAL_POPULATION',
   "gravity"
 )
 hhi_state = generate_stats(
-  path.join(data_dir, 'concentration_metrics_wide_ds.parquet'),
+  hhi_file,
 
   path.join(data_dir, 'demography_tract.parquet'),
   "state",
@@ -440,5 +404,11 @@ split_df_and_msgpack(
   compress=True
 )
 # %%
-demog_tract = pd.read_parquet(path.join(data_dir, 'demography_tract.parquet'))
+us_demog = pd.read_parquet(path.join(data_dir, 'demography_us.parquet'))
+us_demog['GEOID'] = 'us'
+us_demog['UNIT'] = "nation"
+us_demog["UNIT_PLURAL"] = "nation"
+# %%
+data_dir = path.join(current_dir, '..', 'public', 'data')
+columnarize_msgpack(us_demog.to_dict(orient="records"), 'GEOID', path.join(data_dir, 'national', f'1.msgpack'), list(us_demog.columns), compress=True)
 # %%

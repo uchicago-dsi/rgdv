@@ -1,4 +1,4 @@
-import { DataColumns, columnGroups, columnsDict, highlightConfig, timeSeriesConfig, timeSeriesDatasets } from "utils/data/config"
+import { DataColumns, columnGroups, columnsDict, combinedHighlightConfig, timeSeriesConfig, timeSeriesDatasets } from "utils/data/config"
 
 export interface MapState {
   breaks: Array<number>
@@ -30,7 +30,7 @@ export interface MapState {
   timeseriesDatasets: Array<keyof typeof timeSeriesConfig>
   currentTimeseriesDataset?: timeSeriesDatasets
   storeDataId?: string
-  highlight?: keyof typeof highlightConfig
+  highlight?: keyof typeof combinedHighlightConfig
   highlightValue?: readonly [number, number] | readonly (number|string)[]
   highlightColor?: [number, number, number]
 }

@@ -1,17 +1,22 @@
 "use client"
 import { useEffect, useRef, useState } from "react"
-import { highlightConfig } from "utils/data/config"
+import { communityHighlightConfig, parentCompanyHighlightConfig } from "utils/data/config"
 import { setHighlightValue } from "utils/state/map"
 import { useAppDispatch, useAppSelector } from "utils/state/store"
 import SliderRange from "../Slider/Slider"
 
+const combinedConfig = {
+  ...communityHighlightConfig,
+  ...parentCompanyHighlightConfig,
+}
 export const StatefulHighlightForm = () => {
   const dispatch = useAppDispatch()
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const highlight = useAppSelector((state) => state.map.highlight)
   const _highlightValue = useAppSelector((state) => state.map.highlightValue)
-  const highlightConfigValue = highlight && highlightConfig[highlight]
+  // @ts-ignore
+  const highlightConfigValue = highlight && combinedConfig[highlight]
   const [innerValue, setInnerValue] = useState<[number] | [number, number]>([0, 0])
 
   useEffect(() => {

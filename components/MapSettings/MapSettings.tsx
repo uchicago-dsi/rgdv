@@ -6,7 +6,7 @@ import { StatefulHighlightColorPicker } from "components/StatefulControls/Statef
 import { StatefulHighlightForm } from "components/StatefulControls/StatefulMapFilterSlider"
 import Tooltip from "components/Tooltip"
 import { useState } from "react"
-import { columnGroups, highlightConfig } from "utils/data/config"
+import { columnGroups, communityHighlightConfig, parentCompanyHighlightConfig } from "utils/data/config"
 import { setCurrentColumn, setCurrentColumnGroup, setHighlight } from "utils/state/map"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
 import { fetchCentroidById } from "utils/state/thunks"
@@ -23,7 +23,7 @@ const SettingsConfig: Array<{ label: string; icon: keyof typeof Icons }> = [
     icon: "Layers",
   },
   {
-    label: "Key Communities",
+    label: "Map Highlights",
     icon: "Highlight",
   },
   {
@@ -51,12 +51,12 @@ export const MapSettings: React.FC = () => {
   const handleSetFilter = (filter: string) => dispatch(fetchCentroidById(filter))
 
   const handleMenuButton = (label: string) => {
-    setActiveMenuSection(prev => prev === label ? undefined : label)
+    setActiveMenuSection((prev) => (prev === label ? undefined : label))
   }
-  
+
   return (
     <>
-      <div className={`h-full w-10 bg-white flex-none border-r-2 border-neutral-500`}>
+      <div className={`h-full w-10 flex-none border-r-2 border-neutral-500 bg-white`}>
         {SettingsConfig.map((config, i) => (
           <button
             key={i}
@@ -69,64 +69,86 @@ export const MapSettings: React.FC = () => {
           </button>
         ))}
       </div>
-      <div className="h-full w-auto flex flex-col bg-none">
-      <MapInfoSection />
-      <div className={`relative flex  h-full ${activeMenuSection ? "w-96 border-neutral-500 border-r-2" : "w-0"} flex-col`}>
-        {!!activeMenuSection && <button onClick={() => setActiveMenuSection(undefined)} className="absolute top-0 right-0 p-2
-          hover:text-red-500 transition-all cursor-pointer
-        ">
-          &times;
-        </button>}
-        <MenuSection title="Topics" isActive={activeMenuSection === "Map Layers"}>
-          {Object.keys(columnGroups).map((group, i) => (
-            <MenuButton
-              key={i}
-              onClick={() => handleSetColumnGroup(group)}
-              label={group}
-              selected={currentColumnGroup === group}
-            />
-          ))}
-        </MenuSection>
-        <MenuSection title="Available Data" isActive={activeMenuSection === "Map Layers"}>
-          {availableColumns.map((c, i) => (
-            <MenuButton key={i} onClick={() => handleSetColumn(c)} label={c} selected={currentColumn === c} />
-          ))}
-        </MenuSection>
-
-        <MenuSection
-          isActive={activeMenuSection === "Key Communities"}
-          title="Key Communities"
-          titleChildren={
-            <Tooltip
-              explainer={
-                <>
-                  Choose a color
-                  <StatefulHighlightColorPicker />
-                </>
-              }
-            ></Tooltip>
-          }
+      <div className="flex h-full w-auto flex-col bg-none">
+        <MapInfoSection />
+        <div
+          className={`relative flex  h-full ${
+            activeMenuSection ? "w-96 border-r-2 border-neutral-500" : "w-0"
+          } flex-col`}
         >
-          {Object.keys(highlightConfig).map((name, i) => (
-            <MenuButton
-              key={i}
-              onClick={() =>
-                highlight === name ? dispatch(setHighlight(undefined)) : dispatch(setHighlight(name as any))
-              }
-              label={name}
-              selected={highlight === name}
-            />
-          ))}
-          <StatefulHighlightForm />
-          {/* color picker */}
-        </MenuSection>
-        <MenuSection title="Filter Map" isActive={activeMenuSection === "Filter Map"}>
-          <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
-        </MenuSection>
-        <MenuSection title="Map Colors" isActive={activeMenuSection === "Map Colors"}>
-          fixed or relative [coming soon]
-        </MenuSection>
-        {/* <DropdownMenuDemo>
+          {!!activeMenuSection && (
+            <button
+              onClick={() => setActiveMenuSection(undefined)}
+              className="absolute right-0 top-0 cursor-pointer
+          p-2 transition-all hover:text-red-500
+        "
+            >
+              &times;
+            </button>
+          )}
+          <MenuSection title="Topics" isActive={activeMenuSection === "Map Layers"}>
+            {Object.keys(columnGroups).map((group, i) => (
+              <MenuButton
+                key={i}
+                onClick={() => handleSetColumnGroup(group)}
+                label={group}
+                selected={currentColumnGroup === group}
+              />
+            ))}
+          </MenuSection>
+          <MenuSection title="Available Data" isActive={activeMenuSection === "Map Layers"}>
+            {availableColumns.map((c, i) => (
+              <MenuButton key={i} onClick={() => handleSetColumn(c)} label={c} selected={currentColumn === c} />
+            ))}
+          </MenuSection>
+
+          <MenuSection
+            isActive={activeMenuSection === "Map Highlights"}
+            title="Highlight areas on the map"
+            titleChildren={
+              <Tooltip
+                explainer={
+                  <>
+                    Choose a color
+                    <StatefulHighlightColorPicker />
+                  </>
+                }
+              ></Tooltip>
+            }
+          >
+            <p>Communities</p>
+            {Object.keys(communityHighlightConfig).map((name, i) => (
+              <MenuButton
+                key={i}
+                onClick={() =>
+                  highlight === name ? dispatch(setHighlight(undefined)) : dispatch(setHighlight(name as any))
+                }
+                label={name}
+                selected={highlight === name}
+              />
+            ))}
+            <p>Corporate Market Dominance</p>
+
+            {Object.keys(parentCompanyHighlightConfig).map((name, i) => (
+              <MenuButton
+                key={i}
+                onClick={() =>
+                  highlight === name ? dispatch(setHighlight(undefined)) : dispatch(setHighlight(name as any))
+                }
+                label={name}
+                selected={highlight === name}
+              />
+            ))}
+            <StatefulHighlightForm />
+            {/* color picker */}
+          </MenuSection>
+          <MenuSection title="Filter Map" isActive={activeMenuSection === "Filter Map"}>
+            <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
+          </MenuSection>
+          <MenuSection title="Map Colors" isActive={activeMenuSection === "Map Colors"}>
+            fixed or relative [coming soon]
+          </MenuSection>
+          {/* <DropdownMenuDemo>
       <div className="max-w-[100vw] p-4">
         <p>Choose a topic</p>
         <hr />
@@ -182,7 +204,7 @@ export const MapSettings: React.FC = () => {
         <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
       </div>
     </DropdownMenuDemo> */}
-      </div>
+        </div>
       </div>
     </>
   )

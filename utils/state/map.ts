@@ -8,7 +8,7 @@ import {
   defaultColumn,
   defaultColumnGroup,
   defaultTimeseriesDataset,
-  highlightConfig,
+  combinedHighlightConfig,
   timeSeriesConfig,
   timeSeriesDatasets,
 } from "utils/data/config"
@@ -69,7 +69,8 @@ export const mapSlice = createSlice({
     setHighlight: (state, action: PayloadAction<MapState["highlight"]>) => {
       if (action.payload) {
         state.highlight = action.payload
-        const config = highlightConfig[action.payload]
+        // @ts-ignore
+        const config = combinedHighlightConfig[action.payload]
         state.highlightValue = config.default as any
         if (config.color) {
           const tcColor = tinycolor(config.color)
