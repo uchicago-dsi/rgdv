@@ -3,7 +3,7 @@ import { ColumnConfig, ColumnGroups } from "./config.types"
 import { percentFormatter } from "utils/display/formatValue"
 
 export const idColumn = "GEOID"
-export const summaryTractFile = "full_tract_normalized.parquet"
+export const summaryTractFile = "full_tract.parquet"
 const minYear = 1997
 const maxYear = 2023
 export const defaultYear = 2020
@@ -41,6 +41,12 @@ export const columnsDict = {
   "Food Access Supply - 2000 (With Dollar Stores)": generateGravityConfig(2000, true),
   "Food Access Supply - 2010 (With Dollar Stores)": generateGravityConfig(2010, true),
   "Food Access Supply - 2020 (With Dollar Stores)": generateGravityConfig(2020, true),
+  "Percent Walmart": {
+    name: "Percent Walmart",
+    column: '"WALMART INC"',
+    description: "Percentage of Walmart stores",
+    bivariate: false,
+  },
   "Measure of Segregation (Black/African American and White)": {
     name: "Segregation Factor ICE Hispanic NH White Alone",
     bivariate: false,
@@ -261,6 +267,7 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
         "Market Concentration - 2020 (With Dollar Stores)",
         "Market Concentration - 2010 (With Dollar Stores)",
         "Market Concentration - 2000 (With Dollar Stores)",
+        "Percent Walmart"
     ],
   },
   "Food Access": {
