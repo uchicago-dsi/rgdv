@@ -386,23 +386,33 @@ export const defaultColumnGroup: keyof typeof columnGroups = Object.entries(colu
 )![0]
 
 export const communityHighlightConfig = {
-  "Black or African American": {
+  "Non-Hispanic Black or African American (%)": {
     column: '"PCT NH BLACK"',
     type: "continuous",
     default: [0.3, 1],
     range: [0, 1],
     step: 0.01,
     formatter: percentFormatter.format,
-    color: '#00FF00'
+    color: '#FFFF00'
   },
-  "Hispanic or Latinx": {
+  "Hispanic or Latinx (%)": {
     column: '"PCT HISPANIC OR LATINO"',
     type: "continuous",
     default: [0.3, 1],
     range: [0, 1],
     step: 0.01,
     formatter: percentFormatter.format,
-    color: '#FFFFE0'
+    color: '#FFFF00'
+  },
+  "Non-Hispanic White (%)": {
+    column: '"PCT NH WHITE"',
+    type: "continuous",
+    default: [0, 0.3],
+    range: [0, 1],
+    step: 0.01,
+    formatter: percentFormatter.format,
+    color: '#FFFF00',
+    // inverse: true
   },
   "Poverty Rate": {
     column: '"POVERTY_RATE"',
@@ -411,23 +421,96 @@ export const communityHighlightConfig = {
     range: [0, 1],
     step: 0.01,
     formatter: percentFormatter.format,
-    color: '#FF0000'
+    color: '#FFFF00'
+  },
+  "Percent Receiving SNAP Benefits": {
+    column: "PCT_SNAP_ASSISTANCE",
+    type: "continuous",
+    default: [0.3, 1],
+    range: [0, 1],
+    step: 0.01,
+    formatter: percentFormatter.format,
+    // yellow
+    color: '#FFFF00'
+  },
+  "Percent with a Disability": {
+    column: "PCT_WITH_A_DISABILITY",
+    type: "continuous",
+    default: [0.3, 1],
+    range: [0, 1],
+    step: 0.01,
+    formatter: percentFormatter.format,
+    color: '#FFFF00'
   },
   // median age
   // median HH income
   // USDA low income low access flag
   
 } as const
+
+const companyConfig = {
+  type: "continuous",
+  default: [0.3, 1],
+  range: [0, 1],
+  step: 0.01,
+  formatter: percentFormatter.format,
+  color: '#ff0000'
+} as const 
+
+// AHOLD DELHAIZE USA INC	ALBERTSONS CO INC	COSTCO WHOLESALE CORP	DOLLAR GENERAL CORP	DOLLAR TREE INC	KROGER CO	LONE STAR FUNDS	MEIJER INC	PUBLIX SUPER MARKETS INC	TARGET CORP	TRADER JOE'S	WAKEFERN FOOD CORP INC	WALMART INC	WEGMANS FOOD MARKETS INC
 export const parentCompanyHighlightConfig = {
+  "Ahold Delhaize": {
+    column: '"AHOLD DELHAIZE USA INC"',
+    ...companyConfig
+  },
+  "Albertsons": {
+    column: '"ALBERTSONS CO INC"',
+    ...companyConfig
+  },
+  "Costco": {
+    column: '"COSTCO WHOLESALE CORP"',
+    ...companyConfig
+  },
+  "Dollar General": {
+    column: '"DOLLAR GENERAL CORP"',
+    ...companyConfig
+  },
+  "Dollar Tree": {
+    column: '"DOLLAR TREE INC"',
+    ...companyConfig
+  },
+  "Kroger": {
+    column: '"KROGER CO"',
+    ...companyConfig
+  },
+  "Meijer": {
+    column: '"MEIJER INC"',
+    ...companyConfig
+  },
+  "Publix": {
+    column: '"PUBLIX SUPER MARKETS INC"',
+    ...companyConfig
+  },
+  "Target": {
+    column: '"TARGET CORP"',
+    ...companyConfig
+  },
+  "Trader Joe's": {
+    column: '"TRADER JOE\'S"',
+    ...companyConfig
+  },
+  "Wakefern": {
+    column: '"WAKEFERN FOOD CORP INC"',
+    ...companyConfig
+  },
+  "Wegmans": {
+    column: '"WEGMANS FOOD MARKETS INC"',
+    ...companyConfig
+  },
   "Walmart": {
     column: '"WALMART INC"',
-    type: "continuous",
-    default: [0.3, 1],
-    range: [0, 1],
-    step: 0.01,
-    formatter: percentFormatter.format,
-    color: '#0071ce'
-  },
+    ...companyConfig
+  }
 } as const
 
 export const combinedHighlightConfig = {

@@ -399,7 +399,6 @@ export class DataService<DataT extends Record<string, any>> {
       return this.tooltipResults[id]
     }
     const _res = await this.runQuery<DataT[]>(`SELECT * FROM ${dataTableName} WHERE "${this.idColumn}" LIKE '${id}'`)
-    console.log(JSON.parse(this.stringifyJsonWithBigInts(_res)))
     if (!_res || _res.length === 0) {
       console.error(`No results for tooltip query: ${id}`)
       return

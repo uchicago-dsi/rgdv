@@ -8,4 +8,5 @@ export interface SliderRangeProps {
   title?: string;
   showRange?: boolean;
   showValue?: boolean;
+  inverse?: boolean;
 }

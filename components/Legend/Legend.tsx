@@ -8,6 +8,9 @@ import { LegendProps } from "./types"
 
 export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, breaks }) => {
   const colorFilter = useAppSelector((state) => state.map.colorFilter)
+  const highlight = useAppSelector((state) => state.map.highlight)
+  const higlightValue = useAppSelector((state) => state.map.highlightValue)
+  const highlightColor = useAppSelector((state) => state.map.highlightColor)
   const dispatch = useAppDispatch()
 
   const [legendtooltip, setLegendTooltip] = useState<number[]>([])
@@ -89,6 +92,7 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
             </div>
           )}
         </div>
+        <HighlightLegend highlight={highlight} value={higlightValue} color={highlightColor} />
       </div>
     )
   } else {
@@ -107,7 +111,23 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
             />
           ))}
         <p style={{ maxWidth: "35ch", fontSize: "0.75rem" }}>{/* <i>{currentDataSpec?.attribution}</i> */}</p>
+        <HighlightLegend highlight={highlight} value={higlightValue} color={highlightColor}/>
       </div>
     )
   }
+}
+
+const HighlightLegend: React.FC<{highlight?: string, value?: readonly any[], color: any }> = ({highlight, value, color}) => {
+  if (!highlight || !value) return null
+  return (
+      <p className="prose font-xs max-w-64 pl-2 pt-4" style={{
+        fontSize: "0.75rem",
+      }} >
+        <span className="size-[0.75rem] inline-block border-black border-2 mr-2" style={{
+          
+          background: `rgb(${color.join(",")}`
+        }}></span>
+        {highlight} (
+        &gt;{value}%) </p>
+  )
 }

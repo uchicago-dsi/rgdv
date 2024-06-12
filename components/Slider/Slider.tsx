@@ -4,6 +4,15 @@ import * as Tooltip from "@radix-ui/react-tooltip"
 import React, { useState } from "react"
 import { SliderRangeProps } from "./types"
 
+
+const invertValues = (values: number[], max: number, direction: "forward" | "backward") => {
+  if (direction === "forward") {
+    return values.map((v) => max - v).sort((a, b) => a - b)
+  } else {
+    return values.map((v) => max - v).sort((a, b) => b - a)
+  }
+}
+
 const SliderRange: React.FC<SliderRangeProps> = ({
   onChange,
   min,
@@ -11,17 +20,21 @@ const SliderRange: React.FC<SliderRangeProps> = ({
   step,
   value,
   title,
+  inverse,
   formatter,
   showRange = false,
   showValue = false,
 }) => {
   const [mouseInside, setMouseInside] = useState(false)
 
+  let innerValue = inverse ? invertValues(value, max, "forward") : value
+
   const handleValueChange = (values: number[]) => {
     if (values.length === 1) {
       onChange([values[0]!])
     } else if (values.length === 2) {
-      onChange([values[0]!, values[1]!])
+      const output = inverse ? invertValues(values, max, "backward") : values
+      onChange([output[0]!, output[1]!])
     }
   }
 
@@ -34,18 +47,15 @@ const SliderRange: React.FC<SliderRangeProps> = ({
       onTouchEnd={() => setMouseInside(false)}
     >
       {title && <p className="text-sm mb-1">{title}</p>}
-      {showRange && (
-        <div className="mb-1 flex w-full justify-between text-xs text-neutral-500">
-          <span>{formatter ? formatter(min) : min}</span>
-          <span>{formatter ? formatter(max) : max}</span>
-        </div>
-      )}
+      <div className="flex flex-row w-full items-center justify-around">
+      {showRange && <p className="py-0 prose text-xs my-0 pr-4">{formatter ? formatter(min) : min}</p>}
+        
       <Slider.Root
-        className="relative flex h-5 w-[200px] touch-none select-none items-center"
+        className="relative flex h-5 touch-none select-none items-center flex-grow"
         min={min}
         max={max}
         step={step}
-        value={value}
+        value={innerValue}
         onValueChange={handleValueChange}
       >
         <Slider.Track className="relative h-[3px] grow rounded-full bg-neutral-300">
@@ -84,6 +94,9 @@ const SliderRange: React.FC<SliderRangeProps> = ({
           )}
         </Tooltip.Provider>
       </Slider.Root>
+
+      {showRange && <p className="py-0 prose text-xs my-0 pl-4">{formatter ? formatter(max) : max}</p>}
+      </div>
     </form>
   )
 }

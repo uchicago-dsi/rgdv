@@ -66,7 +66,7 @@ export type PrimaryData = {
   NH_TWO_OR_MORE_INCLUDING_SOME_OTHER: number // Population count of Non-Hispanic individuals of two or more races, including some other race
   NH_TWO_OR_MORE_EXCLUDING_SOME_OTHER: number // Population count of Non-Hispanic individuals of two or more races, excluding some other race
   HISPANIC_OR_LATINO: number // Population count of Hispanic or Latino individuals
-  PCT_NH_WHITE: number // Percentage of Non-Hispanic White Alone individuals in the population
+  "PCT NH WHITE": number // Percentage of Non-Hispanic White Alone individuals in the population
   PCT_NH_BLACK: number // Percentage of Non-Hispanic Black Alone individuals in the population
   PCT_NH_AMERICAN_INDIAN: number // Percentage of Non-Hispanic American Indian Alone individuals in the population
   PCT_NH_ASIAN: number // Percentage of Non-Hispanic Asian Alone individuals in the population

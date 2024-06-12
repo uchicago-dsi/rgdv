@@ -18,7 +18,7 @@ export const ClientReportRenderer: React.FC<{
       <ReportRenderer {...props} comparability={comparability}>
         {/* options on chagne set comparability */}
         {!!(options?.length > 1) && <div className="prose">
-          <h3>Comparability</h3>
+          {/* <h3>Comparability</h3>
           <p>
             <i>
               You can view data in relation to the whole country, the state of this place, or the county of this place. By default, we compare to the whole country.
@@ -32,7 +32,7 @@ export const ClientReportRenderer: React.FC<{
             </label>
             <br/>
             </span>
-          ))}
+          ))} */}
 
         </div>}
       </ReportRenderer>

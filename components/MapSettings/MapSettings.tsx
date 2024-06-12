@@ -44,7 +44,8 @@ export const MapSettings: React.FC = () => {
   const availableColumns = columnGroups[currentColumnGroup]?.columns || []
   const highlight = useAppSelector((state) => state.map.highlight)
   const filter = useAppSelector((state) => state.map.idFilter)
-
+  // @ts-ignore
+  const highlightType = !highlight ? 'none' : communityHighlightConfig[highlight] ? 'community' : 'parent'
   const dispatch = useAppDispatch()
   const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col as any))
   const handleSetColumnGroup = (group: string) => dispatch(setCurrentColumnGroup(group))
@@ -69,7 +70,7 @@ export const MapSettings: React.FC = () => {
           </button>
         ))}
       </div>
-      <div className="flex h-full w-auto flex-col bg-none">
+      <div className="flex h-full w-auto flex-none flex-col bg-none overflow-y-auto overflow-x-hidden">
         <MapInfoSection />
         <div
           className={`relative flex  h-full ${
@@ -110,13 +111,12 @@ export const MapSettings: React.FC = () => {
                 explainer={
                   <>
                     Choose a color
-                    <StatefulHighlightColorPicker />
                   </>
                 }
               ></Tooltip>
             }
           >
-            <p>Communities</p>
+            <p>Communities and Socioeconomics</p>
             {Object.keys(communityHighlightConfig).map((name, i) => (
               <MenuButton
                 key={i}
@@ -127,7 +127,8 @@ export const MapSettings: React.FC = () => {
                 selected={highlight === name}
               />
             ))}
-            <p>Corporate Market Dominance</p>
+            {highlightType === 'community' && <StatefulHighlightForm />}
+            <p className="pt-8">Corporate Market Dominance</p>
 
             {Object.keys(parentCompanyHighlightConfig).map((name, i) => (
               <MenuButton
@@ -139,7 +140,13 @@ export const MapSettings: React.FC = () => {
                 selected={highlight === name}
               />
             ))}
-            <StatefulHighlightForm />
+            {highlightType === 'parent' && <StatefulHighlightForm />}
+            <div className="flex flex-row mt-4 items-center gap-4">
+            <p className="text-xs">Choose Color (Advanced)</p>
+            <StatefulHighlightColorPicker />
+
+            </div>
+
             {/* color picker */}
           </MenuSection>
           <MenuSection title="Filter Map" isActive={activeMenuSection === "Filter Map"}>
