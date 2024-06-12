@@ -85,36 +85,23 @@ overview:
         threshold: 0
 stat:
   - title: Median Food Access (Gravity)
-    column: gravity_2021
+    column: gravity_2023
     tooltip: "Food access reflects the amount of grocery supply available relative to people living in a given area. This measure is calculated using a gravity model, which estimates access to services based on the number of service providers, the number of people in a given area, and how close they are together.\n\nThis score reflects the median tract value in the state. The score is relative to the rest of the United States, where one hundred (100) is the best food access and zero (0) is the worst food access.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
     templates:
-      - body: >
-          The gravity value for ... tract is %%gravity\_2021%%.
-
-
-          That means that %%100|-|gravity\_2021\_percentile%%% of all counties
-          have better food access.
+      - body: |
+          %%gravity\_2023%%
   - title: Median Market Concentration (HHI)
-    column: hhi_2021
+    column: hhi_2023
     tooltip: "Market concentration is a measure of diversity in the marketplace. It looks at how dominant single grocery stores are in an area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThis score reflects the median tract value for the tract. The score is relative to the rest of the United tracts, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
     templates:
-      - body: >
-          The HHI index for %%NAME%% is %%hhi\_2021%%, where 1 is total monopoly
-          and 0 is a perfectly distributed market. This measure means that you
-          have 1 in %%1|/|hhi\_2021%% chance of guessing where someone shops.
+      - body: |
+          %%hhi\_2023%%
   - title: Median Segregation
-    column: segregation_2021
+    column: segregation_2023
     tooltip: "ICE (Indicators of Concentration at the Extremes) is a measure that looks at how concentrated and how separate populations live within an area. In this case, the ICE metric reflects how segregated black or african american and white people tend to be in the tract.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
     templates:
-      - body: >
-          The median ICE value in the tract for black or african american and
-          white segregation is %%segregation\_2021%%.
-
-
-          This means %%NAME%% is among the
-          %%100|-|segregation\_2021\_percentile%%% most segregated counties
-          nationally, and %%100|-|segregation\_2021\_tract\_percentile%%% within
-          the tract.
+      - body: |
+          %%segregation\_ICE\_Black\_Alone\_White\_Alone\_weighted%%
   - title: Median Household Income (2021 Dollars)
     column: MEDIAN_HOUSEHOLD_INCOME
     tooltip: >
@@ -146,7 +133,7 @@ stat:
       Community Survey (ACS) 2021 5-year estimates.
     templates:
       - body: |
-          %%NO HEALTHCARE TOTAL%%
+          %%PCT\_NO\_HEALTHCARE|\*|100%% % (%%NO HEALTHCARE TOTAL%% people)
   - title: Population
     column: TOTAL_POPULATION
     tooltip: >
@@ -155,7 +142,27 @@ stat:
       data release of 5-year estimates, meaning that the data reflects an
       estimate from 2016-2021.
     templates:
-      - body: ''
+      - body: |
+          %%TOTAL\_POPULATION%%
+  - title: People Receiving SNAP Benefits or Cash Assistance
+    column: PCT_SNAP_ASSISTANCE
+    tooltip: >
+      The SNAP Benefits or Cash Assistance ACS 5-year data shows how many people
+      in a certain area get help from the government to buy food or pay for
+      basic needs over five years. It helps us understand how many families need
+      extra support to make ends meet.
+    templates:
+      - body: |
+          %%PCT\_SNAP\_ASSISTANCE|\*|100%%%
+  - title: People with a disability
+    column: PCT_WITH_A_DISABILITY
+    tooltip: >
+      The number of people who have physical, mental, or sensory conditions that
+      can limit their ability to perform everyday activities. This can include
+      challenges with seeing, hearing, moving, or thinking clearly.
+    templates:
+      - body: |
+          %%PCT\_WITH\_A\_DISABILITY|\*|100%%%
 dataDescription: >
   In the overview and stat blocks, you can write templates with the following
   syntax:
