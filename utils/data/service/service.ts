@@ -15,6 +15,7 @@ import { deepCompare2d1d } from "../compareArrayElements"
 import type { AsyncDuckDBConnection } from "@duckdb/duckdb-wasm"
 export const dataTableName = "data.parquet"
 
+const NULL_COLOR = [120, 120, 120, 0]
 export const getDecimalsFromRange = (range: number) => {
   if (range < 0.01) {
     return 12
@@ -31,10 +32,7 @@ export const getDecimalsFromRange = (range: number) => {
   }
 }
 
-const SENTINEL_VALUES = [
-  -666666666.0,
-  -666666666
-]
+const SENTINEL_VALUES = [-666666666.0, -666666666]
 export class DataService<DataT extends Record<string, any>> {
   data: Record<string, Record<string, Record<string | number, number>>> = {}
   dbStatus: "none" | "loading" | "loaded" | "error" = "none"
@@ -104,8 +102,9 @@ export class DataService<DataT extends Record<string, any>> {
     let query = `SELECT 
       ${quantileFractions.map((f, i) => `round(approx_quantile(${column}, ${f}), ${sigFigs}) as break${i}`)}
       FROM ${dataTableName}
-      ${this.getWhereClause(filters)}
-    `
+      `
+    // @ts-ignore
+    query += `${this.getWhereClause([...(filters || []), { column: column, operator: "IS NOT", value: null }])}`
     const result = await this.runQuery(query)
     if (!result || result.length === 0) {
       console.error(`No results for quantile query: ${query}`)
@@ -130,14 +129,19 @@ export class DataService<DataT extends Record<string, any>> {
     column: string | number,
     quantiles: Array<number>,
     valueName: string,
-    _values?: Array<string | number>
+    _values?: Array<string | number>,
+    separate_null = true
   ) {
     if (quantiles.length === 0) {
       return
     }
     const values = _values || [...quantiles.map((_, i) => i), quantiles.length]
 
-    let query = `\nCASE `
+    let query = `\nCASE 
+    `
+    if (separate_null) {
+      query += `WHEN ${column} IS NULL THEN [${NULL_COLOR.join(",")}] \n`
+    }
 
     for (let i = 0; i < quantiles.length; i++) {
       query += ` WHEN ${column} < ${quantiles[i]} THEN ${values[i]} `
@@ -149,14 +153,16 @@ export class DataService<DataT extends Record<string, any>> {
     let query = ""
     const __filters = _filters || []
     // @ts-ignore
-    const filters: FilterSpec[] = filterSentinentValues ? [
-      ...__filters,
-      __filters.map(f => ({
-        column: f.column,
-        operator: "IS NOT",
-        value: SENTINEL_VALUES
-      }))  
-    ] : __filters
+    const filters: FilterSpec[] = filterSentinentValues
+      ? [
+          ...__filters,
+          __filters.map((f) => ({
+            column: f.column,
+            operator: "IS NOT",
+            value: SENTINEL_VALUES,
+          })),
+        ]
+      : __filters
     if (filters) {
       for (let i = 0; i < filters.length; i++) {
         const filter = filters[i]!
@@ -180,10 +186,10 @@ export class DataService<DataT extends Record<string, any>> {
 
     return query
   }
-  getBivariateCaseClause(columns: [string, string], colors: Array<Array<number>>) {
+  getBivariateCaseClause(columns: [string, string, string], colors: Array<Array<number>>) {
     let query = `\nCASE `
     query += "\n"
-    query += `WHEN ${columns[0]} IS NULL and ${columns[1]} IS NULL THEN [120,120,120,0]`
+    query += `WHEN ${columns[2]} IS TRUE THEN [120,120,120,0]`
     query += "\n"
     for (let i = 0; i < colors.length; i++) {
       for (let j = 0; j < colors![i]!.length; j++) {
@@ -226,9 +232,11 @@ export class DataService<DataT extends Record<string, any>> {
     }
 
     let query = `SELECT ${this.idColumn}, `
-    query += `${this.getQuantileCaseClause(`${cleanColumns[0]}`, breaks[0], "q0")}, `
-    query += `${this.getQuantileCaseClause(`${cleanColumns[1]}`, breaks[1], "q1")}, `
-    query += `${this.getBivariateCaseClause(["q0", "q1"], colors)}`
+    // if both columns null
+    query += `(${cleanColumns[0]} IS NULL AND ${cleanColumns[1]} IS NULL) as "null_value",\n`
+    query += `${this.getQuantileCaseClause(`${cleanColumns[0]}`, breaks[0], "q0", undefined, false)}, `
+    query += `${this.getQuantileCaseClause(`${cleanColumns[1]}`, breaks[1], "q1", undefined, false)}, `
+    query += `${this.getBivariateCaseClause(["q0", "q1", "null_value"], colors)}`
     query += ` FROM ${dataTableName}`
     const colorMap = this.mapColors((await this.runQuery(query)) as DataT[])
     return {
@@ -335,11 +343,15 @@ export class DataService<DataT extends Record<string, any>> {
           [key: string]: any
         })
   ) {
-    const columnFilter: FilterSpec[] | undefined = props.filter ? [{
-      column: idColumn,
-      operator: "LIKE",
-      value: `'${props.filter}%'`,
-    }] : undefined
+    const columnFilter: FilterSpec[] | undefined = props.filter
+      ? [
+          {
+            column: idColumn,
+            operator: "LIKE",
+            value: `'${props.filter}%'`,
+          },
+        ]
+      : undefined
 
     const bivariate = props.bivariate
     if (bivariate) {
@@ -387,6 +399,7 @@ export class DataService<DataT extends Record<string, any>> {
       return this.tooltipResults[id]
     }
     const _res = await this.runQuery<DataT[]>(`SELECT * FROM ${dataTableName} WHERE "${this.idColumn}" LIKE '${id}'`)
+    console.log(JSON.parse(this.stringifyJsonWithBigInts(_res)))
     if (!_res || _res.length === 0) {
       console.error(`No results for tooltip query: ${id}`)
       return
@@ -428,13 +441,12 @@ export class DataService<DataT extends Record<string, any>> {
       .map((col: string) => timeSeriesAggregates.map((f) => `${f.template(col)} as ${f.alias(col)}`))
       .flat()
       .join(", ")
-    
+
     let q = `SELECT ${columnQuery} FROM "${config.file}" `
-    if (id.length >= 2){
+    if (id.length >= 2) {
       q += `WHERE "${this.idColumn}" LIKE '${id}%'`
     }
     return q
-
   }
 
   rotateSimple(
@@ -672,9 +684,8 @@ export class DataService<DataT extends Record<string, any>> {
     variableY,
     filters,
     binsX = 10,
-    binsY = 10,
-  } // fixedBins,
-  : {
+    binsY = 10, // fixedBins,
+  }: {
     variableX: DataColumns
     variableY: DataColumns
     filters?: FilterSpec[]
@@ -732,7 +743,7 @@ export class DataService<DataT extends Record<string, any>> {
       const rowValues = result.filter((r) => r.qX == x)
       const row = {
         bin: x,
-        bins: [] as any[]
+        bins: [] as any[],
       }
       for (let y = 1; y <= binsY; y++) {
         const entry = rowValues.find((r) => r.qY == y)

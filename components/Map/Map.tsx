@@ -2,34 +2,25 @@
 import "mapbox-gl/dist/mapbox-gl.css"
 import { MVTLayer } from "@deck.gl/geo-layers/typed"
 import { GeoJsonLayer, ScatterplotLayer } from "@deck.gl/layers/typed"
-import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
-import { ThickArrowLeftIcon, ThickArrowRightIcon } from "@radix-ui/react-icons"
+import { ThickArrowLeftIcon } from "@radix-ui/react-icons"
 import { useParentSize } from "@visx/responsive"
 import { useRouter } from "next/navigation"
 import React, { useEffect, useRef, useState } from "react"
-import GlMap, { FullscreenControl, NavigationControl, ScaleControl, useControl  } from "react-map-gl"
+import GlMap, { FullscreenControl, NavigationControl, ScaleControl, useControl } from "react-map-gl"
 import { Provider } from "react-redux"
-import CountyFilterSelector from "components/CountyFilterSelector"
 import { MemoryMonitor } from "components/dev/MemoryMonitor"
 import Legend from "components/Legend"
 import MapTooltip from "components/MapTooltip"
-import { StatefulHighlightColorPicker } from "components/StatefulControls/StatefulHighlightColorPicker"
-import { StatefulHighlightForm } from "components/StatefulControls/StatefulMapFilterSlider"
-import Tooltip from "components/Tooltip"
 import { deepCompare2d1d } from "utils/data/compareArrayElements"
-import { columnGroups, highlightConfig } from "utils/data/config"
 import { formatterPresets } from "utils/display/formatValue"
 import { useDataService } from "utils/hooks/useDataService"
-import {
-  setCurrentColumn,
-  setCurrentColumnGroup,
-  setHighlight,
-  setTooltipInfo,
-} from "utils/state/map"
+import { setClickInfo, setTooltipInfo } from "utils/state/map"
 import { store, useAppDispatch } from "utils/state/store"
 import { fetchCentroidById } from "utils/state/thunks"
 import { zeroPopTracts } from "utils/zeroPopTracts"
+import { MapSettings } from "components/MapSettings/MapSettings"
 import "./styles.css"
+import { DeckGLOverlay } from "./DeckGLOverlay"
 
 export type MapProps = {
   initialFilter?: string
@@ -55,6 +46,7 @@ const INITIAL_VIEW_STATE = {
   bearing: 0,
 }
 
+
 const randomString = () => Math.random().toString(36).substring(7)
 // const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
 export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick, sidebarOpen = true }) => {
@@ -62,7 +54,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
   const mapId = useRef(randomString())
   const router = useRouter()
   const [containerHeight, setContainerHeight] = useState<string | undefined>(undefined)
-  const [settingsExpanded, setSettingsExpanded] = useState(sidebarOpen)
+
   const [clickedGeo, setClickedGeo] = useState<any>({
     geoid: null,
     geometry: null,
@@ -132,8 +124,6 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
       })
     }
   }, [currentCentroid])
-
-  const availableColumns = columnGroups[currentColumnGroup]?.columns || []
 
   const getElementColor = simpleMap
     ? (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
@@ -214,7 +204,9 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         if (onClick) {
           onClick(info)
         }
-        dispatch(setTooltipInfo(null))
+        dispatch(setClickInfo({
+          id: info.object?.properties?.GEOID,
+        }))
         if (event?.srcEvent?.altKey) {
           router.push(`/tract/${info.object?.properties?.GEOID}`)
         } else {
@@ -323,9 +315,6 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
 
   // ACTIONS
   const dispatch = useAppDispatch()
-  const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col as any))
-  const handleSetColumnGroup = (group: string) => dispatch(setCurrentColumnGroup(group))
-  const handleSetFilter = (filter: string) => dispatch(fetchCentroidById(filter))
 
   useEffect(() => {
     if (_initialFilter) {
@@ -334,27 +323,27 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_initialFilter])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!clickedGeo) {
-        setClickedGeo({
-          geoid: null,
-          geometry: null,
-          centroid: null,
-        })
-      }
-      const res = await fetch(`/api/isochrone/${clickedGeo.geoid}`)
-      const data = (await res.json()) as any
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (!clickedGeo) {
+  //       setClickedGeo({
+  //         geoid: null,
+  //         geometry: null,
+  //         centroid: null,
+  //       })
+  //     }
+  //     const res = await fetch(`/api/isochrone/${clickedGeo.geoid}`)
+  //     const data = (await res.json()) as any
 
-      setClickedGeo((prev: any) => ({
-        geoid: prev.geoid,
-        geometry: data.geometry,
-        centroid: data.pop_centroid,
-      }))
-    }
-    fetchData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clickedGeo.geoid])
+  //     setClickedGeo((prev: any) => ({
+  //       geoid: prev.geoid,
+  //       geometry: data.geometry,
+  //       centroid: data.pop_centroid,
+  //     }))
+  //   }
+  //   fetchData()
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [clickedGeo.geoid])
 
   return (
     <div
@@ -375,207 +364,27 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         )}
       </div>
       <div className="relative flex size-full flex-row border-4">
-        {!settingsExpanded && (
-          <button
-            onClick={() => setSettingsExpanded((p) => !p)}
-            className="left-100 absolute top-[50%] z-50 size-8 bg-white p-1 shadow-xl"
+        {!simpleMap && <MapSettings />}
+        <div ref={parentRef} className="relative size-full">
+          <GlMap
+            // hash={true}
+            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
+            mapStyle="mapbox://styles/dhalpern/clsb432ya02pi01pf1o813uwa"
+            initialViewState={INITIAL_VIEW_STATE}
+            // @ts-ignore
+            projection={"mercator"}
+            ref={mapRef}
+            reuseMaps={true}
           >
-            <ThickArrowRightIcon className="size-full" />
-          </button>
-        )}
-        {!simpleMap && (
-          <div
-            className={`relative h-full  bg-white max-w-[50%] ${settingsExpanded && "border-r-2"} border-neutral-950 ${
-              settingsExpanded ? "w-96" : "w-0"
-            } flex flex-col`}
-          >
-            {settingsExpanded && (
-              <button
-                onClick={() => setSettingsExpanded((p) => !p)}
-                className="absolute right-0 top-[50%] z-50 size-8 bg-white p-1 shadow-xl"
-                style={{ transform: "translateX(100%)" }}
-              >
-                <ThickArrowLeftIcon className="size-full" />
-              </button>
-            )}
-            <MenuSection title="Topics">
-              {Object.keys(columnGroups).map((group, i) => (
-                <MenuButton
-                  key={i}
-                  onClick={() => handleSetColumnGroup(group)}
-                  label={group}
-                  selected={currentColumnGroup === group}
-                />
-              ))}
-            </MenuSection>
-            <MenuSection title="Available Data">
-              {availableColumns.map((c, i) => (
-                <MenuButton
-                  key={i}
-                  onClick={() => handleSetColumn(c)}
-                  label={c} 
-                  selected={currentColumn === c}
-                />
-              ))}
-            </MenuSection>
-
-            <MenuSection
-              title="Key Communities"
-              titleChildren={
-                <Tooltip
-                  explainer={
-                    <>
-                      Choose a color
-                      <StatefulHighlightColorPicker />
-                    </>
-                  }
-                ></Tooltip>
-              }
-            >
-              {Object.keys(highlightConfig).map((name, i) => (
-                <MenuButton
-                  key={i}
-                  onClick={() =>
-                    highlight === name ? dispatch(setHighlight(undefined)) : dispatch(setHighlight(name as any))
-                  }
-                  label={name}
-                  selected={highlight === name}
-                />
-              ))}
-              <StatefulHighlightForm />
-              {/* color picker */}
-            </MenuSection>
-            <MenuSection title="Filter Map">
-              <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
-            </MenuSection>
-            <MenuSection title="Map Colors">fixed or relative [coming soon]</MenuSection>
-            {/* <DropdownMenuDemo>
-              <div className="max-w-[100vw] p-4">
-                <p>Choose a topic</p>
-                <hr />
-                <div
-                  style={{
-                    maxWidth: "30vw",
-                  }}
-                >
-                  <SelectMenu
-                    title="Choose a topic"
-                    value={currentColumnGroup || ""}
-                    onValueChange={(e) => handleSetColumnGroup(e)}
-                  >
-                    <>
-                      {Object.keys(columnGroups).map((group, i) => (
-                        <Select.Item className="SelectItem" value={group} key={i}>
-                          <Select.ItemText>{group || "Choose a topic"}</Select.ItemText>
-                          <Select.ItemIndicator className="SelectItemIndicator">
-                            <CheckboxIcon />
-                          </Select.ItemIndicator>
-                        </Select.Item>
-                      ))}
-                    </>
-                  </SelectMenu>
-                </div>
-                <hr className="my-2" />
-                <p>Available data</p>
-
-                <div
-                  style={{
-                    maxWidth: "30vw",
-                  }}
-                >
-                  <SelectMenu
-                    title="Choose a map variable"
-                    value={currentColumnSpec.name}
-                    onValueChange={(e) => handleSetColumn(e)}
-                  >
-                    <>
-                      {availableColumns.map((c, i) => (
-                        <Select.Item className="SelectItem" value={c} key={i}>
-                          <Select.ItemText>{c || "Variable"}</Select.ItemText>
-                          <Select.ItemIndicator className="SelectItemIndicator">
-                            <CheckboxIcon />
-                          </Select.ItemIndicator>
-                        </Select.Item>
-                      ))}
-                    </>
-                  </SelectMenu>
-                </div>
-                <hr className="my-2" />
-                <p>Filter</p>
-                <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
-              </div>
-            </DropdownMenuDemo> */}
-          </div>
-        )}
-        <div 
-        
-      ref={parentRef}
-      className="size-full relative"
-        >
-
-        <GlMap
-          // hash={true}
-          mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-          mapStyle="mapbox://styles/dhalpern/clsb432ya02pi01pf1o813uwa"
-          initialViewState={INITIAL_VIEW_STATE}
-          // @ts-ignore
-          projection={"mercator"}
-          ref={mapRef}
-          reuseMaps={true}
-          >
-          <ScaleControl unit="imperial" />
-          <FullscreenControl containerId={mapId.current} />
-          <NavigationControl />
-          <DeckGLOverlay layers={layers} interleaved={true} />
-        </GlMap>
-          </div>
+            <ScaleControl unit="imperial" />
+            <FullscreenControl containerId={mapId.current} />
+            <NavigationControl />
+            <DeckGLOverlay layers={layers} interleaved={true} />
+          </GlMap>
+        </div>
       </div>
       <MapTooltip simpleMap={simpleMap} />
       <MemoryMonitor />
-    </div>
-  )
-}
-function DeckGLOverlay(
-  props: MapboxOverlayProps & {
-    interleaved?: boolean
-  }
-) {
-  const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props))
-  overlay.setProps(props)
-  return null
-}
-
-const MenuButton: React.FC<{
-  onClick: () => void
-  label: string
-  selected: boolean
-}> = ({ onClick, label, selected }) => {
-  return (
-    <button
-      onClick={onClick}
-      className={`z-0 mb-[-1px] mr-[-1px] max-w-full border-[1px] border-solid border-neutral-300 p-1 text-sm
-      focus:bg-theme-canvas-100 focus:shadow-[0_0_-5px_5px] focus:shadow-blackA5 focus:outline-none
-      
-      ${selected ? "bg-primary-200" : "bg-white hover:bg-theme-canvas-100"}
-      `}
-    >
-      {label}
-    </button>
-  )
-}
-
-const MenuSection: React.FC<{ title: string; children: React.ReactNode; titleChildren?: React.ReactNode }> = ({
-  title,
-  children,
-  titleChildren,
-}) => {
-  return (
-    <div className="prose p-2">
-      <div className="flex flex-row">
-        <h3 className="m-0 p-0">{title}</h3>
-        <div>{titleChildren}</div>
-      </div>
-      {children}
     </div>
   )
 }

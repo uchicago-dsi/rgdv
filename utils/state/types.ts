@@ -20,6 +20,10 @@ export interface MapState {
     id: string
     data?: TooltipData
   } | null
+  clicked?: {
+    id: string,
+    data?: TooltipData
+  } | null
   tooltipStatus?: "pending" | "ready"
   snapshot: Record<string,number>
   timeseriesRequested: boolean

@@ -5,20 +5,25 @@ import { MapTooltipProps } from "./types"
 
 export const TooltipSectionsRenderer: React.FC<{ sections: TooltipData }> = ({ sections }) => {
   return (
-    <ul>
-      {sections.map((section, i) => (
-        <li key={i}>
-          <b>{section.section}</b>
-          <ul>
-            {section.columns.map((col, j) => (
-              <li key={`${i},${j}`}>
-                {col.label || col.col}: {col.data}
-              </li>
-            ))}
-          </ul>
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul>
+        {sections.map((section, i) => (
+          <li key={i}>
+            <b>{section.section}</b>
+            <ul>
+              {section.columns.map((col, j) => (
+                <li key={`${i},${j}`}>
+                  {col.label || col.col}: {col.data}
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+      <p>
+        <i>Click for more info</i>
+      </p>
+    </>
   )
 }
 

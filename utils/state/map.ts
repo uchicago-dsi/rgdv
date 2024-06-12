@@ -28,6 +28,7 @@ const initialState: MapState = {
   breaks: [],
   colors: [],
   tooltipStatus: undefined,
+  clicked: undefined,
   timeseriesDatasets: [],
   timeseriesRequested: false,
   currentTimeseriesDataset: defaultTimeseriesDataset,
@@ -104,6 +105,18 @@ export const mapSlice = createSlice({
     },
     setTooltipInfo: (state, action: PayloadAction<MapState["tooltip"] | null>) => {
       state.tooltip = action?.payload
+      const id = action?.payload?.id
+      if (action?.payload?.data) {
+        // chill
+      } else if (!!id && !globals?.ds?.tooltipResults?.[id]) {
+        state.tooltipStatus = "pending"
+      } else {
+        state.tooltipStatus = "ready"
+      }
+    },
+    setClickInfo: (state, action: PayloadAction<MapState["clicked"] | null>) => {
+      state.clicked = action?.payload
+      console.log(action?.payload)
       const id = action?.payload?.id
       if (action?.payload?.data) {
         // chill
@@ -193,6 +206,7 @@ export const {
   setHighlight,
   setHighlightValue,
   setHighlightColor,
+  setClickInfo
 } = mapSlice.actions
 
 export default mapSlice.reducer

@@ -1,5 +1,5 @@
 import { createListenerMiddleware } from "@reduxjs/toolkit"
-import { mapSlice, setTooltipReady, setTimeSeriesLoaded } from "utils/state/map"
+import { mapSlice, setTooltipReady, setTimeSeriesLoaded, setTooltipInfo } from "utils/state/map"
 import { MapState } from "utils/state/types"
 import { globals } from "./globals"
 import { highlightConfig, columnsDict } from "utils/data/config"
@@ -130,7 +130,8 @@ mapDataMiddleware.startListening({
 mapDataMiddleware.startListening({
   // Can match against actions _or_ state changes/contents
   predicate: (action, currentState, previousState) => {
-    return currentState.map.tooltip?.id !== previousState.map.tooltip?.id
+    return (currentState.map.tooltip?.id !== previousState.map.tooltip?.id
+     || currentState.map.clicked?.id !== previousState.map.clicked?.id)
   },
   // Listeners can have long-running async workflows
   effect: async (action, listenerApi) => {
