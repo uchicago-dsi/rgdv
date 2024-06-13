@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { TinaMarkdown } from "tinacms/dist/rich-text";
+import { TinaMarkdown } from "tinacms/dist/rich-text"
 import { PlaceSearch } from "components/StatefulControls/PlaceSearch"
 import { HomeProps } from "./types"
 
@@ -16,30 +16,42 @@ const getGridcols = (length: number) => {
   // this needs to be explict for tailwind to work
   switch (length) {
     case 1:
-      return "grid-cols-1"
+      return "lg:grid-cols-1"
     case 2:
-      return "grid-cols-2"
+      return "lg:grid-cols-2"
     case 3:
-      return "grid-cols-3"
+      return "lg:grid-cols-3"
     case 4:
-      return "grid-cols-4"
-    case 5: 
-      return "grid-cols-5"
+      return "lg:grid-cols-4"
+    case 5:
+      return "lg:grid-cols-5"
     case 6:
-      return "grid-cols-6"
+      return "lg:grid-cols-6"
     default:
-      return "grid-cols-4"
+      return "lg:grid-cols-4"
   }
 }
 
 export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
   const sections = pageInfo.data.page.sections || []
-  const sectionTitles = sections.map((f: any) => f.title)
-  const fourUpSections = sectionTitles.filter((f: string) => f.includes("4UP"))
+  const sectionTitles = sections.map((f: any) => f?.title)
+  const fourUpSections = sectionTitles.filter((f: string) => f?.includes("4UP"))
+  const caseStudySections = sectionTitles.filter((f: string) => f?.includes("Case Study"))
+  let caseStudies: any[] = new Array(caseStudySections.length / 2).fill(null).map(() => ({}))
+  caseStudySections.forEach((section: string) => {
+    const sectionData = sections.find((f: any) => f.title === section)
+    const caseStudyNumber = section.split("-")[1]?.split("-")[0]?.trim()
+    if (!caseStudyNumber) return
+    const caseStudyIndex = parseInt(caseStudyNumber) - 1
+    if (!caseStudies[caseStudyIndex]) return
+    const type = section.split("-").at(-1)?.trim()!
+    caseStudies[caseStudyIndex]![type] = sectionData.body
+  })
+
   const title = getFirstTextElement(sections, "Title")
 
   return (
-    <main className="flex flex-col">
+    <main className="flex flex-col" id="home-content">
       <div className="relative flex min-h-[80vh] w-full flex-col justify-end text-theme-canvas-100" id="main-hero">
         <Image
           src="/images/hero.png"
@@ -80,25 +92,26 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
         <hr />
         {/* 4 div flex layout equal widths */}
         {/* reports, trends, toolkit, about */}
-        <div className={`my-4 grid justify-between gap-4 md:flex-row ${getGridcols(fourUpSections.length)}`}>
+        <div className={`my-4 grid grid-cols-1 justify-between gap-4 ${getGridcols(fourUpSections.length)}`}>
           {fourUpSections.map((title: string, i: number) => (
             <div key={i} className="flex flex-col border-2 p-4">
-              <TinaMarkdown content={sections.find((f:any) => f.title === title)?.body} />
+              <TinaMarkdown content={sections.find((f: any) => f.title === title)?.body} />
             </div>
           ))}
         </div>
       </div>
-      {/* <article className="prose p-4">
-        <h1>
-          <TinaMarkdown content={pageInfo.data.page.body} />
-        </h1>
-        {sections.map((section: any, i: number) => (
-          <div key={i}>
-            <h1>{section.title}</h1>
-            <TinaMarkdown content={section.body} />
+      <article className="prose p-4 max-w-none flex flex-col">
+        {caseStudies.map((caseStudy: any, i: number) => (
+          <div key={i} className="flex min-h-[75vh] min-w-full border-b-2 prose w-full items-center align-center lg:flex-row">
+            <div className="max-w-[40%]">
+              <TinaMarkdown content={i % 2 === 0 ? caseStudy.Image : caseStudy.Text} />
+            </div>
+            <div className="max-w-[40%]">
+              <TinaMarkdown content={i % 2 === 0 ? caseStudy.Text : caseStudy.Image} />
+            </div>
           </div>
         ))}
-      </article> */}
+      </article>
     </main>
   )
 }
