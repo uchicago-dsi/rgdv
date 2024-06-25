@@ -16,9 +16,6 @@ export default {
       name: "body",
       type: "rich-text",
       isBody: true,
-      ui: {
-        component: "textarea",
-      },
     },
   ],
   ui: {

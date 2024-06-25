@@ -72,10 +72,7 @@ var post_default = {
       label: "Blog Post Body",
       name: "body",
       type: "rich-text",
-      isBody: true,
-      ui: {
-        component: "textarea"
-      }
+      isBody: true
     }
   ],
   ui: {
