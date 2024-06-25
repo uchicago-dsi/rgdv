@@ -26,7 +26,7 @@ function HeatmapComponent({
   colors = defaultColors,
   margin = defaultMargin,
 }: HeatmapProps) {
-  console.log(data)
+  // console.log(data)
 
   // bounds
   const xMax = width - margin.left - margin.right
