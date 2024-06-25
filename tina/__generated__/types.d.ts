@@ -272,7 +272,7 @@ export type PageConnection = Connection & {
 export type Post = Node & Document & {
   __typename?: 'Post';
   title?: Maybe<Scalars['String']['output']>;
-  body?: Maybe<Scalars['String']['output']>;
+  body?: Maybe<Scalars['JSON']['output']>;
   id: Scalars['ID']['output'];
   _sys: SystemInfo;
   _values: Scalars['JSON']['output'];
@@ -280,7 +280,7 @@ export type Post = Node & Document & {
 
 export type PostFilter = {
   title?: InputMaybe<StringFilter>;
-  body?: InputMaybe<StringFilter>;
+  body?: InputMaybe<RichTextFilter>;
 };
 
 export type PostConnectionEdges = {
@@ -564,7 +564,7 @@ export type PageMutation = {
 
 export type PostMutation = {
   title?: InputMaybe<Scalars['String']['input']>;
-  body?: InputMaybe<Scalars['String']['input']>;
+  body?: InputMaybe<Scalars['JSON']['input']>;
 };
 
 export type NavLinksSublinksMutation = {
@@ -619,7 +619,7 @@ export type StatisticsMutation = {
 
 export type PagePartsFragment = { __typename: 'Page', body?: any | null, sections?: Array<{ __typename: 'PageSections', title?: string | null, body?: any | null } | null> | null };
 
-export type PostPartsFragment = { __typename: 'Post', title?: string | null, body?: string | null };
+export type PostPartsFragment = { __typename: 'Post', title?: string | null, body?: any | null };
 
 export type NavPartsFragment = { __typename: 'Nav', title?: string | null, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null };
 
@@ -649,7 +649,7 @@ export type PostQueryVariables = Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post: { __typename: 'Post', id: string, title?: string | null, body?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
+export type PostQuery = { __typename?: 'Query', post: { __typename: 'Post', id: string, title?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
 
 export type PostConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -661,7 +661,7 @@ export type PostConnectionQueryVariables = Exact<{
 }>;
 
 
-export type PostConnectionQuery = { __typename?: 'Query', postConnection: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PostConnectionEdges', cursor: string, node?: { __typename: 'Post', id: string, title?: string | null, body?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+export type PostConnectionQuery = { __typename?: 'Query', postConnection: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PostConnectionEdges', cursor: string, node?: { __typename: 'Post', id: string, title?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
 
 export type NavQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];

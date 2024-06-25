@@ -144,7 +144,7 @@ type PageConnection implements Connection {
 
 type Post implements Node & Document {
   title: String
-  body: String
+  body: JSON
   id: ID!
   _sys: SystemInfo!
   _values: JSON!
@@ -152,7 +152,7 @@ type Post implements Node & Document {
 
 input PostFilter {
   title: StringFilter
-  body: StringFilter
+  body: RichTextFilter
 }
 
 type PostConnectionEdges {
@@ -346,7 +346,7 @@ input PageMutation {
 
 input PostMutation {
   title: String
-  body: String
+  body: JSON
 }
 
 input NavLinksSublinksMutation {
