@@ -325,7 +325,7 @@ export const tooltipConfig: Array<{
   label: string
   column?: (typeof primaryColumns)[number]
   lead?: boolean
-  invert?: boolean
+  inverted?: boolean
   maxOf?: (typeof primaryColumns)[number][]
   minOf?: (typeof primaryColumns)[number][]
   formatter?: (value: number) => string
@@ -333,7 +333,7 @@ export const tooltipConfig: Array<{
   {
     label: "Market Concentration",
     column: "hhi_2023_percentile",
-    invert: true,
+    inverted: true,
     lead: true,
     formatter: wholeNumber.format,
   },
@@ -347,13 +347,13 @@ export const tooltipConfig: Array<{
     label: "Econmic Disadvantage",
     column: "ADI_NATRANK",
     lead: true,
-    invert: true,
+    inverted: true,
     formatter: wholeNumber.format,
   },
   {
     label: "Racial Segregation",
     column: "segregation_2023_percentile",
-    invert: true,
+    inverted: true,
     lead: true,
     formatter: wholeNumber.format,
   },
