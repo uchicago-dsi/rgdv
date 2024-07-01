@@ -404,23 +404,31 @@ export class DataService<DataT extends Record<string, any>> {
       return
     }
     const data = _res[0]!
-    let formattedData = []
-    for (const section of tooltipConfig) {
-      const sectionData: any = {
-        section: section.section,
-        columns: [],
+    this.tooltipResults[id] = data
+    const formattedData: any = []
+    tooltipConfig.forEach((c) => {
+      let value: any = 'NULL_VALUE';
+      if (c.column) {
+        value = data[c.column]
+      } else if (c.maxOf) {
+        const vals = c.maxOf.map((col) => data[col])
+        value = Math.max(...vals)
+      } else if (c.minOf) {
+        const vals = c.minOf.map((col) => data[col])
+        value = Math.min(...vals)
       }
-      for (const column of section.columns) {
-        const columnConfig = columnsDict[column.col]
-        const entry = data[columnConfig.column as keyof typeof data]
-        sectionData.columns.push({
-          ...column,
-          ...columnConfig,
-          data: entry,
+      if (value === 'NULL_VALUE') {
+        return
+      } else {
+        formattedData.push({
+          label: c.label,
+          lead: c.lead,
+          invert: c.invert,
+          formatter: c.formatter,
+          value,
         })
       }
-      formattedData.push(sectionData)
-    }
+    })
     this.tooltipResults[id] = formattedData
     return this.tooltipResults[id]
   }

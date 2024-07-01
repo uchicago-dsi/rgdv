@@ -10,6 +10,15 @@ export type GradientLineProps = {
   value: number,
   inverted?: boolean,
 }
+export const getColorScale = (inverted?: boolean) => {
+  // Color interpolator for three colors
+  return scaleLinear({
+    domain: [0, 50, 100],
+    range: inverted ? ["#5bb81a", "#FFB44E", "#f50000"] :  ["#f50000", "#FFB44E", "#5bb81a"],
+    // @ts-ignore
+    output: interpolateRgb,
+  })
+}
 
 const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
   // Ensure value is within bounds
@@ -28,13 +37,7 @@ const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
     range: [circleRadius, width - circleRadius],
   })
 
-  // Color interpolator for three colors
-  const colorScale = scaleLinear({
-    domain: [0, 50, 100],
-    range: inverted ? ["#5bb81a", "#FFB44E", "#f50000"] :  ["#f50000", "#FFB44E", "#5bb81a"],
-    // @ts-ignore
-    output: interpolateRgb,
-  })
+  const colorScale = getColorScale(inverted)
 
   // Get the x position and color from the scales
   const circleX = positionScale(clampedValue)

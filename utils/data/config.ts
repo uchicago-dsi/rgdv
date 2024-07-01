@@ -1,6 +1,7 @@
 import { color } from "d3"
 import { ColumnConfig, ColumnGroups } from "./config.types"
-import { percentFormatter } from "utils/display/formatValue"
+import { percentFormatter, wholeNumber } from "utils/display/formatValue"
+import { primaryColumns } from "app/playground/page"
 
 export const idColumn = "GEOID"
 export const summaryTractFile = "full_tract.parquet"
@@ -8,19 +9,19 @@ const minYear = 1997
 const maxYear = 2023
 export const defaultYear = 2020
 
-const generateHhiConfig = (year: number, ds: boolean =false) =>
+const generateHhiConfig = (year: number, ds: boolean = false) =>
   ({
     name: `Concentration Index ${year} (No Dollar Stores)`,
-    column: `hhi_${ds ? 'ds_' : ''}${year}`, // hhi_2000, hhi_2010
+    column: `hhi_${ds ? "ds_" : ""}${year}`, // hhi_2000, hhi_2010
     bivariate: false,
     description: `Herfindahl-Hirschman Index for ${year}`,
-    colorScheme: "schemeGreens"
+    colorScheme: "schemeGreens",
   }) as ColumnConfig
 
 const generateGravityConfig = (year: number, ds: boolean = false) =>
   ({
     name: `Gravity ${year}`,
-    column: `gravity_${ds ? 'ds_' : ''}${year}`,
+    column: `gravity_${ds ? "ds_" : ""}${year}`,
     bivariate: false,
     nBins: 9,
     colorScheme: "schemeSpectral",
@@ -210,64 +211,64 @@ export const timeSeriesConfig = {
     columns: [2000, ...new Array(2021 - 2010).fill(null).map((_, i) => i + 2010)],
   },
 } as const
-export type timeSeriesDatasets = typeof timeSeriesConfig[keyof typeof timeSeriesConfig]['file']
+export type timeSeriesDatasets = (typeof timeSeriesConfig)[keyof typeof timeSeriesConfig]["file"]
 export const defaultTimeseriesDataset = "concentration_metrics_wide.parquet"
 
 export const timeSeriesAggregates = [
   {
     template: (col: string) => `AVG("${col}")`,
     alias: (col: string) => `mean_${col}`,
-    role: "mean"
+    role: "mean",
   },
   {
     template: (col: string) => `approx_quantile("${col}", 0.5)`,
     alias: (col: string) => `median_${col}`,
-    role: "median"
+    role: "median",
   },
   {
     template: (col: string) => `MAX("${col}")`,
     alias: (col: string) => `max_${col}`,
-    role: "max"
+    role: "max",
   },
   {
     template: (col: string) => `MIN("${col}")`,
     alias: (col: string) => `min_${col}`,
-    role: "min"
+    role: "min",
   },
   {
     template: (col: string) => `approx_quantile("${col}", 0.95)`,
     alias: (col: string) => `q95_${col}`,
-    role: "q95"
+    role: "q95",
   },
   {
     template: (col: string) => `approx_quantile("${col}", 0.75)`,
     alias: (col: string) => `q75_${col}`,
-    role: "q75"
+    role: "q75",
   },
   {
     template: (col: string) => `approx_quantile("${col}", 0.25)`,
     alias: (col: string) => `q25_${col}`,
-    role: "q25"
+    role: "q25",
   },
   {
     template: (col: string) => `approx_quantile("${col}", 0.05)`,
     alias: (col: string) => `q05_${col}`,
-    role: "q05"
-  }
+    role: "q05",
+  },
 ]
 
 export const columnGroups: ColumnGroups<typeof columnsDict> = {
   "Market Concentration": {
     description: "Concentration Metrics",
     columns: [
-        "Market Concentration - 2023 (Most Recent)",
-        "Market Concentration - 2020",
-        "Market Concentration - 2010",
-        "Market Concentration - 2000",
-        "Market Concentration - 2020 (With Dollar Stores)",
-        "Market Concentration - 2010 (With Dollar Stores)",
-        "Market Concentration - 2000 (With Dollar Stores)",
-        "Percent Walmart"
+      "Market Concentration - 2023 (Most Recent)",
+      "Market Concentration - 2020",
+      "Market Concentration - 2010",
+      "Market Concentration - 2000",
+      "Market Concentration - 2020 (With Dollar Stores)",
+      "Market Concentration - 2010 (With Dollar Stores)",
+      "Market Concentration - 2000 (With Dollar Stores)",
+      "Percent Walmart",
     ],
   },
   "Food Access": {
@@ -321,63 +322,40 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
 export const defaultColumn: DataColumns = "Concentration & Food Access - Bivariate 2020"
 
 export const tooltipConfig: Array<{
-  section?: string
-  columns: Array<{
-    col: DataColumns
-    label?: string
-    format?: string
-  }>
+  label: string
+  column?: (typeof primaryColumns)[number]
+  lead?: boolean
+  invert?: boolean
+  maxOf?: (typeof primaryColumns)[number][]
+  minOf?: (typeof primaryColumns)[number][]
+  formatter?: (value: number) => string
 }> = [
   {
-    section: "Food Access",
-    columns: [
-      {
-        col: "Food Access Supply - 2020",
-        label: "2020",
-      },
-      {
-        col: "Food Access Supply - 2010",
-        label: "2010",
-      },
-      {
-        col: "Food Access Supply - 2000",
-        label: "2000",
-      },
-    ],
+    label: "Market Concentration",
+    column: "hhi_2023_percentile",
+    invert: true,
+    lead: true,
+    formatter: wholeNumber.format,
   },
   {
-    section: "Market Concentration",
-    columns: [
-      {
-        col: "Market Concentration - 2023 (Most Recent)",
-        label: "2023",
-      },
-      {
-        col: "Market Concentration - 2020",
-        label: "2020",
-      },
-      {
-        col: "Market Concentration - 2010",
-        label: "2010",
-      },
-      {
-        col: "Market Concentration - 2000",
-        label: "2000",
-      },
-    ],
+    label: "Food Access",
+    column: "gravity_2023_percentile",
+    lead: true,
+    formatter: wholeNumber.format,
   },
   {
-    section: "Racial Equity",
-    columns: [
-      {
-        col: "Measure of Segregation (Black/African American and White)",
-        label: "Segregation - Black Alone White Alone",
-      },
-      {
-        col: "Measure of Segregation (Hispanic/Latinx and Non-hispanic White)",
-        label: "Segregation - Hispanic NH White Alone",
-      },
-    ],
+    label: "Econmic Disadvantage",
+    column: "ADI_NATRANK",
+    lead: true,
+    invert: true,
+    formatter: wholeNumber.format,
+  },
+  {
+    label: "Racial Segregation",
+    column: "segregation_2023_percentile",
+    invert: true,
+    lead: true,
+    formatter: wholeNumber.format,
   },
 ]
 
@@ -393,7 +371,7 @@ export const communityHighlightConfig = {
     range: [0, 1],
     step: 0.01,
     formatter: percentFormatter.format,
-    color: '#FFFF00'
+    color: "#FFFF00",
   },
   "Hispanic or Latinx (%)": {
     column: '"PCT HISPANIC OR LATINO"',
@@ -402,7 +380,7 @@ export const communityHighlightConfig = {
     range: [0, 1],
     step: 0.01,
     formatter: percentFormatter.format,
-    color: '#FFFF00'
+    color: "#FFFF00",
   },
   "Non-Hispanic White (%)": {
     column: '"PCT NH WHITE"',
@@ -411,7 +389,7 @@ export const communityHighlightConfig = {
     range: [0, 1],
     step: 0.01,
     formatter: percentFormatter.format,
-    color: '#FFFF00',
+    color: "#FFFF00",
     // inverse: true
   },
   "Poverty Rate": {
@@ -421,7 +399,7 @@ export const communityHighlightConfig = {
     range: [0, 1],
     step: 0.01,
     formatter: percentFormatter.format,
-    color: '#FFFF00'
+    color: "#FFFF00",
   },
   "Percent Receiving SNAP Benefits": {
     column: "PCT_SNAP_ASSISTANCE",
@@ -431,7 +409,7 @@ export const communityHighlightConfig = {
     step: 0.01,
     formatter: percentFormatter.format,
     // yellow
-    color: '#FFFF00'
+    color: "#FFFF00",
   },
   "Percent with a Disability": {
     column: "PCT_WITH_A_DISABILITY",
@@ -440,12 +418,11 @@ export const communityHighlightConfig = {
     range: [0, 1],
     step: 0.01,
     formatter: percentFormatter.format,
-    color: '#FFFF00'
+    color: "#FFFF00",
   },
   // median age
   // median HH income
   // USDA low income low access flag
-  
 } as const
 
 const companyConfig = {
@@ -454,63 +431,63 @@ const companyConfig = {
   range: [0, 1],
   step: 0.01,
   formatter: percentFormatter.format,
-  color: '#ff0000'
-} as const 
+  color: "#ff0000",
+} as const
 
 // AHOLD DELHAIZE USA INC	ALBERTSONS CO INC	COSTCO WHOLESALE CORP	DOLLAR GENERAL CORP	DOLLAR TREE INC	KROGER CO	LONE STAR FUNDS	MEIJER INC	PUBLIX SUPER MARKETS INC	TARGET CORP	TRADER JOE'S	WAKEFERN FOOD CORP INC	WALMART INC	WEGMANS FOOD MARKETS INC
 export const parentCompanyHighlightConfig = {
   "Ahold Delhaize": {
     column: '"AHOLD DELHAIZE USA INC"',
-    ...companyConfig
+    ...companyConfig,
   },
-  "Albertsons": {
+  Albertsons: {
     column: '"ALBERTSONS CO INC"',
-    ...companyConfig
+    ...companyConfig,
   },
-  "Costco": {
+  Costco: {
     column: '"COSTCO WHOLESALE CORP"',
-    ...companyConfig
+    ...companyConfig,
   },
   "Dollar General": {
     column: '"DOLLAR GENERAL CORP"',
-    ...companyConfig
+    ...companyConfig,
   },
   "Dollar Tree": {
     column: '"DOLLAR TREE INC"',
-    ...companyConfig
+    ...companyConfig,
   },
-  "Kroger": {
+  Kroger: {
     column: '"KROGER CO"',
-    ...companyConfig
+    ...companyConfig,
   },
-  "Meijer": {
+  Meijer: {
     column: '"MEIJER INC"',
-    ...companyConfig
+    ...companyConfig,
   },
-  "Publix": {
+  Publix: {
     column: '"PUBLIX SUPER MARKETS INC"',
-    ...companyConfig
+    ...companyConfig,
   },
-  "Target": {
+  Target: {
     column: '"TARGET CORP"',
-    ...companyConfig
+    ...companyConfig,
   },
   "Trader Joe's": {
     column: '"TRADER JOE\'S"',
-    ...companyConfig
+    ...companyConfig,
   },
-  "Wakefern": {
+  Wakefern: {
     column: '"WAKEFERN FOOD CORP INC"',
-    ...companyConfig
+    ...companyConfig,
   },
-  "Wegmans": {
+  Wegmans: {
     column: '"WEGMANS FOOD MARKETS INC"',
-    ...companyConfig
+    ...companyConfig,
   },
-  "Walmart": {
+  Walmart: {
     column: '"WALMART INC"',
-    ...companyConfig
-  }
+    ...companyConfig,
+  },
 } as const
 
 export const combinedHighlightConfig = {

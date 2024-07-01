@@ -3,8 +3,20 @@ export const percentFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 1,
 })
 
+export const usdFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+})
+
+export const wholeNumber = new Intl.NumberFormat("en-US", {
+  style: "decimal",
+  maximumFractionDigits: 0,
+})
+
 export const formatterPresets = {
   percent: percentFormatter.format,
+  usd: usdFormatter.format,
+  wholeNumber: wholeNumber.format,
 } as const
 
 type FormatterFunction = (s: string) => string

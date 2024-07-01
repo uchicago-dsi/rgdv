@@ -2,38 +2,56 @@ import { globals } from "utils/state/globals"
 import { useAppSelector } from "utils/state/store"
 import { MapState, TooltipData } from "utils/state/types"
 import { MapTooltipProps } from "./types"
+import './Spinner.css';
+import React from "react";
+import { getColorScale } from "components/PercentileLineChart";
 
-export const TooltipSectionsRenderer: React.FC<{ sections: TooltipData }> = ({ sections }) => {
+const TooltipDot: React.FC<{value:number, inverted?:boolean}> = ({value, inverted}) => {
+  const colorScale = getColorScale(inverted)
+  const clampedValue = Math.min(100, Math.max(0, value))
+  const color = colorScale(clampedValue)
+  return (
+    <div className="h-4 w-4 rounded-full" style={{backgroundColor: color}}></div>
+  )
+}
+
+export const TooltipSectionsRenderer: React.FC<{ sections: any[] }> = ({ sections }) => {
+  const leadSections = sections.filter((section) => section.lead)
+  const nonLeadSections = sections.filter((section) => !section.lead)
   return (
     <>
-      <ul>
-        {sections.map((section, i) => (
-          <li key={i}>
-            <b>{section.section}</b>
-            <ul>
-              {section.columns.map((col, j) => (
-                <li key={`${i},${j}`}>
-                  {col.label || col.col}: {col.data}
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
-      <p>
+    {/* flex lead sections in each row label as small text */}
+    <div className="flex flex-row justify-between align-middle gap-2">
+      {leadSections.map((section, i) => (
+        <div key={i} className="text-sm flex flex-col w-24">
+          {/* vert middle */}
+          <div className="flex flex-row items-center gap-2">
+          <p className="text-3xl">{(section.formatter ? 
+            section.formatter(section.value) : section.value) || '--'}</p>
+          {section.value !== undefined && <TooltipDot value={section.value} inverted={section.inverted} />}
+          </div>
+          <b className="text-xs">{section.label}</b>
+        </div>
+      ))}
+      </div>
+      {/* flex non lead sections in each row */}
+      <p className="text-xs pt-4">
         <i>Click for more info</i>
       </p>
     </>
   )
 }
-
 export const MapTooltipInner: React.FC<
   MapTooltipProps & { tooltipStatus: MapState["tooltipStatus"]; tooltip: MapState["tooltip"] }
 > = ({ simpleMap, tooltipStatus, tooltip }) => {
   const { id, data: tooltipData } = tooltip || { id: "", data: [] }
   const data = globals?.ds?.tooltipResults?.[id]
   if (!data) {
-    return null
+    return (
+      <svg className="spinner" width="4rem" height="4rem" viewBox="0 0 50 50">
+        <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="4" />
+      </svg>
+    )
   }
   if (simpleMap) {
     return <p className="pb-2">{id}</p>
@@ -46,7 +64,7 @@ export const MapTooltipInner: React.FC<
   if (tooltipStatus === "ready") {
     return (
       <p className="pb-2">
-        <b>{id}</b>
+        <b>Tract# {id}</b>
         <TooltipSectionsRenderer sections={data} />
       </p>
     )
