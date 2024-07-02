@@ -67,6 +67,7 @@ export class DataService<DataT extends Record<string, any>> {
       return []
     }
   }
+  
   sanitizeColumn(col: string | any) {
     // if starts or ends with '"" then return else add
     if (col.startsWith('"') && col.endsWith('"')) {
@@ -423,13 +424,17 @@ export class DataService<DataT extends Record<string, any>> {
         formattedData.push({
           label: c.label,
           lead: c.lead,
-          invert: c.invert,
+          inverted: c.inverted,
           formatter: c.formatter,
           value,
         })
       }
     })
-    this.tooltipResults[id] = formattedData
+    console.log(formattedData)
+    this.tooltipResults[id] = {
+      sections: formattedData,
+      name: data.NAME
+    }
     return this.tooltipResults[id]
   }
   rotate(data: Array<Record<string | number, any>>, columnLabel: string, valueLabel: string, columns: Array<string>) {

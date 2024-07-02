@@ -46,6 +46,7 @@ export const MapTooltipInner: React.FC<
 > = ({ simpleMap, tooltipStatus, tooltip }) => {
   const { id, data: tooltipData } = tooltip || { id: "", data: [] }
   const data = globals?.ds?.tooltipResults?.[id]
+
   if (!data) {
     return (
       <svg className="spinner" width="4rem" height="4rem" viewBox="0 0 50 50">
@@ -60,12 +61,11 @@ export const MapTooltipInner: React.FC<
   if (tooltipData) {
     return <TooltipSectionsRenderer sections={tooltipData} />
   }
-
   if (tooltipStatus === "ready") {
     return (
       <p className="pb-2">
-        <b>Tract# {id}</b>
-        <TooltipSectionsRenderer sections={data} />
+        <b>{data.name ? data.name : `Tract# ${id}`}</b>
+        <TooltipSectionsRenderer sections={data.sections} />
       </p>
     )
   }
@@ -87,21 +87,47 @@ export const MapTooltipInner: React.FC<
   )
 }
 
+export const adjustTooltipToMousePosition = (x:number, y:number, tooltipWidth: number): {left?:number, top?:number, right?:number, bottom?:number} => {
+  const screenWidth = window.innerWidth
+  const screenHeight = window.innerHeight
+  // if in bottom right quadrant of screen
+  // move tooltip to the left
+  const quadrantX = x > screenWidth / 2 ? "right" : "left"
+  const quadrantY = y > screenHeight / 2 ? "bottom" : "top"
+  let cssProps: {left?:number, top?:number, right?:number, bottom?:number} = {
+
+  }
+  if (quadrantX === "right") {
+    cssProps['right'] = screenWidth - x + 10
+  } else {
+    cssProps = {left: x + 10}
+  }
+  if (quadrantY === "bottom") {
+    cssProps['bottom'] = screenHeight - y + 10
+  } else {
+    cssProps['top'] = y + 10
+  }
+
+  return cssProps
+}
+
 export const MapTooltip: React.FC<MapTooltipProps> = ({ simpleMap }) => {
+  const tooltipRef = React.useRef<HTMLDivElement>(null)
   const tooltip = useAppSelector((state) => state.map.tooltip)
   const tooltipStatus = useAppSelector((state) => state.map.tooltipStatus)
+  const tooltipWidth = tooltipRef.current?.clientWidth || 0
   const { x, y } = tooltip || {}
-
+  const cssProps = adjustTooltipToMousePosition(x, y, tooltipWidth)
   if (!x || !y) {
     return null
   }
 
   return (
     <div
+      ref={tooltipRef}
       className="padding-4 pointer-events-none fixed z-[1001] rounded-md border border-gray-200 bg-white/90 p-2 shadow-md"
       style={{
-        left: x + 10,
-        top: y + 10,
+        ...cssProps
       }}
     >
       <MapTooltipInner simpleMap={simpleMap} tooltipStatus={tooltipStatus} tooltip={tooltip} />

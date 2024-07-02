@@ -21,6 +21,7 @@ import { zeroPopTracts } from "utils/zeroPopTracts"
 import { MapSettings } from "components/MapSettings/MapSettings"
 import "./styles.css"
 import { DeckGLOverlay } from "./DeckGLOverlay"
+import { useDebouncedCallback } from 'use-debounce';
 
 export type MapProps = {
   initialFilter?: string
@@ -76,6 +77,29 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
       setContainerHeight(`${windowHeight - navHeight}px`)
     } catch (e) {
       console.error(e)
+    }
+  }
+  
+  const handleSetTooltipId = useDebouncedCallback(
+    // function
+    (id) => {
+      dispatch(setTooltipInfo({ id }))
+    },
+    // delay in ms
+    50
+  );
+  // debounce
+  const handleHover = (info: any, event: any) => {
+    const x = event?.srcEvent?.clientX
+    const y = event?.srcEvent?.clientY
+    const id = info.object?.properties?.GEOID
+    const isZeroPop = zeroPopTracts.indexOf(info.object?.properties?.GEOID) !== -1
+    const isFiltered = filter && info.object?.properties?.GEOID?.startsWith(filter) === false
+    if (info?.x && info?.y && info?.object && !isFiltered && !isZeroPop) {
+      dispatch(setTooltipInfo({ x, y, id: undefined }))
+      handleSetTooltipId(id)
+    } else {
+      dispatch(setTooltipInfo(null))
     }
   }
 
@@ -223,18 +247,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
           setClickedGeo({ geoid: info.object?.properties?.GEOID })
         }
       },
-      onHover: (info: any, event: any) => {
-        const x = event?.srcEvent?.clientX
-        const y = event?.srcEvent?.clientY
-        const id = info.object?.properties?.GEOID
-        const isZeroPop = zeroPopTracts.indexOf(info.object?.properties?.GEOID) !== -1
-        const isFiltered = filter && info.object?.properties?.GEOID?.startsWith(filter) === false
-        if (info?.x && info?.y && info?.object && !isFiltered && !isZeroPop) {
-          dispatch(setTooltipInfo({ x, y, id }))
-        } else {
-          dispatch(setTooltipInfo(null))
-        }
-      },
+      onHover: handleHover,
       filled: true,
       stroked: true,
       beforeId: "water",

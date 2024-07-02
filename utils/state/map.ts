@@ -104,8 +104,18 @@ export const mapSlice = createSlice({
     setTimeSeriesLoaded: (state, action: PayloadAction<keyof typeof timeSeriesConfig>) => {
       state.timeseriesDatasets.push(action.payload)
     },
-    setTooltipInfo: (state, action: PayloadAction<MapState["tooltip"] | null>) => {
-      state.tooltip = action?.payload
+    setTooltipInfo: (state, action: PayloadAction<Partial<MapState["tooltip"]> | null>) => {
+      if (action.payload === null) {
+        state.tooltip = null
+        state.tooltipStatus = undefined
+        return
+      }
+
+      state.tooltip = {
+        x: action?.payload?.x || state.tooltip?.x || 0,
+        y: action?.payload?.y || state.tooltip?.y || 0,
+        id: action?.payload?.id || ''
+      }
       const id = action?.payload?.id
       if (action?.payload?.data) {
         // chill
@@ -115,9 +125,9 @@ export const mapSlice = createSlice({
         state.tooltipStatus = "ready"
       }
     },
+
     setClickInfo: (state, action: PayloadAction<MapState["clicked"] | null>) => {
       state.clicked = action?.payload
-      console.log(action?.payload)
       const id = action?.payload?.id
       if (action?.payload?.data) {
         // chill
