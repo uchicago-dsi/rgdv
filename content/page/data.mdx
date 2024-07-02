@@ -1,29 +1,71 @@
+---
+sections:
+  - title: Data
+    body: >
+      This project brings together multiple data sources across economic,
+      health, and technical domains. All data was accessed between January and
+      May 2024. The following table includes all datasets and sources used in
+      this project.
 
-# Data and Methodology
 
-Store inclusions
+      | Data                                                               |
+      Source                                                                                                                                                         
+      | Year      |
 
-The Following NAICS were fully included:
+      | ------------------------------------------------------------------ |
+      ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+      | --------- |
 
-* '445110' - grocery stores
-* 452910 - warehouse stores
-* 455211 - warehouse stores
-* 452311 - warehouse stores
+      | Grocery Store Locations                                            |
+      InfoGroup Reference USA / Data
+      Axle                                                                                                                            
+      | 1997-2023 |
 
-These department stores under the NAICS code 452111 were included: WALMART SUPERCENTER,  TARGET,  and WALMART.
+      | Grocery Store Corporate Ownership                                  |
+      InfoGroup Reference USA / Data
+      Axle                                                                                                                            
+      | 1997-2023 |
 
-For stats with dollar stores, the following business are included (DOLLAR GENERAL'",  "'FAMILY DOLLAR STORE'",  "'DOLLAR TREE'",  "'BIG LOTS'",  "'99 CENTS ONLY STORES'") under the NAICS categories of general merchandise stores (  '452990',  '455219',  '452319',)
+      | Isochrone Generation                                               |
+      Microsoft Bing
+      API                                                                                                                                             
+      | 2023      |
 
-Sales scaling
+      | Residential Segregation - Index of Concentration of Extremes (ICE) |
+      Social Determinants of Health by US Census Tract,  National Health Care
+      Delivery Research Program, National Institute of Health (NIH) National
+      Cancer Institute | 2012      |
 
-Not every store in our data selection sells exclusively, or even primarily, food items. To account for this, we scale the sales based on an estimated percent of category sales. Data for estimated category sales are listed below. for all other stores in non-grocery store NAICS classifications we estimate based on the average of available data: dollar stores (dollar general', 'dollar tree', 'family dollar', '99 cents only), warehouse stores ('costco', 'walmart') and department stores (target', 'big lots).
+      | Economic Disadvantage                                              |
+      HRSA Area Deprivation Index via University of Washington-Madison
+      Neighborhood
+      Atlas                                                                            
+      | 2022      |
 
-* [https://www.statista.com/statistics/1113245/target-sales-by-product-segment-in-the-us/](https://www.statista.com/statistics/1113245/target-sales-by-product-segment-in-the-us/)
-* [https://www.statista.com/statistics/1222703/sales-of-dollar-tree-by-category-united-states-and-canada/](https://www.statista.com/statistics/1222703/sales-of-dollar-tree-by-category-united-states-and-canada/)
-* [https://www.statista.com/statistics/252678/walmarts-net-sales-in-the-us-by-merchandise-unit/](https://www.statista.com/statistics/252678/walmarts-net-sales-in-the-us-by-merchandise-unit/)
-* [https://www.statista.com/statistics/253589/share-of-dollar-generals-merchandise-sales-in-the-us-by-product-category/](https://www.statista.com/statistics/253589/share-of-dollar-generals-merchandise-sales-in-the-us-by-product-category/)
-* [https://www.statista.com/statistics/1222716/sales-of-family-dollar-by-category-united-states/](https://www.statista.com/statistics/1222716/sales-of-family-dollar-by-category-united-states/)
-* [https://www.statista.com/statistics/1222843/sales-big-lots-united-states-by-category/](https://www.statista.com/statistics/1222843/sales-big-lots-united-states-by-category/)
-* [https://www.statista.com/statistics/1018970/99-cents-only-store-product-category-sales-share-us/](https://www.statista.com/statistics/1018970/99-cents-only-store-product-category-sales-share-us/)
-* [https://www.statista.com/statistics/284423/sales-costco-worldwide-2011-2013-by-category/](https://www.statista.com/statistics/284423/sales-costco-worldwide-2011-2013-by-category/)
-*
+      | Inflation                                                          |
+      Consumer Price
+      Index                                                                                                                                           
+      | 2024      |
+
+      | Census Tracts                                                      |
+      American Community Survey / U.S. Census Geographic
+      Boundaries                                                                                                  
+      | 2020      |
+
+      | Census Tracts - Population-Weighted Centroids                      |
+      U.S. Census Centers of
+      Population                                                                                                                              
+      | 2020      |
+  - title: Food Access
+    body: "To estimate food access scores, we use a gravity model with a floating catchment area (FCA). This data model represents accessibility scores for different locations, quantifying how easily people in a given area can access grocery stores. These scores account for both the amount of resources available (weighted by store sales) and the distance or travel time to these resources, applying a decay function that makes further away locations less valuable than nearby ones.\n\nThis approach provides a more nuanced understanding of accessibility compared to a simple binary measure of whether a location is within a certain distance (eg. a grocery location within 1 mile or 10 miles). This complexity allows the model to better reflect real-world conditions where access diminishes with distance and is influenced by the concentration and capacity of resources. Thus, it offers a more detailed and actionable insight for planning and policy-making, identifying not just whether services are accessible, but how accessible they are in relative terms.\n\nTo calculate the food access gravity model score, our methods are the following: \n\n1. **Define supply locations:  **We use the InfoGroup reference USA store locations coded as Grocery Stores, Warehouse Stores, Supercenters, and in some cases Dollar Stores. We weighted each location by its sales volume - in the case of Dollar Stores, Supercenters, and Warehouse Stores, we divide sales based on estimates of the percentage of sales that area food items. To compare values over time, we adjust for inflation (using CPI) and adjust for median income and goods pricing (where higher sales volumes in affluent areas may represent fewer total groceries sold, and the opposite may be true in lower income areas).\n2. **Define demand locations:**  We use census data crosswalked to 2020 census tract geographies to estimate the number of people in a given area.\n3. **Define travel time:**  We use the straight line distance between census block groups, aggregated to census tracts, to estimate the travel time between locations.\n4. **Calculate the catchment areas:** For the following steps, we use the Python Spatial Analysis Library (PySAL's) accessibility module. First, we calculate dynamically-defined areas around each census tract based on the distance or time threshold that people are willing to travel to access a grocery store. Next we apply a distance decay function, which assumes that the attractiveness or utility of a grocery store decreases as the distance from the store increases. Weighting is linear, (α=1) which means that a store would have to be twice as attractive for someone to travel twice as far. We use a distance threshold of 1.2km (β=1200) to estimate the threshold at which distance sensitivity starts to decay more rapidly.\_\n5. **Calculate accessibility:  **For each census tract, we calculate the accessibility score to grocery stores. We sum weighted supply values of all grocery stores within the catchment area, modified by the distance and supply of that store. The sum of all of the distance decayed supply values divided by the total demand reflects the food supply accessibility value. Other spatial access models may take into account competition for resources, which is very important for services that can hit capacity limits such as Healthcare, but in the case of grocery supply it is very rare in the US context that a store would be fully sold out of viable food supply. \n6. **Normalize and interpret:** For the food access score, we assign a percentile to each tract's accessibility score from 0 to 100 relative to all tracts. For counties and states, we calculate the population weighted average of accessibility scores for all the tracts within, and then assign a percentile relative to all counties or states.\n\n#### Grocery Store Data\n\nWe included all grocery stores defined by the following [NAICS codes](https://www.census.gov/naics/) in this project: \n\n* '445110' - grocery stores\n* 452910 - warehouse stores\n* 455211 - warehouse stores\n* 452311 - warehouse stores\n\nThe following department stores under the NAICS code 452111 were included: WALMART SUPERCENTER, TARGET, and WALMART.\n\nFor stats with dollar stores, the following business are included (DOLLAR GENERAL'\", \"'FAMILY DOLLAR STORE'\", \"'DOLLAR TREE'\", \"'BIG LOTS'\", \"'99 CENTS ONLY STORES'\") under the NAICS code categories of general merchandise stores ( '452990', '455219', '452319',)\n\n#### Scaling by Grocery Sales\n\nNot every store in our data selection sells exclusively, or even primarily, food items. To account for this, we scale the sales based on an estimated percent of category sales. Data for estimated category sales are listed below. For all other stores in non-grocery store NAICS classifications we estimate based on the average of available data: dollar stores ('dollar general', 'dollar tree', 'family dollar', '99 cents only'), warehouse stores ('costco', 'walmart') and department stores (target', 'big lots).\n\n* [Target](https://www.statista.com/statistics/1113245/target-sales-by-product-segment-in-the-us/)\n* [Walmart](https://www.statista.com/statistics/252678/walmarts-net-sales-in-the-us-by-merchandise-unit/)\n* [Costco](https://www.statista.com/statistics/284423/sales-costco-worldwide-2011-2013-by-category/)\n* [Big Lots](https://www.statista.com/statistics/1222843/sales-big-lots-united-states-by-category/)\n* [Dollar General](https://www.statista.com/statistics/253589/share-of-dollar-generals-merchandise-sales-in-the-us-by-product-category/)\n* [Dollar Tree](https://www.statista.com/statistics/1222703/sales-of-dollar-tree-by-category-united-states-and-canada/)\n* [Family Dollar](https://www.statista.com/statistics/1222716/sales-of-family-dollar-by-category-united-states/)\n* [99 Cents Only](https://www.statista.com/statistics/1018970/99-cents-only-store-product-category-sales-share-us/)\n"
+  - title: Market Concentration
+    body: "To estimate market concentration we use the Herfindahl-Hirschman Index (HHI), a widely used measure of market concentration.\_HHI is particularly useful when assessing the competitive landscape of industries like grocery stores.\n\nTo calculate HHI, we use the following methods:\n\n1. Estimate service areas / travel time tolerance: We want to measure the dominance of a particular grocery store or grocery parent company within a reasonable range that people might be willing to travel to access groceries. These ranges are based on the density of a place, where denser areas may be more sensitive to distance than a more rural or remote area.\_We assign distance ranges of 5 to 20 minutes driving time with average area traffic, based on reported ranges of how far people are willing to travel in the USDA FoodAPS survey. While many people in urban areas likely do not drive to the grocery store, the 5 minute range of driving roughly equates to a reasonable walking distance when traffic and street grids are considered. We assign a driving time of 5 to 20 minutes based on the density of a given census tract and its neighbors (spatial lagged value) to differentiate tracts that area next to urban areas but are less dense, and truly rural or remote areas. We take the density values and normalize them from 0 to 100, exponentially scale the values to emphasize lower driving tolerances, and normalized again. Based on these scores, we create driving service areas using the Microsoft Bing isochrone API. The estimate the service area based on modeled traffic at 6pm on a Saturday evening in July. We apply a 500 foot linear buffer to the isochrones to capture strip malls or other locations that are just outside the calculated area.\n2. Find stores within a Census tract's service area: Based on the service area of a tract, we find all the stores nearby based on their location. For service areas that have no locations, we increase the threshold by 10 minutes (eg. 20 to 30, 30 to 40) up to a 60 minute driving tolerance until a store or stores are in the area.\n3. Find the parent chain of the stores: For each store in the service area, we identify its parent chain based on the 'Parent Number' column of the Reference USA data. This links an individual grocery chain to their parent company (eg. Harris Teeter is owned by Kroger).\n4. Calculate the HHI index: Based on the total sales of each parent chain in the service area of a tract, we calculate HHI. In essence, this measure reflects how dominant stores are in the area, where a value of 1 represents total dominance (1 store has all of the sales) and a value closer to zero reflects a more dispersed market (0.5 means two stores have equal sales, 0.1 means ten stores, and so on).\n5. Normalize and interpret: We take the HHI values for each tract and assign a percentile value from 0 to 100 relative to all tracts. We invert this value so that a high value represents a competitive, diffuse market and a low value represents a highly concentrated market. For counties and states, we aggregate tract level HHI values with a population-weighted average, and then assign a percentile score relative to other counties or states.\n"
+  - title: Residential Segregation
+    body: "This residential segregation measure comes from the NIH National Cancer Institute’s Healthcare Delivery Research Program’s\_[Social Determinants of Health by U.S. Census Tract](https://healthcaredelivery.cancer.gov/social-determinants/)\_dataset.\_\n\nCalled the\_[Indicator of Concentration at the Extremes](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6458187/), this measure reflects the difference or integration in where African American/Black and White people live.\_It indicates that Black and White residents are mostly living in separate neighborhoods.\_ A high segregation score can indicate other inequities like access to resources like food, healthcare, and other services.\_\n\nA place can be diverse overall but still have segregation if different groups live in separate neighborhoods. Similarly, if the people in a place are predominantly one race, but a small number of people of another race live in a single area, it can be not very diverse and also highly segregated.\n"
+  - title: Socioeconomic Disadvantage
+    body: "This economic disadvantage measure comes from the Area Deprivation Index (ADI) from the University of Wisconsin’s\_[Neighborhood Atlas](https://www.neighborhoodatlas.medicine.wisc.edu/).\_(1)\_The Neighborhood Atlas describes the ADI as follows: “\\[The ADI] allows for rankings of neighborhoods by socioeconomic disadvantage in a region of interest (e.g., at the state or national level). It includes factors for the theoretical domains of income, education, employment, and housing quality. It can be used to inform health delivery and policy, especially for the most disadvantaged neighborhood groups.”\_\n\nWe aggregated the ADI data from 2020 Census block groups to 2020 Census tracts via population-weighted averages, to explore socioeconomic trends in this project.\_\n\n***\n\n(1) Kind AJH, Buckingham W.\_[Making Neighborhood Disadvantage Metrics Accessible: The Neighborhood Atlas](https://www.nejm.org/doi/full/10.1056/NEJMp1802313). New England Journal of Medicine, 2018. 378: 2456-2458. DOI: 10.1056/NEJMp1802313. PMCID: PMC6051533.\n"
+---
+
+# Data & Methodology
+
+Learn more about the datasets, sources, metrics, and methodologies used in this project.
