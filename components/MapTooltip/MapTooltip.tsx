@@ -1,55 +1,30 @@
 import { globals } from "utils/state/globals"
 import { useAppSelector } from "utils/state/store"
-import { MapState, TooltipData } from "utils/state/types"
+import { MapState } from "utils/state/types"
 import { MapTooltipProps } from "./types"
-import './Spinner.css';
-import React from "react";
-import { getColorScale } from "components/PercentileLineChart";
+import "./Spinner.css"
+import React from "react"
+import { adjustTooltipToMousePosition } from "./utils"
+import { TooltipSectionsRenderer } from "./MapTooltipSections"
+import { columnsDict } from "utils/data/config"
 
-const TooltipDot: React.FC<{value:number, inverted?:boolean}> = ({value, inverted}) => {
-  const colorScale = getColorScale(inverted)
-  const clampedValue = Math.min(100, Math.max(0, value))
-  const color = colorScale(clampedValue)
-  return (
-    <div className="h-4 w-4 rounded-full" style={{backgroundColor: color}}></div>
-  )
-}
-
-export const TooltipSectionsRenderer: React.FC<{ sections: any[] }> = ({ sections }) => {
-  const leadSections = sections.filter((section) => section.lead)
-  const nonLeadSections = sections.filter((section) => !section.lead)
-  return (
-    <>
-    {/* flex lead sections in each row label as small text */}
-    <div className="flex flex-row justify-between align-middle gap-2">
-      {leadSections.map((section, i) => (
-        <div key={i} className="text-sm flex flex-col w-24">
-          {/* vert middle */}
-          <div className="flex flex-row items-center gap-2">
-          <p className="text-3xl">{(section.formatter ? 
-            section.formatter(section.value) : section.value) || '--'}</p>
-          {section.value !== undefined && <TooltipDot value={section.value} inverted={section.inverted} />}
-          </div>
-          <b className="text-xs">{section.label}</b>
-        </div>
-      ))}
-      </div>
-      {/* flex non lead sections in each row */}
-      <p className="text-xs pt-4">
-        <i>Click for more info</i>
-      </p>
-    </>
-  )
-}
 export const MapTooltipInner: React.FC<
   MapTooltipProps & { tooltipStatus: MapState["tooltipStatus"]; tooltip: MapState["tooltip"] }
 > = ({ simpleMap, tooltipStatus, tooltip }) => {
   const { id, data: tooltipData } = tooltip || { id: "", data: [] }
   const data = globals?.ds?.tooltipResults?.[id]
-
+  const _rawData = globals?.ds?._rawData?.[id]
+  const currentColumn = useAppSelector((state) => {
+    const colName = state.map.currentColumn
+    const colConfig = columnsDict[colName]
+    return {
+      colName,
+      colConfig,
+    }
+  })
   if (!data) {
     return (
-      <svg className="spinner" width="4rem" height="4rem" viewBox="0 0 50 50">
+      <svg className="spinner" width="2rem" height="2rem" viewBox="0 0 50 50">
         <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="4" />
       </svg>
     )
@@ -65,7 +40,19 @@ export const MapTooltipInner: React.FC<
     return (
       <p className="pb-2">
         <b>{data.name ? data.name : `Tract# ${id}`}</b>
-        <TooltipSectionsRenderer sections={data.sections} />
+        <TooltipSectionsRenderer sections={data.sections}>
+          {!currentColumn.colConfig.bivariate && (
+            <>
+              <p className="pt-2 mt-2 text-xs border-t-2 border-neutral-500">
+                <span className="font-bold pr-2">
+                  {currentColumn.colName}:
+                </span>
+                  {/* @ts-ignore */}
+                {_rawData[currentColumn.colConfig.column]}
+              </p>
+            </>
+          )}
+        </TooltipSectionsRenderer>
       </p>
     )
   }
@@ -87,37 +74,13 @@ export const MapTooltipInner: React.FC<
   )
 }
 
-export const adjustTooltipToMousePosition = (x:number, y:number, tooltipWidth: number): {left?:number, top?:number, right?:number, bottom?:number} => {
-  const screenWidth = window.innerWidth
-  const screenHeight = window.innerHeight
-  // if in bottom right quadrant of screen
-  // move tooltip to the left
-  const quadrantX = x > screenWidth / 2 ? "right" : "left"
-  const quadrantY = y > screenHeight / 2 ? "bottom" : "top"
-  let cssProps: {left?:number, top?:number, right?:number, bottom?:number} = {
-
-  }
-  if (quadrantX === "right") {
-    cssProps['right'] = screenWidth - x + 10
-  } else {
-    cssProps = {left: x + 10}
-  }
-  if (quadrantY === "bottom") {
-    cssProps['bottom'] = screenHeight - y + 10
-  } else {
-    cssProps['top'] = y + 10
-  }
-
-  return cssProps
-}
-
 export const MapTooltip: React.FC<MapTooltipProps> = ({ simpleMap }) => {
   const tooltipRef = React.useRef<HTMLDivElement>(null)
   const tooltip = useAppSelector((state) => state.map.tooltip)
   const tooltipStatus = useAppSelector((state) => state.map.tooltipStatus)
   const tooltipWidth = tooltipRef.current?.clientWidth || 0
   const { x, y } = tooltip || {}
-  const cssProps = adjustTooltipToMousePosition(x, y, tooltipWidth)
+  const cssProps = adjustTooltipToMousePosition(x || 0, y || 0, tooltipWidth)
   if (!x || !y) {
     return null
   }
@@ -127,7 +90,7 @@ export const MapTooltip: React.FC<MapTooltipProps> = ({ simpleMap }) => {
       ref={tooltipRef}
       className="padding-4 pointer-events-none fixed z-[1001] rounded-md border border-gray-200 bg-white/90 p-2 shadow-md"
       style={{
-        ...cssProps
+        ...cssProps,
       }}
     >
       <MapTooltipInner simpleMap={simpleMap} tooltipStatus={tooltipStatus} tooltip={tooltip} />

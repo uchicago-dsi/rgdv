@@ -344,7 +344,7 @@ export const tooltipConfig: Array<{
     formatter: wholeNumber.format,
   },
   {
-    label: "Econmic Disadvantage",
+    label: "Economic Disadvantage",
     column: "ADI_NATRANK",
     lead: true,
     inverted: true,
@@ -490,7 +490,26 @@ export const parentCompanyHighlightConfig = {
   },
 } as const
 
+export const raceEthnicityColumns = [
+  "NH WHITE ALONE",
+  "NH BLACK ALONE",
+  "HISPANIC OR LATINO",
+  "NH AMERICAN INDIAN ALONE",
+  "NH ASIAN ALONE",
+  "NH PACIFIC ISLANDER ALONE",
+  "NH SOME OTHER RACE",
+  "NH TWO OR MORE",
+  "NH TWO OR MORE INCLUDING SOME OTHER",
+  "NH TWO OR MORE EXCLUDING SOME OTHER",
+] as const
+
 export const combinedHighlightConfig = {
   ...communityHighlightConfig,
   ...parentCompanyHighlightConfig,
 } as const
+
+
+export const sidebarConfig = {
+  tooltipConfig,
+  parentCompanyHighlightConfig
+}

@@ -46,7 +46,8 @@ export class DataService<DataT extends Record<string, any>> {
   timeseriesResults: any = {}
   _dataId: keyof DataT = "GEOID"
   idColumn: string
-
+  _rawData: Record<string, DataT> = {}
+  
   constructor(conn: AsyncDuckDBConnection, idColumn: keyof DataT) {
     this.conn = conn
     this._dataId = idColumn
@@ -394,19 +395,9 @@ export class DataService<DataT extends Record<string, any>> {
     this.highlightResult = resultDict
     return performance.now()
   }
-
-  async getTooltipValues(id: string) {
-    if (this.tooltipResults[id]) {
-      return this.tooltipResults[id]
-    }
-    const _res = await this.runQuery<DataT[]>(`SELECT * FROM ${dataTableName} WHERE "${this.idColumn}" LIKE '${id}'`)
-    if (!_res || _res.length === 0) {
-      console.error(`No results for tooltip query: ${id}`)
-      return
-    }
-    const data = _res[0]!
-    this.tooltipResults[id] = data
+  formatTooltipData(data: any) {
     const formattedData: any = []
+
     tooltipConfig.forEach((c) => {
       let value: any = 'NULL_VALUE';
       if (c.column) {
@@ -423,14 +414,28 @@ export class DataService<DataT extends Record<string, any>> {
       } else {
         formattedData.push({
           label: c.label,
-          lead: c.lead,
+          category: c.lead ? 'lead' : undefined,
           inverted: c.inverted,
           formatter: c.formatter,
           value,
         })
       }
     })
-    console.log(formattedData)
+
+    return formattedData
+  }
+  async getTooltipValues(id: string) {
+    if (this.tooltipResults[id]) {
+      return this.tooltipResults[id]
+    }
+    const _res = await this.runQuery<DataT[]>(`SELECT * FROM ${dataTableName} WHERE "${this.idColumn}" LIKE '${id}'`)
+    if (!_res || _res.length === 0) {
+      console.error(`No results for tooltip query: ${id}`)
+      return
+    }
+    const data = _res[0]!
+    this._rawData[id] = data
+    const formattedData = this.formatTooltipData(data)
     this.tooltipResults[id] = {
       sections: formattedData,
       name: data.NAME

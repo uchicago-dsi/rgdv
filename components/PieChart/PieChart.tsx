@@ -18,7 +18,9 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   labelKey,
   tooltipFields = [],
   tooltipFormatters = {},
+  layout = "horizontal"
 }) => {
+
   const { parentRef, width: _width } = useParentSize({ debounceTime: 150 })
   const vw = (document?.documentElement?.clientWidth) / 100
   const [maxWidth, maxHeight] = [50*vw, 400]
@@ -88,7 +90,7 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   })
 
   return (
-    <div className={`flex items-center justify-center content-center flex-col lg:flex-row w-full lg:${cleanData.length > 6 ? "max-h-[80vh]": "max-h-[40vh]"}`} ref={parentRef}>
+    <div className={`flex items-center justify-center content-center flex-col ${layout === 'horizontal' && 'lg:flex-row'} w-full lg:${cleanData.length > 6 ? "max-h-[80vh]": "max-h-[40vh]"}`} ref={parentRef}>
       <svg width={width} height={height}>
         <Group top={height/2} left={width/2}>
           <Pie
@@ -135,10 +137,10 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
       </svg>
       <LegendOrdinal
         shapeHeight={8}
-        shapeMargin={0}
-        labelMargin={0}
+        // shapeMargin={0}
+        // labelMargin={0}
         scale={colorScale}
-        className="lg:max-w-[50%] max-h-[100%] overflow-y-auto "
+        className={`max-h-[100%] ${layout === 'horizontal' ? 'lg:max-w-[50%]' : 'w-full'} overflow-y-auto`}
         labelFormat={(label) => {
           const sum = sums[label] ? ` (${percentFormatter.format(sums[label]!)})` : ``
           return `${toCase(label, "title")}${sum}`
