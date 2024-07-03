@@ -314,11 +314,7 @@ export class DataService<DataT extends Record<string, any>> {
         FROM ${dataTableName}
     `
     }
-    if (filter) {
-      query += ` WHERE ${this.idColumn} LIKE '${filter}%';`
-    } else {
-      query += ";"
-    }
+    
     const colorMap = this.mapColors(await this.runQuery(query))
     return {
       colorMap,
