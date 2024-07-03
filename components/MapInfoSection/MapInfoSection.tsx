@@ -73,7 +73,7 @@ export const MapInfoSection: React.FC = () => {
         const tooltipData = globals.ds.formatTooltipData(res[0])
         const parentCompanyData = formatParentCompanyData(res[0])
         const race = cleanRaceData(res[0])
-        console.log("parentCompanyData", parentCompanyData)
+
         setData({
           id: clicked.id,
           data: JSON.parse(globals.ds.stringifyJsonWithBigInts(res[0])),
