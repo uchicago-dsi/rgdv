@@ -5,12 +5,31 @@ import { deepCompare2d1d } from "utils/data/compareArrayElements"
 import { upcertColorFilter } from "utils/state/map"
 import { useAppDispatch, useAppSelector } from "utils/state/store"
 import { LegendProps } from "./types"
+import CountyList from "../CountyFilterSelector/county_list.json"
+
+const findName = (id: string) => {
+  const state = CountyList.find((state) => state.statefp === id.slice(0, 2))
+  const county = id.length > 2 ? state?.counties?.find((county: any) => county.fips === id) : undefined
+
+  switch(id.length) {
+    case 2:
+      return state?.state || 'Unknown'
+    case 5:
+      return `${county?.name || 'Unknown County'}, ${state?.state || 'Unknown State'}`
+    default:
+      const tractNum = id.slice(5)
+      return `Tract ${tractNum} in ${county?.name || 'Unknown County'}`
+  }
+}
 
 export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, breaks }) => {
   const colorFilter = useAppSelector((state) => state.map.colorFilter)
   const highlight = useAppSelector((state) => state.map.highlight)
   const higlightValue = useAppSelector((state) => state.map.highlightValue)
   const highlightColor = useAppSelector((state) => state.map.highlightColor)
+  const idFilter = useAppSelector((state) => state.map.idFilter)
+  const filterInfo = idFilter?.length ? `* Data for ${findName(idFilter)}` : 'National Data'
+
   const dispatch = useAppDispatch()
 
   const [legendtooltip, setLegendTooltip] = useState<number[]>([])
@@ -93,6 +112,9 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
           )}
         </div>
         <HighlightLegend highlight={highlight} value={higlightValue} color={highlightColor} />
+        <p className="text-xs text-right pt-4">
+          {filterInfo}
+        </p>
       </div>
     )
   } else {
@@ -112,6 +134,9 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
           ))}
         <p style={{ maxWidth: "35ch", fontSize: "0.75rem" }}>{/* <i>{currentDataSpec?.attribution}</i> */}</p>
         <HighlightLegend highlight={highlight} value={higlightValue} color={highlightColor}/>
+        <p className="text-xs text-right pt-4">
+          {filterInfo}
+        </p>
       </div>
     )
   }
