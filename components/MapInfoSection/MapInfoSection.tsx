@@ -94,47 +94,53 @@ export const MapInfoSection: React.FC = () => {
   const leadSections = formatted?.filter((section: any) => section.category === "lead")
 
   return (
-    <div className="relative w-96 border-b-2 border-r-2 border-neutral-500 p-4 py-8">
-      <button onClick={close} className="absolute right-0 top-0 p-2">
-        &times;
-      </button>
-      <h3 className="text-2xl">{data?.data?.NAME || clicked.id}</h3>
-      <div className="m-x-auto my-2 flex w-full flex-row items-center justify-between gap-4 rounded-xl border-2 border-neutral-200 p-2 text-xs">
-        <p>Open Report:</p>
-        <a
-          href={`/tract/${clicked.id}`}
-          className="border-b-2 border-black transition-colors hover:border-primary-500 hover:text-primary-500"
-        >
-          Neighborhood
-        </a>
-        <a
-          href={`/county/${clicked.id.slice(0, 5)}`}
-          className="border-b-2 border-black transition-colors hover:border-primary-500 hover:text-primary-500"
-        >
-          County
-        </a>
-        <a
-          href={`/state/${clicked.id.slice(0, 2)}`}
-          className="border-b-2 border-black transition-colors hover:border-primary-500 hover:text-primary-500"
-        >
-          State
-        </a>
+    <div
+      className="relative w-96 border-r-2 border-neutral-500 pb-8 [&>*]:px-4 min-h-[100vh]"
+    >
+      <div className="sticky top-0 flex h-auto w-full flex-row bg-white py-2 shadow-sm z-10">
+        <div className="w-full relative h-full">
+          <h3 className="text-2xl max-w-[75%]">{data?.data?.NAME || clicked.id}</h3>
+          <div className="m-x-auto my-2 flex w-full flex-row items-center justify-between gap-4 rounded-xl border-2 border-neutral-200 p-2 text-xs">
+            <p>Open Report:</p>
+            <a
+              href={`/tract/${clicked.id}`}
+              className="border-b-2 border-black transition-colors hover:border-primary-500 hover:text-primary-500"
+            >
+              Neighborhood
+            </a>
+            <a
+              href={`/county/${clicked.id.slice(0, 5)}`}
+              className="border-b-2 border-black transition-colors hover:border-primary-500 hover:text-primary-500"
+            >
+              County
+            </a>
+            <a
+              href={`/state/${clicked.id.slice(0, 2)}`}
+              className="border-b-2 border-black transition-colors hover:border-primary-500 hover:text-primary-500"
+            >
+              State
+            </a>
+          </div>
+          <button onClick={close} className="absolute right-0 top-0 p-2">
+            &times;
+          </button>
+        </div>
       </div>
       <LeadSectionsRenderer sections={leadSections} />
       {!!(data?.parentCompanyData && Object.keys(data?.parentCompanyData).length > 0) && (
         <>
-          <div className="w-full my-4 border-b-2 border-neutral-500"/>
+          <div className="my-4 w-full border-b-2 border-neutral-200" />
           <p className="text-bold pt-4 text-xs font-bold">Major company market dominance</p>
           <Table data={data?.parentCompanyData || []} headers={["Parent Company", "Market Share"]} />
         </>
       )}
       {!!data?.race && (
         <>
-        <div className="w-full my-4 border-b-2 border-neutral-500"/>
-    <p className="text-bold pt-4 text-xs font-bold">Demographic Profile</p>
-        <div className="relative h-128 w-full">
-          <PieChart layout="vertical" data={data.race} dataKey="value" labelKey="raceEthnicity" />
-        </div>
+          <div className="my-4 w-full border-b-2 border-neutral-200" />
+          <p className="text-bold pt-4 text-xs font-bold">Demographic Profile</p>
+          <div className="h-128 relative w-full">
+            <PieChart layout="vertical" data={data.race} dataKey="value" labelKey="raceEthnicity" />
+          </div>
         </>
       )}
       {/* <Table data={data?.data} /> */}

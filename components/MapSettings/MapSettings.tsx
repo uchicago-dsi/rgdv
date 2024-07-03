@@ -44,6 +44,7 @@ export const MapSettings: React.FC = () => {
   const availableColumns = columnGroups[currentColumnGroup]?.columns || []
   const highlight = useAppSelector((state) => state.map.highlight)
   const filter = useAppSelector((state) => state.map.idFilter)
+  const clicked = useAppSelector((state) => state.map.clicked)
   // @ts-ignore
   const highlightType = !highlight ? 'none' : communityHighlightConfig[highlight] ? 'community' : 'parent'
   const dispatch = useAppDispatch()
@@ -70,10 +71,14 @@ export const MapSettings: React.FC = () => {
           </button>
         ))}
       </div>
-      <div className="flex h-full w-auto flex-none flex-col bg-none overflow-y-auto overflow-x-hidden">
+      <div className={`flex flex-none flex-col w-auto bg-none overflow-x-hidden`}>
+       {!!clicked && <div className={`${!!activeMenuSection ? 'max-h-[50vh]' : 'max-h-none'} overflow-y-auto h-full
+        border-b-2 border-neutral-500
+        `}>
         <MapInfoSection />
-        <div
-          className={`relative flex  h-full ${
+        </div>}
+      {!!(activeMenuSection?.length) && <div
+          className={`relative flex  h-full max-h-[50vh] overflow-y-auto ${
             activeMenuSection ? "w-96 border-r-2 border-neutral-500" : "w-0"
           } flex-col`}
         >
@@ -211,7 +216,7 @@ export const MapSettings: React.FC = () => {
         <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
       </div>
     </DropdownMenuDemo> */}
-        </div>
+        </div>}
       </div>
     </>
   )
