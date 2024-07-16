@@ -105,8 +105,8 @@ stat:
   - title: Population
     column: TOTAL_POPULATION
     tooltip: >
-      Population data is from the 2021 data release of ACS 5-year estimates,
-      meaning that the data reflects an estimate from 2016-2021.
+      Total population of %%NAME%%, from the American Community Survey (ACS)
+      2021 5-Year Data.
     templates:
       - body: |
           %%TOTAL\_POPULATION%%
@@ -121,36 +121,32 @@ stat:
   - title: Poverty Rate
     column: POVERTY_RATE
     tooltip: >
-      A percentage of the number of people with income below the poverty limit
-      divided by the total population. Source: American Community Survey 2021
-      5-Year Data.
+      A percentage of the number of people with income below the poverty line,
+      divided by the total population. Source: ACS 2021 5-Year Data.
     templates:
       - body: |
           %%100|\*|POVERTY\_RATE%%%
   - title: Median Age
     column: MEDIAN_AGE
-    tooltip: >
-      Median age of a person in %%NAME%%. Source: American Community Survey 2021
-      5-Year Data.
+    tooltip: |
+      Median age of a person in %%NAME%%. Source: ACS 2021 5-Year Data.
     templates:
       - body: |
           %%MEDIAN\_AGE%% years old.
   - title: People Receiving SNAP Benefits or Cash Assistance
     column: PCT_SNAP_ASSISTANCE
     tooltip: >
-      The SNAP Benefits or Cash Assistance data shows how many people in a
-      certain area get help from the government to buy food or pay for basic
-      needs over five years. It helps us understand how many families need extra
-      support to make ends meet. Source: American Community Survey 2021 5-Year
-      Data.
+      The SNAP Benefits or Cash Assistance data shows how many people get help
+      to buy food or pay for basic needs. It helps us understand how many people
+      need extra support to make ends meet. Source: ACS 2021 5-Year Data.
     templates:
       - body: |
           %%PCT\_SNAP\_ASSISTANCE|\*|100%%%
   - title: People without health insurance
     column: NO HEALTHCARE TOTAL
     tooltip: >
-      People who report having no health insurance. Source: American Community
-      Survey 2021 5-Year Data.
+      People who report having no health insurance. Source: ACS 2021 5-Year
+      Data.
     templates:
       - body: |
           %%PCT\_NO\_HEALTHCARE|\*|100%% % (%%NO HEALTHCARE TOTAL%% people)
@@ -158,8 +154,8 @@ stat:
     column: PCT_WITH_A_DISABILITY
     tooltip: >
       The number of people who have physical, mental, or sensory conditions that
-      can limit their ability to perform everyday activities. Source: American
-      Community Survey 2021 5-Year Data.
+      can limit their ability to perform everyday activities. Source: ACS 2021
+      5-Year Data.
     templates:
       - body: |
           %%PCT\_WITH\_A\_DISABILITY|\*|100%%%
