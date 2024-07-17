@@ -2,7 +2,7 @@ import Home from "components/Pages/Home";
 import { getMdxContent } from "hooks/useMdxContent";
 
 export const metadata = {
-  title: "Feeding Fairness"
+  title: "Grocery Gap Atlas"
 }
 
 export default async function HomePage() {

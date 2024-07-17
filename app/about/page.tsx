@@ -2,7 +2,7 @@ import SectionRenderer from "components/SectionRenderer";
 import { getMdxContent } from "hooks/useMdxContent";
 
 export const metadata = {
-  title: "About :: Feeding Fairness"
+  title: "About :: Grocery Gap Atlas"
 }
 
 export default async function AboutPage() {
