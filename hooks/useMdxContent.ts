@@ -46,6 +46,7 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
           ...fmData,
         },
       }
+      // @ts-ignore
       parseRichRecursive(parseCache[filepath][contentType], schema)
     }
     return {
@@ -53,6 +54,36 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
     } as {
       data: T
     }
+  }
+}
+
+export const getMdxDir = async <T extends any>(contentType: keyof typeof client.queries) => {
+  if (DEV) {
+    const contentKey = `${contentType}Connection` as keyof typeof client.queries
+    // @ts-ignore
+    const r = await client.queries[contentKey]()
+    // @ts-ignore
+    return r.data[contentKey].edges.map((f: any) => ({
+      ...f.node,
+      _sys: undefined,
+      body: undefined,
+      slug: f.node.id.split("/").pop().replace(".md", ""),
+    }))
+  } else {
+    getContentDirs()
+    const filepath = path.join(process.cwd(), "content", contentType)
+    const files = fs.readdirSync(filepath + "/")
+    return files
+      .map((file) => {
+        const mdxContent = fs.readFileSync(path.join(filepath, file), "utf-8")
+        const frontMatter = matter(mdxContent)
+        return frontMatter.data
+      })
+      .map((f: any, i: number) => ({
+        ...f,
+        // @ts-ignore
+        slug: files[i].replace(".md", ""),
+      }))
   }
 }
 

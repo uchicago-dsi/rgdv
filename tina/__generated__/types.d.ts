@@ -260,15 +260,34 @@ export type Post = Node &
   Document & {
     __typename?: "Post"
     title?: Maybe<Scalars["String"]["output"]>
+    mainImage?: Maybe<Scalars["String"]["output"]>
+    shortText?: Maybe<Scalars["String"]["output"]>
     body?: Maybe<Scalars["JSON"]["output"]>
     id: Scalars["ID"]["output"]
     _sys: SystemInfo
     _values: Scalars["JSON"]["output"]
   }
 
+export type ImageFilter = {
+  startsWith?: InputMaybe<Scalars["String"]["input"]>
+  eq?: InputMaybe<Scalars["String"]["input"]>
+  exists?: InputMaybe<Scalars["Boolean"]["input"]>
+  in?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>
+}
+
+export type PostBodyWidgetFilter = {
+  widget?: InputMaybe<StringFilter>
+}
+
+export type PostBodyFilter = {
+  widget?: InputMaybe<PostBodyWidgetFilter>
+}
+
 export type PostFilter = {
   title?: InputMaybe<StringFilter>
-  body?: InputMaybe<RichTextFilter>
+  mainImage?: InputMaybe<ImageFilter>
+  shortText?: InputMaybe<StringFilter>
+  body?: InputMaybe<PostBodyFilter>
 }
 
 export type PostConnectionEdges = {
@@ -542,6 +561,8 @@ export type PageMutation = {
 
 export type PostMutation = {
   title?: InputMaybe<Scalars["String"]["input"]>
+  mainImage?: InputMaybe<Scalars["String"]["input"]>
+  shortText?: InputMaybe<Scalars["String"]["input"]>
   body?: InputMaybe<Scalars["JSON"]["input"]>
 }
 
@@ -601,7 +622,13 @@ export type PagePartsFragment = {
   sections?: Array<{ __typename: "PageSections"; title?: string | null; body?: any | null } | null> | null
 }
 
-export type PostPartsFragment = { __typename: "Post"; title?: string | null; body?: any | null }
+export type PostPartsFragment = {
+  __typename: "Post"
+  title?: string | null
+  mainImage?: string | null
+  shortText?: string | null
+  body?: any | null
+}
 
 export type NavPartsFragment = {
   __typename: "Nav"
@@ -721,6 +748,8 @@ export type PostQuery = {
     __typename: "Post"
     id: string
     title?: string | null
+    mainImage?: string | null
+    shortText?: string | null
     body?: any | null
     _sys: {
       __typename?: "SystemInfo"
@@ -762,6 +791,8 @@ export type PostConnectionQuery = {
         __typename: "Post"
         id: string
         title?: string | null
+        mainImage?: string | null
+        shortText?: string | null
         body?: any | null
         _sys: {
           __typename?: "SystemInfo"
@@ -988,6 +1019,8 @@ export const PostPartsFragmentDoc = gql`
   fragment PostParts on Post {
     __typename
     title
+    mainImage
+    shortText
     body
   }
 `

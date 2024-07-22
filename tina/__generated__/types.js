@@ -20,6 +20,8 @@ export const PostPartsFragmentDoc = gql`
   fragment PostParts on Post {
     __typename
     title
+    mainImage
+    shortText
     body
   }
 `
