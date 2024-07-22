@@ -23,7 +23,7 @@ export const MapTooltipInner: React.FC<
       colConfig,
     }
   })
-  
+
   if (!data) {
     return (
       <svg className="spinner" width="2rem" height="2rem" viewBox="0 0 50 50">
@@ -45,11 +45,9 @@ export const MapTooltipInner: React.FC<
         <TooltipSectionsRenderer sections={data.sections}>
           {!currentColumn.colConfig.bivariate && (
             <>
-              <p className="pt-2 mt-2 text-xs border-t-2 border-neutral-500">
-                <span className="font-bold pr-2">
-                  {currentColumn.colName}:
-                </span>
-                  {/* @ts-ignore */}
+              <p className="mt-2 border-t-2 border-neutral-500 pt-2 text-xs">
+                <span className="pr-2 font-bold">{currentColumn.colName}:</span>
+                {/* @ts-ignore */}
                 {_rawData[currentColumn.colConfig.column]}
               </p>
             </>

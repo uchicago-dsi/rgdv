@@ -114,7 +114,7 @@ export const mapSlice = createSlice({
       state.tooltip = {
         x: action?.payload?.x || state.tooltip?.x || 0,
         y: action?.payload?.y || state.tooltip?.y || 0,
-        id: action?.payload?.id || ''
+        id: action?.payload?.id || "",
       }
       const id = action?.payload?.id
       if (action?.payload?.data) {
@@ -217,7 +217,7 @@ export const {
   setHighlight,
   setHighlightValue,
   setHighlightColor,
-  setClickInfo
+  setClickInfo,
 } = mapSlice.actions
 
 export default mapSlice.reducer

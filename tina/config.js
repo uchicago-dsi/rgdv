@@ -1,13 +1,13 @@
-import { defineConfig } from "tinacms";
-import page from "./collections/page";
-import post from "./collections/post";
-import nav from "./collections/nav";
-import stats from "./collections/stats";
+import { defineConfig } from "tinacms"
+import page from "./collections/page"
+import post from "./collections/post"
+import nav from "./collections/nav"
+import stats from "./collections/stats"
 
 export const config = defineConfig({
   clientId: "", //process.env.NEXT_PUBLIC_TINA_CLIENT_ID,
   branch: "main",
-  token: "",//process.env.TINA_TOKEN,
+  token: "", //process.env.TINA_TOKEN,
   media: {
     // If you wanted cloudinary do this
     // loadCustomStore: async () => {
@@ -27,6 +27,6 @@ export const config = defineConfig({
   schema: {
     collections: [page, post, nav, stats],
   },
-});
+})
 
-export default config;
+export default config

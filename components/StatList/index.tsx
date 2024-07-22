@@ -1,3 +1,3 @@
-import { StatList } from "./StatList";
+import { StatList } from "./StatList"
 
-export default StatList;
+export default StatList

@@ -60,7 +60,7 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
   return (
     <div>
       <h3 className="pb-2 font-sans font-bold">{placeName} over time</h3>
-      <div className="relative w-full mb-4">
+      <div className="relative mb-4 w-full">
         <ToggleGroup.Root
           className="inline-flex space-x-px rounded bg-mauve6 shadow-[0_2px_10px] shadow-blackA4"
           type="single"

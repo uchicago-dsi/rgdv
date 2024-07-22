@@ -1,3 +1,3 @@
-import SliderRange from "./Slider";
+import SliderRange from "./Slider"
 
-export default SliderRange;
+export default SliderRange

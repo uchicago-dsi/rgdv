@@ -57,7 +57,7 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
           src="/images/hero.png"
           alt="Picture of the author"
           fill
-          className="object-cover object-center size-full"
+          className="size-full object-cover object-center"
         />
 
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-theme-navy-500 to-theme-navy-500"></div>
@@ -67,7 +67,11 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
             <div className="invisible md:visible">
               <h1 className="text-[13vw] font-bold leading-[13vw]" style={{ WebkitTextStroke: "2px #00152c" }}>
                 {title.split(" ").map((f: string, i: number) => (
-                  <span key={i} className={`block ${i%2===0 ? 'text-theme-navy-500' : ''}`} style={{ WebkitTextStroke: i%2===0?"2px white":'' }}>
+                  <span
+                    key={i}
+                    className={`block ${i % 2 === 0 ? "text-theme-navy-500" : ""}`}
+                    style={{ WebkitTextStroke: i % 2 === 0 ? "2px white" : "" }}
+                  >
                     {f}
                   </span>
                 ))}
@@ -98,9 +102,12 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
           ))}
         </div>
       </div>
-      <article className="prose p-4 max-w-none flex flex-col">
+      <article className="prose flex max-w-none flex-col p-4">
         {caseStudies.map((caseStudy: any, i: number) => (
-          <div key={i} className="flex min-h-[75vh] min-w-full border-b-2 prose w-full items-center align-center lg:flex-row">
+          <div
+            key={i}
+            className="align-center prose flex min-h-[75vh] w-full min-w-full items-center border-b-2 lg:flex-row"
+          >
             <div className="max-w-[40%]">
               <TinaMarkdown content={i % 2 === 0 ? caseStudy.Image : caseStudy.Text} />
             </div>

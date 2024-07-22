@@ -9,37 +9,36 @@ export const DesktopNavStatic: React.FC<NavProps> = ({ navInfo }) => {
   // render subLinks as dropdown
   return (
     <div className="bg-white/85 p-4 text-neutral-950 shadow-md " id="top-nav">
-        <div className="font-display prose m-0 p-0">
-          <a href="/" className="m-0 p-0 line-height-0 no-underline">
-            <h1 className="m-0 p-0">{navInfo.data.nav.title}</h1>
-          </a>
-        </div>
-        <ul className="justify-end hidden md:flex">
-          {links.map((link, li) => {
-            // @ts-ignore
-            if (link.sublinks?.length > 0) {
-              return (
-                <li key={li} className="mr-4">
-                  <SubNavList
-                    title={link.title}
-                    // @ts-ignore
-                    subLinks={link.sublinks}
-                  />
-                </li>
-              )
-            } else {
-              return (
-                <li className="mr-4" key={li}>
-                  <a href={link.path}>{link.title}</a>
-                </li>
-              )
-            }
-          })}
-        </ul>
+      <div className="prose m-0 p-0 font-display">
+        <a href="/" className="line-height-0 m-0 p-0 no-underline">
+          <h1 className="m-0 p-0">{navInfo.data.nav.title}</h1>
+        </a>
       </div>
+      <ul className="hidden justify-end md:flex">
+        {links.map((link, li) => {
+          // @ts-ignore
+          if (link.sublinks?.length > 0) {
+            return (
+              <li key={li} className="mr-4">
+                <SubNavList
+                  title={link.title}
+                  // @ts-ignore
+                  subLinks={link.sublinks}
+                />
+              </li>
+            )
+          } else {
+            return (
+              <li className="mr-4" key={li}>
+                <a href={link.path}>{link.title}</a>
+              </li>
+            )
+          }
+        })}
+      </ul>
+    </div>
   )
 }
-
 
 export const NavRenderer: React.FC<NavProps> = ({ navInfo }) => {
   if (typeof window === "undefined") {

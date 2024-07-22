@@ -6,7 +6,7 @@ import { findNames } from "utils/getFilteredNames"
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const searchTerm = searchParams.get("search")
-  const limit = typeof searchParams.get("limit") === 'string' ? +(searchParams.get("limit") as string) : 5
+  const limit = typeof searchParams.get("limit") === "string" ? +(searchParams.get("limit") as string) : 5
   if (!searchTerm) return new Response("Missing search term", { status: 400 })
   const names = await findNames(searchTerm, limit)
   return new Response(JSON.stringify(names.slice(0, 5)), {

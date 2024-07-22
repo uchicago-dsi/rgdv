@@ -20,7 +20,7 @@ export default {
   ],
   ui: {
     router: ({ document }) => {
-      return `/posts/${document._sys.filename}`;
+      return `/posts/${document._sys.filename}`
     },
   },
-};
+}

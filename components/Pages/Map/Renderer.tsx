@@ -7,7 +7,7 @@ const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 export function Renderer() {
   return (
     <>
-      <Map/>
+      <Map />
     </>
   )
 }

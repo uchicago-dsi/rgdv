@@ -24,20 +24,20 @@ class GlobalServices {
       this[`_${key}`] = args[key]
     }
   }
-  
-  get ds(){
+
+  get ds() {
     return this._ds! || {}
   }
-  get db(){
+  get db() {
     return this._db! || {}
   }
-  get conn(){
+  get conn() {
     return this._conn! || {}
   }
-  get colorFunction(){
+  get colorFunction() {
     return this._colorFunction!
   }
-  get highlightFunction(){
+  get highlightFunction() {
     return this._highlightFunction!
   }
 }

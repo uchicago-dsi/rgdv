@@ -11,14 +11,14 @@ const findName = (id: string) => {
   const state = CountyList.find((state) => state.statefp === id.slice(0, 2))
   const county = id.length > 2 ? state?.counties?.find((county: any) => county.fips === id) : undefined
 
-  switch(id.length) {
+  switch (id.length) {
     case 2:
-      return state?.state || 'Unknown'
+      return state?.state || "Unknown"
     case 5:
-      return `${county?.name || 'Unknown County'}, ${state?.state || 'Unknown State'}`
+      return `${county?.name || "Unknown County"}, ${state?.state || "Unknown State"}`
     default:
       const tractNum = id.slice(5)
-      return `Tract ${tractNum} in ${county?.name || 'Unknown County'}`
+      return `Tract ${tractNum} in ${county?.name || "Unknown County"}`
   }
 }
 
@@ -28,7 +28,7 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
   const higlightValue = useAppSelector((state) => state.map.highlightValue)
   const highlightColor = useAppSelector((state) => state.map.highlightColor)
   const idFilter = useAppSelector((state) => state.map.idFilter)
-  const filterInfo = idFilter?.length ? `* Data for ${findName(idFilter)}` : 'National Data'
+  const filterInfo = idFilter?.length ? `* Data for ${findName(idFilter)}` : "National Data"
 
   const dispatch = useAppDispatch()
 
@@ -112,9 +112,7 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
           )}
         </div>
         <HighlightLegend highlight={highlight} value={higlightValue} color={highlightColor} />
-        <p className="text-xs text-right pt-4">
-          {filterInfo}
-        </p>
+        <p className="pt-4 text-right text-xs">{filterInfo}</p>
       </div>
     )
   } else {
@@ -133,26 +131,33 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
             />
           ))}
         <p style={{ maxWidth: "35ch", fontSize: "0.75rem" }}>{/* <i>{currentDataSpec?.attribution}</i> */}</p>
-        <HighlightLegend highlight={highlight} value={higlightValue} color={highlightColor}/>
-        <p className="text-xs text-right pt-4">
-          {filterInfo}
-        </p>
+        <HighlightLegend highlight={highlight} value={higlightValue} color={highlightColor} />
+        <p className="pt-4 text-right text-xs">{filterInfo}</p>
       </div>
     )
   }
 }
 
-const HighlightLegend: React.FC<{highlight?: string, value?: readonly any[], color: any }> = ({highlight, value, color}) => {
+const HighlightLegend: React.FC<{ highlight?: string; value?: readonly any[]; color: any }> = ({
+  highlight,
+  value,
+  color,
+}) => {
   if (!highlight || !value) return null
   return (
-      <p className="prose font-xs max-w-64 pl-2 pt-4" style={{
+    <p
+      className="font-xs prose max-w-64 pl-2 pt-4"
+      style={{
         fontSize: "0.75rem",
-      }} >
-        <span className="size-[0.75rem] inline-block border-black border-2 mr-2" style={{
-          
-          background: `rgb(${color.join(",")}`
-        }}></span>
-        {highlight} (
-        &gt;{value}%) </p>
+      }}
+    >
+      <span
+        className="mr-2 inline-block size-[0.75rem] border-2 border-black"
+        style={{
+          background: `rgb(${color.join(",")}`,
+        }}
+      ></span>
+      {highlight} ( &gt;{value}%){" "}
+    </p>
   )
 }

@@ -33,7 +33,7 @@ mapDataMiddleware.startListening({
       // Can pause execution
       const _params = {
         ...columnConfig,
-        filter
+        filter,
       } as unknown
 
       const colorParams = columnConfig.bivariate
@@ -62,15 +62,17 @@ mapDataMiddleware.startListening({
 
     // Unwrap the child result in the listener
     const result = await task.result
-    if ("ok" == result.status && null !== result.value ) {
+    if ("ok" == result.status && null !== result.value) {
       globals.set({
         colorFunction: result.value.colorFunction,
       })
 
-      dispatch(mapSlice.actions.setMapBreaksColors({
-        breaks: result.value.breaks as number[],
-        colors: result.value.colors,
-      }))
+      dispatch(
+        mapSlice.actions.setMapBreaksColors({
+          breaks: result.value.breaks as number[],
+          colors: result.value.colors,
+        })
+      )
     }
   },
 })
@@ -95,7 +97,7 @@ mapDataMiddleware.startListening({
     if (!ds || !config) {
       return
     }
-    
+
     // Spawn "child tasks" that can do more work and return results
     const task = listenerApi.fork(async (forkApi) => {
       // Can pause execution
@@ -103,7 +105,7 @@ mapDataMiddleware.startListening({
       await ds.getHighlightValues(config.column, value, config.type)
       const data = globals.ds.highlightResult
       const activeColor = state.map.highlightColor || [255, 0, 255]
-      const nullColor = [0,0,0,0]
+      const nullColor = [0, 0, 0, 0]
       const highlightFunction: (id: string | number) => Array<number> = (_id: string | number) => {
         const id = _id.toString()
         if (data?.[id]) {
@@ -119,11 +121,11 @@ mapDataMiddleware.startListening({
 
     // Unwrap the child result in the listener
     const result = await task.result
-    if ("ok" == result.status && null !== result.value ) {
+    if ("ok" == result.status && null !== result.value) {
       globals.set({
         highlightFunction: result.value.highlightFunction,
       })
-      dispatch(mapSlice.actions.setSnapshot('highlight'))
+      dispatch(mapSlice.actions.setSnapshot("highlight"))
     }
   },
 })
@@ -131,8 +133,10 @@ mapDataMiddleware.startListening({
 mapDataMiddleware.startListening({
   // Can match against actions _or_ state changes/contents
   predicate: (action, currentState, previousState) => {
-    return (currentState.map.tooltip?.id !== previousState.map.tooltip?.id
-     || currentState.map.clicked?.id !== previousState.map.clicked?.id)
+    return (
+      currentState.map.tooltip?.id !== previousState.map.tooltip?.id ||
+      currentState.map.clicked?.id !== previousState.map.clicked?.id
+    )
   },
   // Listeners can have long-running async workflows
   effect: async (action, listenerApi) => {
@@ -149,7 +153,7 @@ mapDataMiddleware.startListening({
 
     // Unwrap the child result in the listener
     const result = await task.result
-    if ("ok" == result.status && null !== result.value ) {
+    if ("ok" == result.status && null !== result.value) {
       dispatch(setTooltipReady(id))
     }
   },

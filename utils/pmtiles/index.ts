@@ -1,31 +1,20 @@
-import {
-  Compression,
-  PMTiles,
-  RangeResponse,
-  ResolvedValueCache,
-  Source,
-  TileType,
-  FetchSource
-} from "pmtiles";
+import { Compression, PMTiles, RangeResponse, ResolvedValueCache, Source, TileType, FetchSource } from "pmtiles"
 
 class KeyNotFoundError extends Error {}
 
-export async function nativeDecompress(
-  buf: ArrayBuffer,
-  compression: Compression
-): Promise<ArrayBuffer> {
+export async function nativeDecompress(buf: ArrayBuffer, compression: Compression): Promise<ArrayBuffer> {
   if (compression === Compression.None || compression === Compression.Unknown) {
-    return buf;
+    return buf
   }
   if (compression === Compression.Gzip) {
-    const stream = new Response(buf).body;
-    const result = stream?.pipeThrough(new DecompressionStream("gzip"));
-    return new Response(result).arrayBuffer();
+    const stream = new Response(buf).body
+    const result = stream?.pipeThrough(new DecompressionStream("gzip"))
+    return new Response(result).arrayBuffer()
   }
-  throw Error("Compression method not supported");
+  throw Error("Compression method not supported")
 }
 
-export const CACHE = new ResolvedValueCache(25, undefined, nativeDecompress); 
+export const CACHE = new ResolvedValueCache(25, undefined, nativeDecompress)
 
 const PMTILES_ENDPOINT = process.env.DATA_ENDPOINT
 

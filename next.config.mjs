@@ -21,7 +21,7 @@ const config = withPlugins([[new NodePolyFillPlugin(), withBundleAnalyzer({ enab
       })
     )
     return config
-  }
+  },
   // rewrites() {
   //   return [
   //     { source: "/healthz", destination: "/api/health" },

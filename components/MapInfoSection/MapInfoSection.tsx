@@ -94,12 +94,10 @@ export const MapInfoSection: React.FC = () => {
   const leadSections = formatted?.filter((section: any) => section.category === "lead")
 
   return (
-    <div
-      className="relative w-96 border-r-2 border-neutral-500 pb-8 [&>*]:px-4 min-h-[100vh]"
-    >
-      <div className="sticky top-0 flex h-auto w-full flex-row bg-white py-2 shadow-sm z-10">
-        <div className="size-full relative">
-          <h3 className="text-2xl max-w-[75%]">{data?.data?.NAME || clicked.id}</h3>
+    <div className="relative min-h-[100vh] w-96 border-r-2 border-neutral-500 pb-8 [&>*]:px-4">
+      <div className="sticky top-0 z-10 flex h-auto w-full flex-row bg-white py-2 shadow-sm">
+        <div className="relative size-full">
+          <h3 className="max-w-[75%] text-2xl">{data?.data?.NAME || clicked.id}</h3>
           <div className="m-x-auto my-2 flex w-full flex-row items-center justify-between gap-4 rounded-xl border-2 border-neutral-200 p-2 text-xs">
             <p>Open the report for this area</p>
             <a

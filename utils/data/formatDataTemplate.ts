@@ -2,9 +2,9 @@ import { TinaMarkdownContent } from "tinacms/dist/rich-text"
 
 const operators = ["-", "+", "*", "/"] as const
 
-const formatter = new Intl.NumberFormat('en-US', { 
-  maximumSignificantDigits: 3, 
-  notation: 'compact' 
+const formatter = new Intl.NumberFormat("en-US", {
+  maximumSignificantDigits: 3,
+  notation: "compact",
 })
 
 const handleOperator = (operator: (typeof operators)[number], value: number, value2: number) => {
@@ -39,15 +39,15 @@ export const formatDataTemplate = <T extends Record<string, any>>(_template: str
           const value = data[part] as any
           return value || null
         })
-        const [value1, operator, value2] = parts.map(part => part === null ? 0 : part)
+        const [value1, operator, value2] = parts.map((part) => (part === null ? 0 : part))
         if (!value1 === null || !value2 === null || !operator) {
-          template = ''
-          return 
+          template = ""
+          return
         }
         const result = formatter.format(handleOperator(operator, value1, value2))
         template = template.replace(match, `${result}`)
       } else {
-        const value = isNaN(data[key]) ? data[key] as any : formatter.format(data[key] as any)
+        const value = isNaN(data[key]) ? (data[key] as any) : formatter.format(data[key] as any)
         value && (template = template.replace(match, `${value}`))
       }
     })

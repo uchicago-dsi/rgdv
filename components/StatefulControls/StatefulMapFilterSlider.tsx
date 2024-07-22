@@ -48,19 +48,20 @@ export const StatefulHighlightForm = () => {
     // const highlightValue =
     //   _highlightValue?.length === 1 ? (_highlightValue as [number]) : (_highlightValue as [number, number])
 
-    return (<>
-    <p>Highlight: {highlight}</p>
-      <SliderRange
-        value={innerValue}
-        min={highlightConfigValue.range[0]}
-        max={highlightConfigValue.range[1]}
-        step={highlightConfigValue?.step || 1}
-        formatter={highlightConfigValue.formatter}
-        inverse={(highlightConfigValue as any)?.inverse}
-        showRange
-        showValue
-        onChange={setInnerValue}
-      />
+    return (
+      <>
+        <p>Highlight: {highlight}</p>
+        <SliderRange
+          value={innerValue}
+          min={highlightConfigValue.range[0]}
+          max={highlightConfigValue.range[1]}
+          step={highlightConfigValue?.step || 1}
+          formatter={highlightConfigValue.formatter}
+          inverse={(highlightConfigValue as any)?.inverse}
+          showRange
+          showValue
+          onChange={setInnerValue}
+        />
       </>
     )
   } else {

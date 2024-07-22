@@ -7,14 +7,14 @@ import { interpolateRgb } from "d3-interpolate"
 import React from "react"
 
 export type GradientLineProps = {
-  value: number,
-  inverted?: boolean,
+  value: number
+  inverted?: boolean
 }
 export const getColorScale = (inverted?: boolean) => {
   // Color interpolator for three colors
   return scaleLinear({
     domain: [0, 50, 100],
-    range: inverted ? ["#5bb81a", "#FFB44E", "#f50000"] :  ["#f50000", "#FFB44E", "#5bb81a"],
+    range: inverted ? ["#5bb81a", "#FFB44E", "#f50000"] : ["#f50000", "#FFB44E", "#5bb81a"],
     // @ts-ignore
     output: interpolateRgb,
   })
@@ -60,13 +60,8 @@ const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
     <div ref={parentRef} className="h-auto w-full">
       <svg width={width} height={height}>
         <Group top={height / 2} left={0}>
-          <Line
-            from={{ x: 0, y: 0 }}
-            to={{ x: width, y: 0 }}
-            stroke="black"
-            strokeWidth={1.5}
-          />
-          {(new Array(10).fill(null)).map((_, i) => {
+          <Line from={{ x: 0, y: 0 }} to={{ x: width, y: 0 }} stroke="black" strokeWidth={1.5} />
+          {new Array(10).fill(null).map((_, i) => {
             const x = (width / 10) * i
             return (
               <circle
@@ -83,18 +78,20 @@ const GradientLine: React.FC<GradientLineProps> = ({ value, inverted }) => {
           {/* Triangles as arrowheads */}
           <Polygon points={triangleLeft} fill="black" />
           <Polygon points={triangleRight} fill="black" />
-          {!valueIsNull && <circle
-            cx={circleX}
-            cy={0}
-            r={circleRadius}
-            fill={circleColor}
-            stroke="black"
-            strokeWidth={1.5} // Black border for the circle
-            // transition cx and fill
-            style={{
-              transition: "cx 1s, fill 1s",
-            }}
-          />}
+          {!valueIsNull && (
+            <circle
+              cx={circleX}
+              cy={0}
+              r={circleRadius}
+              fill={circleColor}
+              stroke="black"
+              strokeWidth={1.5} // Black border for the circle
+              // transition cx and fill
+              style={{
+                transition: "cx 1s, fill 1s",
+              }}
+            />
+          )}
         </Group>
       </svg>
     </div>

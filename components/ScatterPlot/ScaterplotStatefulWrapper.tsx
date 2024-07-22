@@ -47,37 +47,37 @@ const ScatterPlotWrapper: React.FC<ScatterPlotWrapperProps> = ({
 
   return (
     <>
-    <div className="pb-12 w-full" ref={parentRef}>
-      <div className="select-menus flex flex-col md:flex-row items-center gap-4" >
-      <h3 className="text-2xl">Scatterplot</h3>
-        <div className="flex flex-row items-center gap-4 border-2  border-r-0 pl-4">
-          <p>X Variable</p>
-          <SelectMenu title="Choose X Variable" value={xVar} onValueChange={handleXChange}>
-            {options.map((key, i) => (
-              <Select.Item key={i} value={key}>
-                <Select.ItemText>{key}</Select.ItemText>
-              </Select.Item>
-            ))}
-          </SelectMenu>
+      <div className="w-full pb-12" ref={parentRef}>
+        <div className="select-menus flex flex-col items-center gap-4 md:flex-row">
+          <h3 className="text-2xl">Scatterplot</h3>
+          <div className="flex flex-row items-center gap-4 border-2  border-r-0 pl-4">
+            <p>X Variable</p>
+            <SelectMenu title="Choose X Variable" value={xVar} onValueChange={handleXChange}>
+              {options.map((key, i) => (
+                <Select.Item key={i} value={key}>
+                  <Select.ItemText>{key}</Select.ItemText>
+                </Select.Item>
+              ))}
+            </SelectMenu>
+          </div>
+          <div className="flex flex-row items-center gap-4 border-2 pl-4">
+            <p>Y Variable</p>
+            <SelectMenu title="Choose Y Variable" value={yVar} onValueChange={handleYChange}>
+              {options.map((key, i) => (
+                <Select.Item key={i} value={key}>
+                  <Select.ItemText>{key}</Select.ItemText>
+                </Select.Item>
+              ))}
+            </SelectMenu>
+          </div>
         </div>
-        <div className="flex flex-row items-center gap-4 border-2 pl-4">
-          <p>Y Variable</p>
-          <SelectMenu title="Choose Y Variable" value={yVar} onValueChange={handleYChange}>
-            {options.map((key, i) => (
-              <Select.Item key={i} value={key}>
-                <Select.ItemText>{key}</Select.ItemText>
-              </Select.Item>
-            ))}
-          </SelectMenu>
+
+        <div className="relative h-[50vh] w-full">
+          <ScatterPlot data={data} xVar={xVar} yVar={yVar} showRegressionLine={true} />
         </div>
       </div>
 
-      <div className="relative h-[50vh] w-full">
-        <ScatterPlot data={data} xVar={xVar} yVar={yVar} showRegressionLine={true} />
-      </div>
-    </div>
-
-    {/* <div className="relative h-[50vh] w-full">
+      {/* <div className="relative h-[50vh] w-full">
       heatmap here...
         {heatmapData?.data && <HeatmapComponent 
           data={heatmapData.data} 
@@ -88,7 +88,7 @@ const ScatterPlotWrapper: React.FC<ScatterPlotWrapperProps> = ({
           bucketSizeMax={heatmapData.bucketSizeMax}
           />}
       </div> */}
-            </>
+    </>
   )
 }
 

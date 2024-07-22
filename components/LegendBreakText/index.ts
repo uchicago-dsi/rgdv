@@ -1,3 +1,3 @@
-import { LegendBreakText } from "./LegendBreakText";
+import { LegendBreakText } from "./LegendBreakText"
 
-export default LegendBreakText;
+export default LegendBreakText

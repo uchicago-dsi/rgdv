@@ -53,7 +53,7 @@ export const SectionScroll: React.FC<{
         // jump to id of section.key on click
         <li key={`li-${section.key}`} className="cursor-pointer">
           <button
-            className={`${activeSection === section.id ? "text-blue-500" : "text-gray-500"} py-0 m-0`}
+            className={`${activeSection === section.id ? "text-blue-500" : "text-gray-500"} m-0 py-0`}
             onClick={() => smoothScrollToSection(section.id)}
           >
             {section.key}

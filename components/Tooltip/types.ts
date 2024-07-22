@@ -7,14 +7,15 @@ export const tooltipContent = cva([], {
       primary: [
         "rounded-0.5md",
         "bg-white",
-        "shadow-xl", 
+        "shadow-xl",
         "border-2",
         "border-black",
-        "font-serif", 
+        "font-serif",
         "max-w-[80vw]",
         "w-72",
         "prose",
-        "text-black"],
+        "text-black",
+      ],
     },
     size: {
       sm: ["px-2.5", "py-1.5", "text-xs"],

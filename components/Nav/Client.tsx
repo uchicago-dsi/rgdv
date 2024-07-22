@@ -6,12 +6,12 @@ import { NavProps } from "./types"
 
 export const NavClient: React.FC<NavProps> = ({ navInfo }) => {
   const z = useTina({
-      query: navInfo.query,
-      variables: navInfo.variables,
-      data: navInfo.data
-    })
-    
-    return (
+    query: navInfo.query,
+    variables: navInfo.variables,
+    data: navInfo.data,
+  })
+
+  return (
     // @ts-ignore
     <NavRenderer navInfo={z} />
   )

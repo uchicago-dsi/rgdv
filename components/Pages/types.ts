@@ -1,6 +1,6 @@
 export type PageContent = {
   sections: Array<{
-    title: string,
+    title: string
     body: string
   }>
 }

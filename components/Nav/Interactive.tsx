@@ -43,7 +43,7 @@ export const InteractiveNav: React.FC<NavProps> = ({ navInfo }) => {
         </button>
       </div>
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col pl-12 justify-center bg-white/95 md:hidden">
+        <div className="fixed inset-0 z-50 flex flex-col justify-center bg-white/95 pl-12 md:hidden">
           <button onClick={toggleMobileMenu} className="absolute right-4 top-4 text-neutral-900 focus:outline-none">
             <HiX size={28} />
           </button>
@@ -51,14 +51,16 @@ export const InteractiveNav: React.FC<NavProps> = ({ navInfo }) => {
             {links.map((link, idx) => (
               <div key={idx}>
                 {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                <a href={link.sublinks?.length ? '' : link.path} className="block py-2 text-2xl">
+                <a href={link.sublinks?.length ? "" : link.path} className="block py-2 text-2xl">
                   {link.title}
                 </a>
-                {!!link.sublinks?.length &&  (
+                {!!link.sublinks?.length && (
                   <ul className="list-disc pl-6">
                     {link.sublinks.map((sublink, subIdx) => (
                       <li key={`${idx}-${subIdx}`}>
-                        <a href={sublink.path} className="text-2xl block py-2">{sublink.title}</a>
+                        <a href={sublink.path} className="block py-2 text-2xl">
+                          {sublink.title}
+                        </a>
                       </li>
                     ))}
                   </ul>

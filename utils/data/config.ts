@@ -508,8 +508,7 @@ export const combinedHighlightConfig = {
   ...parentCompanyHighlightConfig,
 } as const
 
-
 export const sidebarConfig = {
   tooltipConfig,
-  parentCompanyHighlightConfig
+  parentCompanyHighlightConfig,
 }

@@ -23,11 +23,11 @@ class NameFinder {
       if (!s.NAME || !s.GEOID) return false
       return s.NAME.toLowerCase().includes(search) || s.GEOID.includes(search)
     }
-    
+
     const namesOut = []
-    
+
     for (let i = 0; i < this.namesData.length; i++) {
-        if (f(this.namesData[i] as any)) {
+      if (f(this.namesData[i] as any)) {
         namesOut.push(this.namesData[i])
         iters++
         if (limit && iters >= limit) break
@@ -40,6 +40,6 @@ class NameFinder {
 
 const nameFinder = new NameFinder()
 
-export const findNames = async (search: string, limit?:number) => {
+export const findNames = async (search: string, limit?: number) => {
   return nameFinder.getFilteredNames(search, limit)
 }

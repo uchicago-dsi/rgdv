@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import React, { useEffect, useRef, useState } from "react"
 import GlMap, { FullscreenControl, NavigationControl, ScaleControl } from "react-map-gl"
 import { Provider } from "react-redux"
-import { useDebouncedCallback } from 'use-debounce';
+import { useDebouncedCallback } from "use-debounce"
 import { MemoryMonitor } from "components/dev/MemoryMonitor"
 import Legend from "components/Legend"
 import { MapSettings } from "components/MapSettings/MapSettings"
@@ -46,7 +46,6 @@ const INITIAL_VIEW_STATE = {
   bearing: 0,
 }
 
-
 const randomString = () => Math.random().toString(36).substring(7)
 // const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
 export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick }) => {
@@ -80,7 +79,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
       console.error(e)
     }
   }
-  
+
   const handleSetTooltipId = useDebouncedCallback(
     // function
     (id) => {
@@ -88,7 +87,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
     },
     // delay in ms
     50
-  );
+  )
   // debounce
   const handleHover = (info: any, event: any) => {
     const x = event?.srcEvent?.clientX
@@ -221,12 +220,12 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
       minZoom: 0,
       maxZoom: 14,
       // @ts-ignore
-      getLineColor: ({properties}) => {
+      getLineColor: ({ properties }) => {
         const id = properties?.GEOID
         if (id && clickedId && id === clickedId) {
           return [255, 120, 0]
         }
-        return [0,0,0,0]
+        return [0, 0, 0, 0]
       },
       getFillColor: getElementColor,
       getlineWidth: 1,
@@ -240,9 +239,11 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         if (onClick) {
           onClick(info)
         }
-        dispatch(setClickInfo({
-          id: info.object?.properties?.GEOID,
-        }))
+        dispatch(
+          setClickInfo({
+            id: info.object?.properties?.GEOID,
+          })
+        )
         if (event?.srcEvent?.altKey) {
           router.push(`/tract/${info.object?.properties?.GEOID}`)
         } else {

@@ -1,3 +1,3 @@
-export type MapTooltipProps = { 
+export type MapTooltipProps = {
   simpleMap: boolean
 }

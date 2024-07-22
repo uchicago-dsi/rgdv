@@ -15,7 +15,7 @@ export type HeatmapProps = {
 }
 
 const defaultMargin = { top: 10, left: 20, right: 20, bottom: 110 }
-const defaultColors = ['#fff', '#000']
+const defaultColors = ["#fff", "#000"]
 
 function HeatmapComponent({
   data,
@@ -34,11 +34,11 @@ function HeatmapComponent({
   // scales
   const xScale = scaleLinear<number>({
     domain: [0, data.length],
-    range: [0, xMax]
+    range: [0, xMax],
   })
   const yScale = scaleLinear<number>({
     domain: [0, 8],
-    range: [yMax, 0]
+    range: [yMax, 0],
   })
   const rectColorScale = scaleLinear<string>({
     range: colors,
@@ -59,7 +59,7 @@ function HeatmapComponent({
         <HeatmapRect
           data={data}
           xScale={(d) => xScale(d) ?? 0}
-          yScale={(d) => yScale(d+1) ?? 0}
+          yScale={(d) => yScale(d + 1) ?? 0}
           colorScale={rectColorScale}
           opacityScale={opacityScale}
           binWidth={binWidth}

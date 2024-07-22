@@ -39,7 +39,7 @@ const StatePage: React.FC = () => {
   // }, [filter])
 
   return (
-    <div className="prose max-w-none bg-canvas-500 align-center flex min-h-[100vh] items-center justify-center p-8">
+    <div className="bg-canvas-500 align-center prose flex min-h-[100vh] max-w-none items-center justify-center p-8">
       <div className="min-h-[20vh] min-w-[50vw] bg-white p-8 shadow-xl">
         {isTractId ? (
           <code>Loading, please wait...</code>

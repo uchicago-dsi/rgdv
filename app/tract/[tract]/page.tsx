@@ -11,16 +11,15 @@ type TractRouteParams = {
 
 const TractPage: React.FC<TractRouteParams> = async ({ params }) => {
   getContentDirs()
-  return <>
-  <Head>
-    <title>Tract Report</title>
-    <meta
-      property="og:image"
-      content="/api/og"
-    />
-  </Head>
-  <ReportLayout id={params.tract} />
-  </>
+  return (
+    <>
+      <Head>
+        <title>Tract Report</title>
+        <meta property="og:image" content="/api/og" />
+      </Head>
+      <ReportLayout id={params.tract} />
+    </>
+  )
 }
 
 export default TractPage

@@ -46,7 +46,7 @@ export const MapSettings: React.FC = () => {
   const filter = useAppSelector((state) => state.map.idFilter)
   const clicked = useAppSelector((state) => state.map.clicked)
   // @ts-ignore
-  const highlightType = !highlight ? 'none' : communityHighlightConfig[highlight] ? 'community' : 'parent'
+  const highlightType = !highlight ? "none" : communityHighlightConfig[highlight] ? "community" : "parent"
   const dispatch = useAppDispatch()
   const handleSetColumn = (col: string | number) => dispatch(setCurrentColumn(col as any))
   const handleSetColumnGroup = (group: string) => dispatch(setCurrentColumnGroup(group))
@@ -71,96 +71,92 @@ export const MapSettings: React.FC = () => {
           </button>
         ))}
       </div>
-      <div className={`flex flex-none flex-col w-auto bg-none overflow-x-hidden`}>
-       {!!clicked && <div className={`${!!activeMenuSection ? 'max-h-[50vh]' : 'max-h-none'} overflow-y-auto h-full
+      <div className={`flex w-auto flex-none flex-col overflow-x-hidden bg-none`}>
+        {!!clicked && (
+          <div
+            className={`${!!activeMenuSection ? "max-h-[50vh]" : "max-h-none"} h-full overflow-y-auto
         border-b-2 border-neutral-500
-        `}>
-        <MapInfoSection />
-        </div>}
-      {!!(activeMenuSection?.length) && <div
-          className={`relative flex  h-full max-h-[50vh] overflow-y-auto ${
-            activeMenuSection ? "w-96 border-r-2 border-neutral-500" : "w-0"
-          } flex-col`}
-        >
-          {!!activeMenuSection && (
-            <button
-              onClick={() => setActiveMenuSection(undefined)}
-              className="absolute right-0 top-0 cursor-pointer
+        `}
+          >
+            <MapInfoSection />
+          </div>
+        )}
+        {!!activeMenuSection?.length && (
+          <div
+            className={`relative flex  h-full max-h-[50vh] overflow-y-auto ${
+              activeMenuSection ? "w-96 border-r-2 border-neutral-500" : "w-0"
+            } flex-col`}
+          >
+            {!!activeMenuSection && (
+              <button
+                onClick={() => setActiveMenuSection(undefined)}
+                className="absolute right-0 top-0 cursor-pointer
           p-2 transition-all hover:text-red-500
         "
+              >
+                &times;
+              </button>
+            )}
+            <MenuSection title="Topics" isActive={activeMenuSection === "Map Layers"}>
+              {Object.keys(columnGroups).map((group, i) => (
+                <MenuButton
+                  key={i}
+                  onClick={() => handleSetColumnGroup(group)}
+                  label={group}
+                  selected={currentColumnGroup === group}
+                />
+              ))}
+            </MenuSection>
+            <MenuSection title="Available Data" isActive={activeMenuSection === "Map Layers"}>
+              {availableColumns.map((c, i) => (
+                <MenuButton key={i} onClick={() => handleSetColumn(c)} label={c} selected={currentColumn === c} />
+              ))}
+            </MenuSection>
+
+            <MenuSection
+              isActive={activeMenuSection === "Map Highlights"}
+              title="Highlight areas on the map"
+              titleChildren={<Tooltip explainer={<>Choose a color</>}></Tooltip>}
             >
-              &times;
-            </button>
-          )}
-          <MenuSection title="Topics" isActive={activeMenuSection === "Map Layers"}>
-            {Object.keys(columnGroups).map((group, i) => (
-              <MenuButton
-                key={i}
-                onClick={() => handleSetColumnGroup(group)}
-                label={group}
-                selected={currentColumnGroup === group}
-              />
-            ))}
-          </MenuSection>
-          <MenuSection title="Available Data" isActive={activeMenuSection === "Map Layers"}>
-            {availableColumns.map((c, i) => (
-              <MenuButton key={i} onClick={() => handleSetColumn(c)} label={c} selected={currentColumn === c} />
-            ))}
-          </MenuSection>
+              <p>Communities and Socioeconomics</p>
+              {Object.keys(communityHighlightConfig).map((name, i) => (
+                <MenuButton
+                  key={i}
+                  onClick={() =>
+                    highlight === name ? dispatch(setHighlight(undefined)) : dispatch(setHighlight(name as any))
+                  }
+                  label={name}
+                  selected={highlight === name}
+                />
+              ))}
+              {highlightType === "community" && <StatefulHighlightForm />}
+              <p className="pt-8">Corporate Market Dominance</p>
 
-          <MenuSection
-            isActive={activeMenuSection === "Map Highlights"}
-            title="Highlight areas on the map"
-            titleChildren={
-              <Tooltip
-                explainer={
-                  <>
-                    Choose a color
-                  </>
-                }
-              ></Tooltip>
-            }
-          >
-            <p>Communities and Socioeconomics</p>
-            {Object.keys(communityHighlightConfig).map((name, i) => (
-              <MenuButton
-                key={i}
-                onClick={() =>
-                  highlight === name ? dispatch(setHighlight(undefined)) : dispatch(setHighlight(name as any))
-                }
-                label={name}
-                selected={highlight === name}
-              />
-            ))}
-            {highlightType === 'community' && <StatefulHighlightForm />}
-            <p className="pt-8">Corporate Market Dominance</p>
+              {Object.keys(parentCompanyHighlightConfig).map((name, i) => (
+                <MenuButton
+                  key={i}
+                  onClick={() =>
+                    highlight === name ? dispatch(setHighlight(undefined)) : dispatch(setHighlight(name as any))
+                  }
+                  label={name}
+                  selected={highlight === name}
+                />
+              ))}
+              {highlightType === "parent" && <StatefulHighlightForm />}
+              <div className="mt-4 flex flex-row items-center gap-4">
+                <p className="text-xs">Choose Color (Advanced)</p>
+                <StatefulHighlightColorPicker />
+              </div>
 
-            {Object.keys(parentCompanyHighlightConfig).map((name, i) => (
-              <MenuButton
-                key={i}
-                onClick={() =>
-                  highlight === name ? dispatch(setHighlight(undefined)) : dispatch(setHighlight(name as any))
-                }
-                label={name}
-                selected={highlight === name}
-              />
-            ))}
-            {highlightType === 'parent' && <StatefulHighlightForm />}
-            <div className="flex flex-row mt-4 items-center gap-4">
-            <p className="text-xs">Choose Color (Advanced)</p>
-            <StatefulHighlightColorPicker />
-
-            </div>
-
-            {/* color picker */}
-          </MenuSection>
-          <MenuSection title="Filter Map" isActive={activeMenuSection === "Filter Map"}>
-            <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
-          </MenuSection>
-          <MenuSection title="Map Colors" isActive={activeMenuSection === "Map Colors"}>
-            fixed or relative [coming soon]
-          </MenuSection>
-          {/* <DropdownMenuDemo>
+              {/* color picker */}
+            </MenuSection>
+            <MenuSection title="Filter Map" isActive={activeMenuSection === "Filter Map"}>
+              <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
+            </MenuSection>
+            <MenuSection title="Map Colors" isActive={activeMenuSection === "Map Colors"}>
+              fixed or relative [coming soon]
+            </MenuSection>
+            {/* <DropdownMenuDemo>
       <div className="max-w-[100vw] p-4">
         <p>Choose a topic</p>
         <hr />
@@ -216,7 +212,8 @@ export const MapSettings: React.FC = () => {
         <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
       </div>
     </DropdownMenuDemo> */}
-        </div>}
+          </div>
+        )}
       </div>
     </>
   )

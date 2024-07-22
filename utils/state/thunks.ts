@@ -52,18 +52,21 @@ export const initializeDb = createAsyncThunk("map/initDb", async () => {
     conn,
     db,
     ds: new DataService(conn, idColumn),
-    ready: true
+    ready: true,
   })
   return "ready"
 })
 
-export const loadTimeseriesData = createAsyncThunk("map/loadTimeseriesData", async (dataset: keyof typeof timeSeriesConfig) => {
-  const file = timeSeriesConfig[dataset].file
-  const buffer = await fetch(`${window.location.origin}/data/${file}`).then((r) => r.arrayBuffer())
-  const dataArray = new Uint8Array(buffer)
-  await globals.db.registerFileBuffer(file, dataArray)
-  return dataset
-})
+export const loadTimeseriesData = createAsyncThunk(
+  "map/loadTimeseriesData",
+  async (dataset: keyof typeof timeSeriesConfig) => {
+    const file = timeSeriesConfig[dataset].file
+    const buffer = await fetch(`${window.location.origin}/data/${file}`).then((r) => r.arrayBuffer())
+    const dataArray = new Uint8Array(buffer)
+    await globals.db.registerFileBuffer(file, dataArray)
+    return dataset
+  }
+)
 
 export const fetchStoreData = createAsyncThunk("map/fetchStoreData", async (id: string) => {
   if (globals.ds.storeListResults[id]) {

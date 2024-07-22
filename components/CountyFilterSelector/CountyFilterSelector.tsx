@@ -5,7 +5,7 @@ import { SelectMenu } from "components/Select/Select"
 import CountyList from "./county_list.json"
 import type { CountyFilterSelectorProps } from "./types"
 
-export const CountyFilterSelector: React.FC<CountyFilterSelectorProps> = ({ handleSetFilter, currentFilter, size}) => {
+export const CountyFilterSelector: React.FC<CountyFilterSelectorProps> = ({ handleSetFilter, currentFilter, size }) => {
   const _fontSize = size
   const filterState = currentFilter?.length ? currentFilter.slice(0, 2) : ""
   const currentData = currentFilter?.length ? CountyList.find((state) => state.statefp === filterState) : ({} as any)
@@ -17,21 +17,25 @@ export const CountyFilterSelector: React.FC<CountyFilterSelectorProps> = ({ hand
     <div>
       <SelectMenu title="Filter by state" value={currentState} onValueChange={handleSetFilter}>
         <>
-            <Select.Item className="SelectItem" value={currentState}>
-              <Select.ItemText>{currentState || "Choose a State"}</Select.ItemText>
-              <Select.ItemIndicator className="SelectItemIndicator">
-                <CheckboxIcon />
-              </Select.ItemIndicator>
-            </Select.Item>
-            {/* @ts-ignore */}
-            <Select.Item className="SelectItem" value={null} >
-              <Select.ItemText>All</Select.ItemText>
-              <Select.ItemIndicator className="SelectItemIndicator">
-                <CheckboxIcon />
-              </Select.ItemIndicator>
-            </Select.Item>
+          <Select.Item className="SelectItem" value={currentState}>
+            <Select.ItemText>{currentState || "Choose a State"}</Select.ItemText>
+            <Select.ItemIndicator className="SelectItemIndicator">
+              <CheckboxIcon />
+            </Select.ItemIndicator>
+          </Select.Item>
+          {/* @ts-ignore */}
+          <Select.Item className="SelectItem" value={null}>
+            <Select.ItemText>All</Select.ItemText>
+            <Select.ItemIndicator className="SelectItemIndicator">
+              <CheckboxIcon />
+            </Select.ItemIndicator>
+          </Select.Item>
           {CountyList.map((state, i) => (
-            <Select.Item className="text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1" value={state.statefp as string} key={i}>
+            <Select.Item
+              className="relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[35px] text-[13px] leading-none text-violet11 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1 data-[highlighted]:outline-none"
+              value={state.statefp as string}
+              key={i}
+            >
               <Select.ItemText>{state.state}</Select.ItemText>
               <Select.ItemIndicator className="SelectItemIndicator">
                 <CheckboxIcon />
@@ -41,26 +45,25 @@ export const CountyFilterSelector: React.FC<CountyFilterSelectorProps> = ({ hand
         </>
       </SelectMenu>
       {currentCounties.length > 0 && (
-      <SelectMenu title="Filter by county" value={currentCounty} onValueChange={handleSetFilter}>
-        <>
-
-        <Select.Item className="SelectItem" value={currentCounty}>
+        <SelectMenu title="Filter by county" value={currentCounty} onValueChange={handleSetFilter}>
+          <>
+            <Select.Item className="SelectItem" value={currentCounty}>
               <Select.ItemText>{currentCounty || "Choose a County"}</Select.ItemText>
               <Select.ItemIndicator className="SelectItemIndicator">
                 <CheckboxIcon />
               </Select.ItemIndicator>
             </Select.Item>
-          {currentCounties.map((county: any, i: number) => (
-            <Select.Item className="SelectItem" value={county.fips} key={i}>
-              <Select.ItemText>{county.name}</Select.ItemText>
-              <Select.ItemIndicator className="SelectItemIndicator">
-                <CheckboxIcon />
-              </Select.ItemIndicator>
-            </Select.Item>
-          ))}
-        </>
-      </SelectMenu>
-        )}
+            {currentCounties.map((county: any, i: number) => (
+              <Select.Item className="SelectItem" value={county.fips} key={i}>
+                <Select.ItemText>{county.name}</Select.ItemText>
+                <Select.ItemIndicator className="SelectItemIndicator">
+                  <CheckboxIcon />
+                </Select.ItemIndicator>
+              </Select.Item>
+            ))}
+          </>
+        </SelectMenu>
+      )}
     </div>
   )
 }

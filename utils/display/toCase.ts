@@ -1,4 +1,7 @@
-export const toCase = (text: string, caseType: "camel" | "pascal" | "kebab" | "snake" | "dot" | "title" | "sentence" | "header" | "constant") => {
+export const toCase = (
+  text: string,
+  caseType: "camel" | "pascal" | "kebab" | "snake" | "dot" | "title" | "sentence" | "header" | "constant"
+) => {
   let result = `${text}`.toLocaleLowerCase()
   switch (caseType) {
     case "camel":

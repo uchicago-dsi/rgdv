@@ -1,3 +1,3 @@
-import { DataLockup } from "./DataLockup";
+import { DataLockup } from "./DataLockup"
 
-export default DataLockup;
+export default DataLockup

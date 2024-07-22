@@ -27,7 +27,7 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
   const dispatch = useAppDispatch()
   const data = globals.ds.storeListResults?.[id] as any[]
   const salesCol = columns.find((col) => col.includes("SALES"))!
-  const labelCol = columns.includes('COMPANY') ? 'COMPANY' : 'PARENT COMPANY'
+  const labelCol = columns.includes("COMPANY") ? "COMPANY" : "PARENT COMPANY"
 
   useEffect(() => {
     if (dbStatus === "ready" && storeDataId !== id) {
@@ -70,7 +70,7 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
             {data.map((row, i) => (
               <tr key={i}>
                 {columns.map((key, j: number) => {
-                  const value = formatValue({row, key, formatters})
+                  const value = formatValue({ row, key, formatters })
                   return <td key={j}>{value === "0%" ? "<0.1%" : value}</td>
                 })}
               </tr>

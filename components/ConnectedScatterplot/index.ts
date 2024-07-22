@@ -1,3 +1,3 @@
-import ConnectedScatterplot from "./ConnectedScatterplot";
+import ConnectedScatterplot from "./ConnectedScatterplot"
 
-export default ConnectedScatterplot;
+export default ConnectedScatterplot

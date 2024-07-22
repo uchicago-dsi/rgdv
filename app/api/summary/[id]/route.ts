@@ -12,9 +12,8 @@ type SummaryReq = {
   params: {
     id: string
   }
-
 }
-export const GET = async (req: SummaryReq ) => {
+export const GET = async (req: SummaryReq) => {
   const { id } = req.params
   const unit = units[id.length as keyof typeof units]
 

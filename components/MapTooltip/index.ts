@@ -1,3 +1,3 @@
-import { MapTooltip } from "./MapTooltip";
+import { MapTooltip } from "./MapTooltip"
 
-export default MapTooltip;
+export default MapTooltip

@@ -8,7 +8,9 @@ const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 const StoreList = dynamic(() => import("components/StoreList"), { ssr: false })
 // const ComparisonOverTimeChart = dynamic(() => import("components/ComparisonOverTime"), { ssr: false })
 const PieChart = dynamic(() => import("components/PieChart/PieChart"), { ssr: false })
-const ScatterplotStatefulWrapper = dynamic(() => import("components/ScatterPlot/ScaterplotStatefulWrapper"), { ssr: false })
+const ScatterplotStatefulWrapper = dynamic(() => import("components/ScatterPlot/ScaterplotStatefulWrapper"), {
+  ssr: false,
+})
 
 export const Sections = [
   {
@@ -83,11 +85,11 @@ export const ReportSections: React.FC<{
         </div>
       )
     case "Store List":
-      let dataColumns: string[] | undefined = ["PARENT COMPANY", `PCT OF ${data?.UNIT?.toUpperCase() || ''} SALES`]
+      let dataColumns: string[] | undefined = ["PARENT COMPANY", `PCT OF ${data?.UNIT?.toUpperCase() || ""} SALES`]
       if (unit === "tract") {
         dataColumns = undefined
       }
-      if (unit === "national"){
+      if (unit === "national") {
         dataColumns = ["PARENT COMPANY", "PCT OF NATIONAL SALES"]
       }
 
@@ -100,7 +102,7 @@ export const ReportSections: React.FC<{
               unit === "tract"
                 ? undefined
                 : {
-                    [`PCT OF ${data?.UNIT?.toUpperCase() || ''} SALES`]: {
+                    [`PCT OF ${data?.UNIT?.toUpperCase() || ""} SALES`]: {
                       label: "Estimated Percent of Grocery Sales in " + data.name,
                       formatterPreset: "percent",
                     },
@@ -112,7 +114,12 @@ export const ReportSections: React.FC<{
     case "Scatterplot":
       return (
         <div id={divId} className="h-auto w-full">
-          <ScatterplotStatefulWrapper options={Object.keys(columnsDict) as DataColumns[]} id={id} initialXVar="Market Concentration - 2023 (Most Recent)" initialYVar="Food Access Supply - 2020" />
+          <ScatterplotStatefulWrapper
+            options={Object.keys(columnsDict) as DataColumns[]}
+            id={id}
+            initialXVar="Market Concentration - 2023 (Most Recent)"
+            initialYVar="Food Access Supply - 2020"
+          />
         </div>
       )
     default:

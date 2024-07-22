@@ -10,12 +10,12 @@ const StatePage: React.FC = () => {
     if (e.length === 2) {
       setFilter(e)
       router.push(`/state/${e}`)
-    } 
+    }
   }
 
   return (
     <div className="bg-canvas-500 align-center flex min-h-[100vh] items-center justify-center p-8">
-      <div className="bg-white p-8 shadow-xl min-w-[50vw] min-h-[20vh]">
+      <div className="min-h-[20vh] min-w-[50vw] bg-white p-8 shadow-xl">
         {filter.length === 2 ? (
           <code>Loading, please wait...</code>
         ) : (

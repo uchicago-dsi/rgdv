@@ -54,9 +54,7 @@ export default function Transitions({ children, className }: Props) {
 
   const navigate = (href: string) => {
     start(async () => {
-      router.push(href, {
-
-      })
+      router.push(href, {})
       await sleep(DELAY)
     })
   }
@@ -75,7 +73,7 @@ export default function Transitions({ children, className }: Props) {
 
   return (
     <Context.Provider value={{ pending, navigate }}>
-      {isLoading && <Loader/>}
+      {isLoading && <Loader />}
       <div onClickCapture={onClick} className={className}>
         {children}
       </div>

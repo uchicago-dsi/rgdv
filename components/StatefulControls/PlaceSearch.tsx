@@ -11,7 +11,12 @@ export const PlaceSearch = () => {
     router.push(`/${unit}/${item.GEOID}`)
   }
 
-  return <AutoComplete dataCallback={fetchData} listTitleProperty="NAME" 
-    placeholder="Search for a state, county, or census tract **NOT ADDRESS**" onClick={onClick}
-  />
+  return (
+    <AutoComplete
+      dataCallback={fetchData}
+      listTitleProperty="NAME"
+      placeholder="Search for a state, county, or census tract **NOT ADDRESS**"
+      onClick={onClick}
+    />
+  )
 }

@@ -18,14 +18,14 @@ export function Tooltip({
   return (
     <RadixTooltip.Provider>
       <RadixTooltip.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange} delayDuration={200}>
-        <RadixTooltip.Trigger asChild className="mx-2 inline min-h-4 min-w-4 size-4">
+        <RadixTooltip.Trigger asChild className="mx-2 inline size-4 min-h-4 min-w-4">
           <InfoCircledIcon />
         </RadixTooltip.Trigger>
         <RadixTooltip.Portal>
           <RadixTooltip.Content
             side={side}
             sideOffset={5}
-            className={twMerge(tooltipContent({ intent, size, className })) + "max-w-xs max-h-96 overflow-auto text-xs"}
+            className={twMerge(tooltipContent({ intent, size, className })) + "max-h-96 max-w-xs overflow-auto text-xs"}
           >
             {explainer}
             {withArrow ? <RadixTooltip.Arrow className={twMerge(tooltipArrow({ intent, size, className }))} /> : null}

@@ -87,8 +87,8 @@ export type PrimaryData = {
   UNIT_PLURAL: string // Plural name of the geographic unit -- tracts, counties, or states
 }
 
-export type FilterSpec = { 
-  column: string; 
-  operator: string; 
+export type FilterSpec = {
+  column: string
+  operator: string
   value: string | string[] | number | number[]
 }

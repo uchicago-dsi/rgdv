@@ -32,8 +32,8 @@ const ScatterPlot: React.FC<ScatterPlotProps<Record<string, any>>> = ({
       let xValues = []
       const yValues = []
       const linearRegressionData = []
-      
-      for (let i=0 ;i<data.length;i++){
+
+      for (let i = 0; i < data.length; i++) {
         const x = data[i]?.[xVar]
         const y = data[i]?.[yVar]
         if (x === undefined || y === undefined) continue
@@ -73,7 +73,7 @@ const ScatterPlot: React.FC<ScatterPlotProps<Record<string, any>>> = ({
     } else {
       return {}
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, showRegressionLine])
 
   if (!data) return null
@@ -94,14 +94,12 @@ const ScatterPlot: React.FC<ScatterPlotProps<Record<string, any>>> = ({
       <svg width={width} height={height}>
         <Group left={margin.left} top={margin.top}>
           {/* Axes */}
-          <AxisBottom scale={xScale} top={yMax} label={xVar}/>
-          <AxisLeft scale={yScale} label={yVar}/>
+          <AxisBottom scale={xScale} top={yMax} label={xVar} />
+          <AxisLeft scale={yScale} label={yVar} />
 
           {/* Scatterplot */}
           {data.map((d, i) => (
-            <Circle key={i} 
-              opacity={opacity}
-            cx={xScale(d[xVar])} cy={yScale(d[yVar])} r={5} fill="blue" />
+            <Circle key={i} opacity={opacity} cx={xScale(d[xVar])} cy={yScale(d[yVar])} r={5} fill="blue" />
           ))}
           {/* Regression line and confidence band */}
           {!!(showRegressionLine && regressionLine) && (

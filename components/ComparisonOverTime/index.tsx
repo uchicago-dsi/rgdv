@@ -8,32 +8,35 @@ import { requestTimeseries } from "utils/state/map"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
 import { initializeDb, loadTimeseriesData } from "utils/state/thunks"
 
-const configs: Record<string, {
-  label: string,
-  timeseriesConfig: keyof typeof timeSeriesConfig,
-  scatterConfig: DataColumns
-}> = {
-  "HHI": {
+const configs: Record<
+  string,
+  {
+    label: string
+    timeseriesConfig: keyof typeof timeSeriesConfig
+    scatterConfig: DataColumns
+  }
+> = {
+  HHI: {
     timeseriesConfig: "hhi",
     label: "Market Concentration",
-    scatterConfig: "Market Concentration - 2020"
+    scatterConfig: "Market Concentration - 2020",
   },
   "HHI DS": {
     timeseriesConfig: "hhiDs",
     label: "Market Concentration (Dollar Stores)",
-    scatterConfig: "Market Concentration - 2020 (With Dollar Stores)"
+    scatterConfig: "Market Concentration - 2020 (With Dollar Stores)",
   },
-  "Gravity": {
+  Gravity: {
     timeseriesConfig: "gravity",
     label: "Food Access",
-    scatterConfig: "Food Access Supply - 2020"
+    scatterConfig: "Food Access Supply - 2020",
   },
   "Gravity DS": {
     timeseriesConfig: "gravityDs",
     label: "Food Access (Dollar Stores)",
-    scatterConfig: "Food Access Supply - 2020 (With Dollar Stores)"
-  }
-} as const 
+    scatterConfig: "Food Access Supply - 2020 (With Dollar Stores)",
+  },
+} as const
 
 const ComparisonOverTimeChart: React.FC<any> = ({ id, placeName }) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
@@ -57,15 +60,17 @@ const ComparisonOverTimeChart: React.FC<any> = ({ id, placeName }) => {
   useEffect(() => {
     if (timeseriesLoaded.includes(config1.timeseriesConfig) && timeseriesLoaded.includes(config2.timeseriesConfig)) {
       const main = async () => {
-        globals.ds.getConnectedScatterplotData(
-          id, 
-          config1.scatterConfig,
-          config2.scatterConfig,
-          config1.timeseriesConfig,
-          config2.timeseriesConfig
-        ).then(() => {
-          setSnapshot(performance.now())
-        })
+        globals.ds
+          .getConnectedScatterplotData(
+            id,
+            config1.scatterConfig,
+            config2.scatterConfig,
+            config1.timeseriesConfig,
+            config2.timeseriesConfig
+          )
+          .then(() => {
+            setSnapshot(performance.now())
+          })
       }
       main()
     } else if (dbStatus === "uninitialized") {
@@ -118,8 +123,7 @@ const ComparisonOverTimeChart: React.FC<any> = ({ id, placeName }) => {
             linesData={data.linesData}
             xKey={config1.timeseriesConfig}
             yKey={config2.timeseriesConfig}
-          >
-          </ConnectedScatterplot>
+          ></ConnectedScatterplot>
         )}
       </div>
     </div>

@@ -1,9 +1,16 @@
-import { DataColumns, columnGroups, columnsDict, combinedHighlightConfig, timeSeriesConfig, timeSeriesDatasets } from "utils/data/config"
+import {
+  DataColumns,
+  columnGroups,
+  columnsDict,
+  combinedHighlightConfig,
+  timeSeriesConfig,
+  timeSeriesDatasets,
+} from "utils/data/config"
 
 export interface MapState {
   breaks: Array<number>
   colors: Array<Array<number>>
-  dbStatus?: 'uninitialized' | 'loading' | 'ready' | 'error'
+  dbStatus?: "uninitialized" | "loading" | "ready" | "error"
   // currentData: string,
   currentColumn: DataColumns
   currentColumnGroup: keyof typeof columnGroups
@@ -21,17 +28,17 @@ export interface MapState {
     data?: TooltipData
   } | null
   clicked?: {
-    id: string,
+    id: string
     data?: TooltipData
   } | null
   tooltipStatus?: "pending" | "ready"
-  snapshot: Record<string,number>
+  snapshot: Record<string, number>
   timeseriesRequested: boolean
   timeseriesDatasets: Array<keyof typeof timeSeriesConfig>
   currentTimeseriesDataset?: timeSeriesDatasets
   storeDataId?: string
   highlight?: keyof typeof combinedHighlightConfig
-  highlightValue?: readonly [number, number] | readonly (number|string)[]
+  highlightValue?: readonly [number, number] | readonly (number | string)[]
   highlightColor?: [number, number, number]
 }
 

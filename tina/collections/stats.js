@@ -63,7 +63,7 @@ const thresholdStatList = {
           min: 0,
           description:
             "The threshold of the statistic as a percentile. Reports will check each threshold in order, and if the value",
-        }
+        },
       ],
     },
   ],
@@ -89,29 +89,29 @@ export default {
       label: "Overview",
       name: "overview",
       fields: [
-        thresholdStatList.fields.find(f => f.name === 'title'),
+        thresholdStatList.fields.find((f) => f.name === "title"),
         {
-          label:"Measure (Don't edit this unless you are also updating the React components.)",
-          name:"measure",
-          type:"string",
+          label: "Measure (Don't edit this unless you are also updating the React components.)",
+          name: "measure",
+          type: "string",
         },
         {
           name: "column_national",
           label: "National Comparability Data Column (Neighborhood, County, State)",
-          type: "string"
+          type: "string",
         },
         {
           name: "column_state",
           label: "State Comparability Data Column (Neighborhood, County)",
-          type: "string"
+          type: "string",
         },
         {
           name: "column_county",
           label: "County Comparability Data Column (Neighborhood only)",
-          type: "string"
+          type: "string",
         },
-        thresholdStatList.fields.find(f => f.name === 'tooltip'),
-        thresholdStatList.fields.find(f => f.name === 'templates'),
+        thresholdStatList.fields.find((f) => f.name === "tooltip"),
+        thresholdStatList.fields.find((f) => f.name === "templates"),
       ],
     },
     // list of "sections"

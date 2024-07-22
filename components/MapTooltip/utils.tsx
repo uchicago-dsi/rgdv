@@ -1,22 +1,23 @@
-export const adjustTooltipToMousePosition = (x:number, y:number): {left?:number, top?:number, right?:number, bottom?:number} => {
+export const adjustTooltipToMousePosition = (
+  x: number,
+  y: number
+): { left?: number; top?: number; right?: number; bottom?: number } => {
   const screenWidth = window.innerWidth
   const screenHeight = window.innerHeight
   // if in bottom right quadrant of screen
   // move tooltip to the left
   const quadrantX = x > screenWidth / 2 ? "right" : "left"
   const quadrantY = y > screenHeight / 2 ? "bottom" : "top"
-  let cssProps: {left?:number, top?:number, right?:number, bottom?:number} = {
-
-  }
+  let cssProps: { left?: number; top?: number; right?: number; bottom?: number } = {}
   if (quadrantX === "right") {
-    cssProps['right'] = screenWidth - x + 10
+    cssProps["right"] = screenWidth - x + 10
   } else {
-    cssProps = {left: x + 10}
+    cssProps = { left: x + 10 }
   }
   if (quadrantY === "bottom") {
-    cssProps['bottom'] = screenHeight - y + 10
+    cssProps["bottom"] = screenHeight - y + 10
   } else {
-    cssProps['top'] = y + 10
+    cssProps["top"] = y + 10
   }
 
   return cssProps

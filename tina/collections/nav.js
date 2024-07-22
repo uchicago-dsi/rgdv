@@ -21,13 +21,13 @@ export default {
       ui: {
         itemProps: (item) => {
           // Field values are accessed by item?.<Field name>
-          return { label: item?.title };
+          return { label: item?.title }
         },
         router: ({ document }) => {
           if (document._sys.filename === "home") {
-            return `/`;
+            return `/`
           }
-          return undefined;
+          return undefined
         },
       },
       fields: [
@@ -50,13 +50,13 @@ export default {
           ui: {
             itemProps: (item) => {
               // Field values are accessed by item?.<Field name>
-              return { label: item?.title };
+              return { label: item?.title }
             },
             router: ({ document }) => {
               if (document._sys.filename === "home") {
-                return `/`;
+                return `/`
               }
-              return undefined;
+              return undefined
             },
           },
           fields: [
@@ -78,9 +78,9 @@ export default {
   ui: {
     router: ({ document }) => {
       if (document._sys.filename === "home") {
-        return `/`;
+        return `/`
       }
-      return undefined;
+      return undefined
     },
   },
-};
+}

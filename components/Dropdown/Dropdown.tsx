@@ -1,17 +1,12 @@
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import {
-  HamburgerMenuIcon,
-} from '@radix-ui/react-icons';
-import React from 'react';
-import './styles.css';
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
+import { HamburgerMenuIcon } from "@radix-ui/react-icons"
+import React from "react"
+import "./styles.css"
 export interface DropdownProps {
-  children: React.ReactNode;  
+  children: React.ReactNode
 }
 
-export const DropdownMenuDemo: React.FC<DropdownProps> = ({
-  children
-}) => {
-
+export const DropdownMenuDemo: React.FC<DropdownProps> = ({ children }) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -26,7 +21,7 @@ export const DropdownMenuDemo: React.FC<DropdownProps> = ({
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
-  );
-};
+  )
+}
 
-export default DropdownMenuDemo;
+export default DropdownMenuDemo

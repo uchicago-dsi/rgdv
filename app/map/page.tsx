@@ -7,7 +7,7 @@ export const metadata = {
 export default function Web() {
   return (
     <>
-      <Map/>
+      <Map />
     </>
   )
 }

@@ -4,7 +4,6 @@ import Tooltip from "components/Tooltip"
 import { getThresholdValue } from "utils/data/formatDataTemplate"
 import { StatListProps } from "./types"
 
-
 export const StatList: React.FC<StatListProps> = ({ stats, data }) => {
   return (
     <ul className="list-disc">

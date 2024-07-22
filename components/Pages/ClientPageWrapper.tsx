@@ -15,9 +15,9 @@ function withClient<T extends {}>(WrappedComponent: React.ComponentType<T>) {
       data: props.pageInfo.data,
     })
     // Render the WrappedComponent with the original props and additional isClient prop
-    return <WrappedComponent {...props} pageInfo={data} />;
-  };
-  return WithClient;
+    return <WrappedComponent {...props} pageInfo={data} />
+  }
+  return WithClient
 }
 
-export default withClient;
+export default withClient

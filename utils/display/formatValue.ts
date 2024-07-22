@@ -33,7 +33,7 @@ export const formatValue = <T extends object>({
   value?: number | string
 }) => {
   const val = value === undefined ? row[key] : value
-if (Number.isNaN(+val)) return String(val)
+  if (Number.isNaN(+val)) return String(val)
   if (val === undefined) return String(val)
   const rowFormatter = formatters?.[key as keyof typeof formatters]
   const formatter = rowFormatter?.hasOwnProperty("formatter")

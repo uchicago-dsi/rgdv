@@ -1,3 +1,1 @@
-export { 
-  DataService
-} from './service'
+export { DataService } from "./service"

@@ -4,7 +4,7 @@ export type StoreEntry = {
   STORE_LON: number
   COMPANY: string
   "PARENT COMPANY": string
-  'PCT OF TRACT SALES': number
+  "PCT OF TRACT SALES": number
   ZIPCODE: string
   "ADDRESS LINE 1": string
 }

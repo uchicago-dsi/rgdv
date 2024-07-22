@@ -1,11 +1,13 @@
 "use client"
-import { Provider } from "react-redux";
-import { store } from "utils/state/store";
+import { Provider } from "react-redux"
+import { store } from "utils/state/store"
 
 const Outer = () => {
-  return <Provider store={store}>
-    <StoreTest />
-  </Provider>
+  return (
+    <Provider store={store}>
+      <StoreTest />
+    </Provider>
+  )
 }
 
 const StoreTest = () => {

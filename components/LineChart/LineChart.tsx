@@ -8,7 +8,7 @@ import { LinePath } from "@visx/shape"
 import { Threshold } from "@visx/threshold"
 import { useTooltip, useTooltipInPortal } from "@visx/tooltip"
 import { bisector } from "@visx/vendor/d3-array"
-import { Axis} from "@visx/xychart"
+import { Axis } from "@visx/xychart"
 import React, { useCallback } from "react"
 import { LineChartProps } from "./types"
 
@@ -105,7 +105,7 @@ const LineChart = <T extends Record<string, any>>({
 
   const handleTooltip = useCallback(
     (event: React.TouchEvent<SVGRectElement> | React.MouseEvent<SVGRectElement>) => {
-      const { x,y } = localPoint(event) || { x: 0 }
+      const { x, y } = localPoint(event) || { x: 0 }
       const x0 = dateScale.invert(x)
       const index = bisectDate(data, x0, 1)
       const d0 = data[index - 1]
@@ -120,11 +120,11 @@ const LineChart = <T extends Record<string, any>>({
         tooltipLeft: x,
         // @ts-ignore
         tooltipTop: y,
-        tooltipData: d
-      });
+        tooltipData: d,
+      })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [showTooltip,valueScale,dateScale]
+    [showTooltip, valueScale, dateScale]
   )
 
   return (
@@ -236,17 +236,17 @@ const LineChart = <T extends Record<string, any>>({
           fill="transparent"
           onMouseMove={handleTooltip}
           onMouseLeave={() => {
-            hideTooltip();
+            hideTooltip()
           }}
         />
         <TooltipInPortal
-            // set this to random so it correctly updates with parent bounds
-            key={Math.random()}
-            top={tooltipTop}
-            left={tooltipLeft}
-          >
-            Data value <strong>{JSON.stringify(tooltipData)}</strong>
-          </TooltipInPortal>
+          // set this to random so it correctly updates with parent bounds
+          key={Math.random()}
+          top={tooltipTop}
+          left={tooltipLeft}
+        >
+          Data value <strong>{JSON.stringify(tooltipData)}</strong>
+        </TooltipInPortal>
       </svg>
 
       <div id="legend" className="absolute right-0 top-0 flex flex-row space-x-8 p-1">

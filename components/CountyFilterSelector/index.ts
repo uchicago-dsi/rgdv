@@ -1,5 +1,3 @@
-import {
-  CountyFilterSelector,
-} from "./CountyFilterSelector"
+import { CountyFilterSelector } from "./CountyFilterSelector"
 
 export default CountyFilterSelector

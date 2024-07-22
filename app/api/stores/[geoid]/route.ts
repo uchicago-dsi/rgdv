@@ -15,36 +15,36 @@ const cache: Record<units, any> = {
   county: {},
   state: {},
   tract: {},
-  national: {}
+  national: {},
 }
 
-let columns: Record<units, any>  = {
+let columns: Record<units, any> = {
   county: [],
   state: [],
   tract: [],
-  national: []
+  national: [],
 }
 
 const getStores = async (geoid: string) => {
-  let queryType: keyof typeof cache = 'tract'
+  let queryType: keyof typeof cache = "tract"
   switch (geoid.length) {
     case 1:
-      queryType = 'national'
+      queryType = "national"
       break
     case 2:
-      queryType = 'state'
+      queryType = "state"
       break
     case 5:
-      queryType = 'county'
+      queryType = "county"
       break
     case 11:
-      queryType = 'tract'
+      queryType = "tract"
       break
   }
 
   const county = geoid.slice(0, 5) as keyof typeof cache
   const state = geoid.slice(0, 2) as keyof typeof cache
-  const filename = queryType === 'tract' ? county : state
+  const filename = queryType === "tract" ? county : state
 
   if (cache[queryType][filename] === undefined) {
     const url = `${process.env.DATA_ENDPOINT}stores/${queryType}/${filename}.msgpack.gz`
@@ -63,12 +63,12 @@ const getStores = async (geoid: string) => {
       columns[queryType] = data.columns
     }
   }
-  
+
   if (!cache[queryType][filename]?.[geoid]) {
     return []
   }
   const entry = cache[queryType][filename][geoid] as unknown as any[][]
-  const salesColumn = columns[queryType].find((col: any) => col.toLowerCase().includes("sales")) 
+  const salesColumn = columns[queryType].find((col: any) => col.toLowerCase().includes("sales"))
   const recordsData = Array.isArray(entry[0]) ? mapArrayToRecords(entry, columns[queryType]) : entry
   // @ts-ignore
   return recordsData.sort((a, b) => b[salesColumn] - a[salesColumn])

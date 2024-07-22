@@ -42,7 +42,7 @@ const ConnectedScatterplot: React.FC<ConnectedScatterplotProps<Record<string, nu
   const xScale = scaleLinear({
     range: [xMin, xMax],
     // @ts-ignore
-    domain: [15, 40]
+    domain: [15, 40],
     // domain: extent(pointsData, xAccessor),
   })
 
@@ -59,8 +59,6 @@ const ConnectedScatterplot: React.FC<ConnectedScatterplotProps<Record<string, nu
   return (
     <svg className="size-full">
       <Group>
-
-
         {!!linesData &&
           linesData.map((lineData, i) => (
             <>
@@ -92,19 +90,19 @@ const ConnectedScatterplot: React.FC<ConnectedScatterplotProps<Record<string, nu
               )}
             </>
           ))}
-          {pointsData.map((d, i) => (
-              <Circle
-                key={`point-${i}`}
-                cx={xScale(xAccessor(d))}
-                cy={yScale(yAccessor(d))}
-                r={4}
-                fill="red"
-                opacity={!activeId ? 1 : d.GEOID === activeId ? 1 : 0.2}
-                // @ts-ignore
-                onMouseEnter={() => setActiveId(d.GEOID)}
-                onMouseLeave={() => setActiveId(null)}
-              />
-            ))}
+        {pointsData.map((d, i) => (
+          <Circle
+            key={`point-${i}`}
+            cx={xScale(xAccessor(d))}
+            cy={yScale(yAccessor(d))}
+            r={4}
+            fill="red"
+            opacity={!activeId ? 1 : d.GEOID === activeId ? 1 : 0.2}
+            // @ts-ignore
+            onMouseEnter={() => setActiveId(d.GEOID)}
+            onMouseLeave={() => setActiveId(null)}
+          />
+        ))}
 
         <AxisLeft scale={yScale} top={margin.top} left={margin.left} />
         <AxisBottom scale={xScale} top={parentHeight - margin.bottom} />

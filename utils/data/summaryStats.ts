@@ -1,9 +1,12 @@
 import { readMsgPackFile } from "./msgpack"
 import { join } from "path"
 
-export const getSummaryStats = async <T extends Record<string, unknown>>(level: 'tract'|'state'|'county'|'national', id: string) => {
+export const getSummaryStats = async <T extends Record<string, unknown>>(
+  level: "tract" | "state" | "county" | "national",
+  id: string
+) => {
   try {
-    const filepath = join(process.cwd(), "public", "data", "summary", level, `${id.slice(0,2)}.min.msgpack.gz`) 
+    const filepath = join(process.cwd(), "public", "data", "summary", level, `${id.slice(0, 2)}.min.msgpack.gz`)
     const data = await readMsgPackFile<any>(filepath, true)
     const entry = data[id]
     const columns = data.columns
@@ -20,7 +23,7 @@ export const getSummaryStats = async <T extends Record<string, unknown>>(level: 
     }
     return {
       ok: true,
-      result: result as T
+      result: result as T,
     }
   } catch (error) {
     console.log("Error getting messagepack data")

@@ -1,16 +1,13 @@
-export type LinkSpec = {  title: string;
-  path: string
-}
+export type LinkSpec = { title: string; path: string }
 
-export type NavProps = { 
-  navInfo: 
-  { 
-    query: any,
-    variables: any,
+export type NavProps = {
+  navInfo: {
+    query: any
+    variables: any
     data: {
-      nav:{ 
-        title: string;
-        links: Array<LinkSpec & {sublinks: Array<LinkSpec>}>
+      nav: {
+        title: string
+        links: Array<LinkSpec & { sublinks: Array<LinkSpec> }>
       }
     }
   }

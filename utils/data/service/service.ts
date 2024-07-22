@@ -47,7 +47,7 @@ export class DataService<DataT extends Record<string, any>> {
   _dataId: keyof DataT = "GEOID"
   idColumn: string
   _rawData: Record<string, DataT> = {}
-  
+
   constructor(conn: AsyncDuckDBConnection, idColumn: keyof DataT) {
     this.conn = conn
     this._dataId = idColumn
@@ -68,7 +68,7 @@ export class DataService<DataT extends Record<string, any>> {
       return []
     }
   }
-  
+
   sanitizeColumn(col: string | any) {
     // if starts or ends with '"" then return else add
     if (col.startsWith('"') && col.endsWith('"')) {
@@ -314,7 +314,7 @@ export class DataService<DataT extends Record<string, any>> {
         FROM ${dataTableName}
     `
     }
-    
+
     const colorMap = this.mapColors(await this.runQuery(query))
     return {
       colorMap,
@@ -395,7 +395,7 @@ export class DataService<DataT extends Record<string, any>> {
     const formattedData: any = []
 
     tooltipConfig.forEach((c) => {
-      let value: any = 'NULL_VALUE';
+      let value: any = "NULL_VALUE"
       if (c.column) {
         value = data[c.column]
       } else if (c.maxOf) {
@@ -405,12 +405,12 @@ export class DataService<DataT extends Record<string, any>> {
         const vals = c.minOf.map((col) => data[col])
         value = Math.min(...vals)
       }
-      if (value === 'NULL_VALUE') {
+      if (value === "NULL_VALUE") {
         return
       } else {
         formattedData.push({
           label: c.label,
-          category: c.lead ? 'lead' : undefined,
+          category: c.lead ? "lead" : undefined,
           inverted: c.inverted,
           formatter: c.formatter,
           value,
@@ -434,7 +434,7 @@ export class DataService<DataT extends Record<string, any>> {
     const formattedData = this.formatTooltipData(data)
     this.tooltipResults[id] = {
       sections: formattedData,
-      name: data.NAME
+      name: data.NAME,
     }
     return this.tooltipResults[id]
   }

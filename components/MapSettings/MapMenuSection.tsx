@@ -4,7 +4,6 @@ export const MenuSection: React.FC<{
   isActive: boolean
   titleChildren?: React.ReactNode
 }> = ({ title, children, titleChildren, isActive }) => {
-  
   if (!isActive) {
     return null
   }

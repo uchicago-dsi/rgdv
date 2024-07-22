@@ -14,7 +14,10 @@ export const LegendBreakText: React.FC<LegendBreakTextProps> = ({ breaks, index,
   } else if (index === breaks.length) {
     text = `> ${formatNumber(breaks[breaks.length - 1] as number, numFractionDigits)}`
   } else {
-    text = `${formatNumber(breaks[index - 1] as number, numFractionDigits)} - ${formatNumber(breaks[index] as number, numFractionDigits)}`
+    text = `${formatNumber(breaks[index - 1] as number, numFractionDigits)} - ${formatNumber(
+      breaks[index] as number,
+      numFractionDigits
+    )}`
   }
   const color = colors[index]!
   const isOpaque = !colorFilter?.length || deepCompare2d1d(colorFilter, color)
@@ -22,7 +25,7 @@ export const LegendBreakText: React.FC<LegendBreakTextProps> = ({ breaks, index,
   return (
     <div className="ColorRow">
       <button
-        className={`inline-block size-6 mr-2 ${isOpaque ? 'opactiy-100' : 'opacity-10'}`}
+        className={`mr-2 inline-block size-6 ${isOpaque ? "opactiy-100" : "opacity-10"}`}
         onClick={() => onClick && onClick(color, index)}
         style={{ background: `rgb(${color.join(",")})` }}
       ></button>

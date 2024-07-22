@@ -1,2 +1,2 @@
-import { ReportLayout } from "./ReportLayout";
-export default ReportLayout;
+import { ReportLayout } from "./ReportLayout"
+export default ReportLayout

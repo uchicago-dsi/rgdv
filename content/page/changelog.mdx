@@ -1,42 +1,41 @@
-
-* 7/3
-  * The map sidebar now displays richer information, and the layout with the variable selector/filters is more intuitive
-  * The map tooltip now shows 4 key scores and the current selected variable 
-  * Added data note to clarify the color scale when the color scale is filtered to a particular state or county
-  * Fixed a few rendering bugs with filtering and monovariate data options
-* 6/12
-  * Added a more detail pane when you click on an area. From this details pane you can open neighborhood, county, and state level reports for the corresponding areas and view the available data (WIP to be refined)
-  * Added filters/highlights based on market dominance percentage. These appear in the legend when active
-  * Reorganized the map controls sidebar to manage complexity better. Each section of the map controls now appears in a subsection that can be opened with icons on the left side of the navigation
-  * Added updated and corrected ACS data for the following variables: Percent of people without healthcare, percent of people with a disability, percent of people on SNAP benefits or cash assistance
-  * Updated census variables appearing in the reports
-  * Added clearer highlights for a hovered or selected tract
-* 6/7
-  * Added scatter plot charts with trend lines to show potential relationships
-  * Added national report
-  * Enabled some conditional rendering and fallback logic when working with national report (eg. four top metrics do not work/exist)
-  * Updated gravity metric with 2023 data. Data is now normalized to square root values for comparability.
-* 6/3
-  * Reorganized report pages to emphasize economic metrics
-  * Added sticky nav on left side of report to organize sections
-  * Added comparability for key metrics. You can now chose state, national, or county comparisons. This means that if you chose a given census tract (neighborhood level) by default it will show how that tract relates to the whole country. You can choose state, which will update scores based on the context of the state, and county for the context of the county. You can only compare to units larger than your current area (eg. County can view state and national, state can only view national).
-  * Added persistence to comparability that will stay the same in between page views of the same unit.
-* 5/31
-  * Refactored home page to work with CMS
-* 5/29
-  * Added key community highlights to show tracts of key inequities / structural racism (black / African American, Hispanic / Latinx, poverty rate)
-  * Added slider to filter for specific population percent of value of interest for key communities; added color adjustment in tooltip
-  * Redesigned map controls to accommodate more complexity
-  * Mobile and responsive fixes
-  * Fixed an issue where some data queries would have the same quantile bin multiple times
-  * Added a search / autocomplete to the home page for faster navigation to a report
-  * Various data refactors and clean ups
-* **5/22**
-  * Added pie charts to reports
-  * Added changelog page
-  * Added other ancillary pages
-  * Added store locations to tract level reports maps with tooltip
-* **5/21**
-  * Refactored and centralized report formatting
-  * Enhanced percentile scale for greater legibility
-  * Swapped 'score' scales to align with value conceptual meaning (eg. high segregation score is bad)"
+- 7/3
+  - The map sidebar now displays richer information, and the layout with the variable selector/filters is more intuitive
+  - The map tooltip now shows 4 key scores and the current selected variable
+  - Added data note to clarify the color scale when the color scale is filtered to a particular state or county
+  - Fixed a few rendering bugs with filtering and monovariate data options
+- 6/12
+  - Added a more detail pane when you click on an area. From this details pane you can open neighborhood, county, and state level reports for the corresponding areas and view the available data (WIP to be refined)
+  - Added filters/highlights based on market dominance percentage. These appear in the legend when active
+  - Reorganized the map controls sidebar to manage complexity better. Each section of the map controls now appears in a subsection that can be opened with icons on the left side of the navigation
+  - Added updated and corrected ACS data for the following variables: Percent of people without healthcare, percent of people with a disability, percent of people on SNAP benefits or cash assistance
+  - Updated census variables appearing in the reports
+  - Added clearer highlights for a hovered or selected tract
+- 6/7
+  - Added scatter plot charts with trend lines to show potential relationships
+  - Added national report
+  - Enabled some conditional rendering and fallback logic when working with national report (eg. four top metrics do not work/exist)
+  - Updated gravity metric with 2023 data. Data is now normalized to square root values for comparability.
+- 6/3
+  - Reorganized report pages to emphasize economic metrics
+  - Added sticky nav on left side of report to organize sections
+  - Added comparability for key metrics. You can now chose state, national, or county comparisons. This means that if you chose a given census tract (neighborhood level) by default it will show how that tract relates to the whole country. You can choose state, which will update scores based on the context of the state, and county for the context of the county. You can only compare to units larger than your current area (eg. County can view state and national, state can only view national).
+  - Added persistence to comparability that will stay the same in between page views of the same unit.
+- 5/31
+  - Refactored home page to work with CMS
+- 5/29
+  - Added key community highlights to show tracts of key inequities / structural racism (black / African American, Hispanic / Latinx, poverty rate)
+  - Added slider to filter for specific population percent of value of interest for key communities; added color adjustment in tooltip
+  - Redesigned map controls to accommodate more complexity
+  - Mobile and responsive fixes
+  - Fixed an issue where some data queries would have the same quantile bin multiple times
+  - Added a search / autocomplete to the home page for faster navigation to a report
+  - Various data refactors and clean ups
+- **5/22**
+  - Added pie charts to reports
+  - Added changelog page
+  - Added other ancillary pages
+  - Added store locations to tract level reports maps with tooltip
+- **5/21**
+  - Refactored and centralized report formatting
+  - Enhanced percentile scale for greater legibility
+  - Swapped 'score' scales to align with value conceptual meaning (eg. high segregation score is bad)"

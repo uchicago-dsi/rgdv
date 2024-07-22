@@ -6,5 +6,4 @@ export type PieChartProps<T extends Record<string, any>> = {
   tooltipFields?: Array<keyof T>
   tooltipFormatters?: Record<keyof T, any>
   layout?: "horizontal" | "vertical"
-  
 }
