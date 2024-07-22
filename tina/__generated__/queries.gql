@@ -16,7 +16,14 @@ query page($relativePath: String!) {
 }
 
 query pageConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: PageFilter) {
-  pageConnection(before: $before, after: $after, first: $first, last: $last, sort: $sort, filter: $filter) {
+  pageConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
     pageInfo {
       hasPreviousPage
       hasNextPage
@@ -62,7 +69,14 @@ query post($relativePath: String!) {
 }
 
 query postConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: PostFilter) {
-  postConnection(before: $before, after: $after, first: $first, last: $last, sort: $sort, filter: $filter) {
+  postConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
     pageInfo {
       hasPreviousPage
       hasNextPage
@@ -108,7 +122,14 @@ query nav($relativePath: String!) {
 }
 
 query navConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: NavFilter) {
-  navConnection(before: $before, after: $after, first: $first, last: $last, sort: $sort, filter: $filter) {
+  navConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
     pageInfo {
       hasPreviousPage
       hasNextPage
@@ -153,15 +174,15 @@ query statistics($relativePath: String!) {
   }
 }
 
-query statisticsConnection(
-  $before: String
-  $after: String
-  $first: Float
-  $last: Float
-  $sort: String
-  $filter: StatisticsFilter
-) {
-  statisticsConnection(before: $before, after: $after, first: $first, last: $last, sort: $sort, filter: $filter) {
+query statisticsConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: StatisticsFilter) {
+  statisticsConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
     pageInfo {
       hasPreviousPage
       hasNextPage
