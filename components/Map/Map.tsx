@@ -109,6 +109,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
     }
     handleResize()
     return () => {
+      dispatch(setTooltipInfo(null))
       if (typeof window !== "undefined") {
         window?.removeEventListener("resize", handleResize)
       }

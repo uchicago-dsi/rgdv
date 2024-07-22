@@ -14,6 +14,7 @@ export const MapTooltipInner: React.FC<
   const { id, data: tooltipData } = tooltip || { id: "", data: [] }
   const data = globals?.ds?.tooltipResults?.[id]
   const _rawData = globals?.ds?._rawData?.[id]
+
   const currentColumn = useAppSelector((state) => {
     const colName = state.map.currentColumn
     const colConfig = columnsDict[colName]
@@ -22,6 +23,7 @@ export const MapTooltipInner: React.FC<
       colConfig,
     }
   })
+  
   if (!data) {
     return (
       <svg className="spinner" width="2rem" height="2rem" viewBox="0 0 50 50">

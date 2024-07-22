@@ -73,9 +73,10 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
                 <span className="block text-theme-navy-500" style={{ WebkitTextStroke: "2px white" }}>
                   {title.split(" ")[1]}
                 </span>
+                {title.split(" ")[2]}
               </h1>
             </div>
-            <div className="my-12 lg:my-0">
+            <div className="my-12 flex flex-col justify-end lg:my-0">
               <h2 className="text-3xl font-bold">{getFirstTextElement(sections, "Subtitle")}</h2>
             </div>
           </div>

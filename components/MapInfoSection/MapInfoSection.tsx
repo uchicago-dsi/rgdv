@@ -70,6 +70,7 @@ export const MapInfoSection: React.FC = () => {
     const getData = async () => {
       if (clicked?.id && data?.id !== clicked.id) {
         const res = await globals.ds.runQuery(`SELECT * FROM ${dataTableName} WHERE ${idColumn} = ${clicked.id}`)
+        console.log(JSON.parse(globals.ds.stringifyJsonWithBigInts(res[0])))
         const tooltipData = globals.ds.formatTooltipData(res[0])
         const parentCompanyData = formatParentCompanyData(res[0])
         const race = cleanRaceData(res[0])
@@ -101,7 +102,7 @@ export const MapInfoSection: React.FC = () => {
         <div className="w-full relative h-full">
           <h3 className="text-2xl max-w-[75%]">{data?.data?.NAME || clicked.id}</h3>
           <div className="m-x-auto my-2 flex w-full flex-row items-center justify-between gap-4 rounded-xl border-2 border-neutral-200 p-2 text-xs">
-            <p>Open Report:</p>
+            <p>Open the report for this area</p>
             <a
               href={`/tract/${clicked.id}`}
               className="border-b-2 border-black transition-colors hover:border-primary-500 hover:text-primary-500"

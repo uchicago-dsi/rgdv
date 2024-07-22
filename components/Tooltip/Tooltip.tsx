@@ -25,7 +25,7 @@ export function Tooltip({
           <RadixTooltip.Content
             side={side}
             sideOffset={5}
-            className={twMerge(tooltipContent({ intent, size, className })) + "max-w-xs max-h-96 overflow-auto"}
+            className={twMerge(tooltipContent({ intent, size, className })) + "max-w-xs max-h-96 overflow-auto text-xs"}
           >
             {explainer}
             {withArrow ? <RadixTooltip.Arrow className={twMerge(tooltipArrow({ intent, size, className }))} /> : null}

@@ -37,7 +37,7 @@ export const TooltipSectionsRenderer: React.FC<{ sections: any[], children?:Reac
       {/* flex non lead sections in each row */}
       {children}
       <p className="text-xs pt-4">
-        <i>Click for more info</i>
+        <i>Click for more info in the sidebar</i>
       </p>
     </>
   )
