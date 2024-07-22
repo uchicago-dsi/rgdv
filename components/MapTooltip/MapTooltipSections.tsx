@@ -5,7 +5,7 @@ const TooltipDot: React.FC<{value:number, inverted?:boolean}> = ({value, inverte
   const clampedValue = Math.min(100, Math.max(0, value))
   const color = colorScale(clampedValue)
   return (
-    <div className="h-4 w-4 rounded-full" style={{backgroundColor: color}}></div>
+    <div className="size-4 rounded-full" style={{backgroundColor: color}}></div>
   )
 }
 
@@ -29,7 +29,7 @@ export const LeadSectionsRenderer: React.FC<{ sections: any[] }> = ({ sections }
 
 export const TooltipSectionsRenderer: React.FC<{ sections: any[], children?:React.ReactNode }> = ({ sections, children }) => {
   const leadSections = sections.filter((section) => section.category === 'lead')
-  const nonLeadSections = sections.filter((section) => section.category !== 'lead')
+  // const nonLeadSections = sections.filter((section) => section.category !== 'lead')
   return (
     <>
     {/* flex lead sections in each row label as small text */}

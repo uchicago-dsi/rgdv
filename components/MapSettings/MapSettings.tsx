@@ -1,17 +1,17 @@
 "use client"
-import { MenuButton } from "./MapMenuButton"
-import { MenuSection } from "./MapMenuSection"
+import { useState } from "react"
 import CountyFilterSelector from "components/CountyFilterSelector"
+import { MapInfoSection } from "components/MapInfoSection/MapInfoSection"
 import { StatefulHighlightColorPicker } from "components/StatefulControls/StatefulHighlightColorPicker"
 import { StatefulHighlightForm } from "components/StatefulControls/StatefulMapFilterSlider"
 import Tooltip from "components/Tooltip"
-import { useState } from "react"
 import { columnGroups, communityHighlightConfig, parentCompanyHighlightConfig } from "utils/data/config"
 import { setCurrentColumn, setCurrentColumnGroup, setHighlight } from "utils/state/map"
-import { store, useAppDispatch, useAppSelector } from "utils/state/store"
+import { useAppDispatch, useAppSelector } from "utils/state/store"
 import { fetchCentroidById } from "utils/state/thunks"
+import { MenuButton } from "./MapMenuButton"
+import { MenuSection } from "./MapMenuSection"
 import { Icons, MapSettingsIcon } from "./MapSettingsIcon"
-import { MapInfoSection } from "components/MapInfoSection/MapInfoSection"
 
 const SettingsConfig: Array<{ label: string; icon: keyof typeof Icons }> = [
   // {

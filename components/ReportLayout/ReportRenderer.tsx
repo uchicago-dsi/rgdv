@@ -1,11 +1,10 @@
-import React from "react"
-import { renderReportText } from "utils/data/renderReportText"
 import { ArrowLeftIcon } from "@radix-ui/react-icons"
+import React from "react"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
 import DataLockup from "components/DataLockup"
-import { SectionScroll } from "./SectionScroll"
+import { renderReportText } from "utils/data/renderReportText"
 import { ReportSections, Sections } from "./Sections"
-import { ClientDataLockup } from "components/DataLockup/ClientDataLockup"
+import { SectionScroll } from "./SectionScroll"
 
 export const ReportRenderer: React.FC<{
   id: string

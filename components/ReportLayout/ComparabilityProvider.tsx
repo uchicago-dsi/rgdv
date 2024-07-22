@@ -1,10 +1,10 @@
 "use client"
-import { createContext, useContext, useState } from "react"
 import { useLocalStorage } from "@uidotdev/usehooks"
+import { createContext, useContext, useState } from "react"
 
 export const ComparabilityContext = createContext({
   comparability: "national",
-  setComparability: (comparability: string) => {},
+  setComparability: (_comparability: string) => {},
   options: ["national"] as readonly string[],
 })
 

@@ -1,8 +1,8 @@
-import { Group } from "@visx/group"
-import { type Bin, type Bins } from "@visx/mock-data/lib/generators/genBins"
-import { scaleLinear } from "@visx/scale"
-import { HeatmapRect } from "@visx/heatmap"
 import { AxisBottom, AxisLeft } from "@visx/axis"
+import { Group } from "@visx/group"
+import { HeatmapRect } from "@visx/heatmap"
+import { type Bins } from "@visx/mock-data/lib/generators/genBins"
+import { scaleLinear } from "@visx/scale"
 
 export type HeatmapProps = {
   data: Bins[]
@@ -22,7 +22,7 @@ function HeatmapComponent({
   width = 800,
   height = 800,
   colorMax = 3000,
-  bucketSizeMax,
+  // bucketSizeMax,
   colors = defaultColors,
   margin = defaultMargin,
 }: HeatmapProps) {

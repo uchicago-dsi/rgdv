@@ -1,5 +1,5 @@
-import React from "react"
 import dynamic from "next/dynamic"
+import React from "react"
 import StatList from "components/StatList"
 import TimeseriesChart from "components/TimeseriesChart"
 import { columnsDict, type DataColumns } from "utils/data/config"

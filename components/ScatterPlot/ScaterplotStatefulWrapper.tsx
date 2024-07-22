@@ -1,15 +1,15 @@
 "use client"
 // ScatterPlotWrapper.tsx
-import React, { useEffect, useState } from "react"
-import ScatterPlot from "./ScatterPlot"
-import { ScatterPlotWrapperProps } from "./types"
 import * as Select from "@radix-ui/react-select"
-import { globals } from "utils/state/globals"
-import { columnsDict, type DataColumns } from "utils/data/config"
-import { store, useAppSelector } from "utils/state/store"
+import { useParentSize } from "@visx/responsive"
+import React, { useEffect, useState } from "react"
 import { Provider } from "react-redux"
 import { SelectMenu } from "components/Select/Select"
-import { useParentSize } from "@visx/responsive"
+import { columnsDict, type DataColumns } from "utils/data/config"
+import { globals } from "utils/state/globals"
+import { store, useAppSelector } from "utils/state/store"
+import ScatterPlot from "./ScatterPlot"
+import { ScatterPlotWrapperProps } from "./types"
 // import HeatmapComponent from "components/Heatmap/Heatmap"
 
 const ScatterPlotWrapper: React.FC<ScatterPlotWrapperProps> = ({
@@ -18,7 +18,7 @@ const ScatterPlotWrapper: React.FC<ScatterPlotWrapperProps> = ({
   initialXVar,
   initialYVar,
 }) => {
-  const { width, height, parentRef } = useParentSize()
+  const { parentRef } = useParentSize()
   const [xVar, setXVar] = useState<DataColumns>(initialXVar! || options?.[0]! || Object.keys(columnsDict)[0])
   const [yVar, setYVar] = useState<DataColumns>(initialYVar! || options?.[1]! || Object.keys(columnsDict)[1])
   const [data, setData] = useState<Record<string, any>[]>([])

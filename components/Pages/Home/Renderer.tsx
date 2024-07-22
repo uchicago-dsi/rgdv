@@ -57,10 +57,7 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
           src="/images/hero.png"
           alt="Picture of the author"
           fill
-          style={{
-            objectFit: "cover",
-            objectPosition: "top middle",
-          }}
+          className="object-cover object-center size-full"
         />
 
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-theme-navy-500 to-theme-navy-500"></div>
@@ -69,11 +66,11 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
           <div className="z-20 grid grid-flow-col grid-rows-2 lg:mb-12 lg:grid-cols-2 lg:grid-rows-1">
             <div className="invisible md:visible">
               <h1 className="text-[13vw] font-bold leading-[13vw]" style={{ WebkitTextStroke: "2px #00152c" }}>
-                {title.split(" ")[0]}
-                <span className="block text-theme-navy-500" style={{ WebkitTextStroke: "2px white" }}>
-                  {title.split(" ")[1]}
-                </span>
-                {title.split(" ")[2]}
+                {title.split(" ").map((f: string, i: number) => (
+                  <span key={i} className={`block ${i%2===0 ? 'text-theme-navy-500' : ''}`} style={{ WebkitTextStroke: i%2===0?"2px white":'' }}>
+                    {f}
+                  </span>
+                ))}
               </h1>
             </div>
             <div className="my-12 flex flex-col justify-end lg:my-0">

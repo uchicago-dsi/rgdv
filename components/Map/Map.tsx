@@ -2,14 +2,15 @@
 import "mapbox-gl/dist/mapbox-gl.css"
 import { MVTLayer } from "@deck.gl/geo-layers/typed"
 import { GeoJsonLayer, ScatterplotLayer } from "@deck.gl/layers/typed"
-import { ThickArrowLeftIcon } from "@radix-ui/react-icons"
 import { useParentSize } from "@visx/responsive"
 import { useRouter } from "next/navigation"
 import React, { useEffect, useRef, useState } from "react"
-import GlMap, { FullscreenControl, NavigationControl, ScaleControl, useControl } from "react-map-gl"
+import GlMap, { FullscreenControl, NavigationControl, ScaleControl } from "react-map-gl"
 import { Provider } from "react-redux"
+import { useDebouncedCallback } from 'use-debounce';
 import { MemoryMonitor } from "components/dev/MemoryMonitor"
 import Legend from "components/Legend"
+import { MapSettings } from "components/MapSettings/MapSettings"
 import MapTooltip from "components/MapTooltip"
 import { deepCompare2d1d } from "utils/data/compareArrayElements"
 import { formatterPresets } from "utils/display/formatValue"
@@ -18,10 +19,8 @@ import { setClickInfo, setTooltipInfo } from "utils/state/map"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
 import { fetchCentroidById } from "utils/state/thunks"
 import { zeroPopTracts } from "utils/zeroPopTracts"
-import { MapSettings } from "components/MapSettings/MapSettings"
 import "./styles.css"
 import { DeckGLOverlay } from "./DeckGLOverlay"
-import { useDebouncedCallback } from 'use-debounce';
 
 export type MapProps = {
   initialFilter?: string
@@ -50,11 +49,13 @@ const INITIAL_VIEW_STATE = {
 
 const randomString = () => Math.random().toString(36).substring(7)
 // const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
-export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick, sidebarOpen = true }) => {
+export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick }) => {
   const _initialFilter = initialFilter && initialFilter.length >= 2 ? initialFilter : undefined
   const mapId = useRef(randomString())
   const router = useRouter()
   const clickedId = useAppSelector((state) => state.map.clicked?.id)
+  // ACTIONS
+  const dispatch = useAppDispatch()
   const [containerHeight, setContainerHeight] = useState<string | undefined>(undefined)
 
   const [clickedGeo, setClickedGeo] = useState<any>({
@@ -114,7 +115,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         window?.removeEventListener("resize", handleResize)
       }
     }
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     handleResize()
@@ -127,10 +128,10 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
     snapshot,
     colors,
     breaks,
-    currentColumn,
+    // currentColumn,
     currentColumnSpec,
     colorFilter,
-    currentColumnGroup,
+    // currentColumnGroup,
     currentCentroid,
     filter,
     isBivariate,
@@ -336,9 +337,6 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
   ]
   const mapRef = useRef(null)
   // const year = useAppSelector((state) => state.map.year)
-
-  // ACTIONS
-  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (_initialFilter) {

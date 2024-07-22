@@ -1,13 +1,13 @@
-import React from 'react';
-import { Bar } from '@visx/shape';
-import { scaleLinear } from '@visx/scale';
 import { useParentSize } from '@visx/responsive';
+import { scaleLinear } from '@visx/scale';
+import { Bar } from '@visx/shape';
+import React from 'react';
 import { BarChartProps } from './types';
 
 
 const BarChart: React.FC<BarChartProps<any>> = ({ barData, sameYScale, 
-  startCol,
-  endCol,
+  // startCol,
+  // endCol,
   height1Col,
   height2Col
  }) => {

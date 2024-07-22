@@ -1,6 +1,6 @@
 "use client"
 import { Provider } from "react-redux";
-import { store, useAppSelector } from "utils/state/store";
+import { store } from "utils/state/store";
 
 const Outer = () => {
   return <Provider store={store}>
@@ -9,7 +9,7 @@ const Outer = () => {
 }
 
 const StoreTest = () => {
-  const store = useAppSelector(s => s)
+  // const store = useAppSelector(s => s)
   // console.log(store)
   return null
 }

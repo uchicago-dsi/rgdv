@@ -1,7 +1,10 @@
 import { Antonio, Libre_Baskerville, Open_Sans } from "next/font/google"
 import Nav from "components/Nav"
 import "styles/tailwind.css"
+import "styles/global.css"
+
 import { WipTag } from "components/WipTag"
+
 // import Transitions, { Animate } from "components/Transition"
 // import DomEvents from "components/Transition/DomEvents"
 

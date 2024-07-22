@@ -1,12 +1,12 @@
 // ScatterPlot.tsx
-import React, { useMemo } from "react"
-import { ScatterPlotProps } from "./types"
-import { scaleLinear } from "@visx/scale"
 import { AxisBottom, AxisLeft } from "@visx/axis"
-import { useParentSize } from "@visx/responsive"
 import { Group } from "@visx/group"
+import { useParentSize } from "@visx/responsive"
+import { scaleLinear } from "@visx/scale"
 import { AreaClosed, Circle, Line } from "@visx/shape"
+import React, { useMemo } from "react"
 import * as ss from "simple-statistics"
+import { ScatterPlotProps } from "./types"
 
 const ScatterPlot: React.FC<ScatterPlotProps<Record<string, any>>> = ({
   data,
@@ -20,6 +20,8 @@ const ScatterPlot: React.FC<ScatterPlotProps<Record<string, any>>> = ({
   const yMax = height - margin.top - margin.bottom
   const opacity = data.length <= 100 ? 1 : 1 / (Math.log10(data.length) * 2)
   // Calculate regression line and confidence band if needed
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const { regressionLine, confidenceBand, xValues } = useMemo(() => {
     if (!data || !data.length) {
       return {}
@@ -71,6 +73,7 @@ const ScatterPlot: React.FC<ScatterPlotProps<Record<string, any>>> = ({
     } else {
       return {}
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, showRegressionLine])
 
   if (!data) return null

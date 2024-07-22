@@ -2,10 +2,10 @@
 import React from "react"
 import { getMdxContent } from "hooks/useMdxContent"
 import { getSummaryStats } from "utils/data/summaryStats"
-import { ReportLayoutProps } from "./types"
+import { ClientReportRenderer } from "./ClientReportRenderer"
 import ComparabilityProvider from "./ComparabilityProvider"
 import { ReportRenderer } from "./ReportRenderer"
-import { ClientReportRenderer } from "./ClientReportRenderer"
+import { ReportLayoutProps } from "./types"
 
 const units = {
   1: "national",

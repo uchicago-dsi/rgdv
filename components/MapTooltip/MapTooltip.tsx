@@ -1,12 +1,12 @@
+import React from "react"
+import { columnsDict } from "utils/data/config"
 import { globals } from "utils/state/globals"
 import { useAppSelector } from "utils/state/store"
 import { MapState } from "utils/state/types"
-import { MapTooltipProps } from "./types"
-import "./Spinner.css"
-import React from "react"
-import { adjustTooltipToMousePosition } from "./utils"
 import { TooltipSectionsRenderer } from "./MapTooltipSections"
-import { columnsDict } from "utils/data/config"
+import { MapTooltipProps } from "./types"
+import { adjustTooltipToMousePosition } from "./utils"
+import "./Spinner.css"
 
 export const MapTooltipInner: React.FC<
   MapTooltipProps & { tooltipStatus: MapState["tooltipStatus"]; tooltip: MapState["tooltip"] }
@@ -80,9 +80,9 @@ export const MapTooltip: React.FC<MapTooltipProps> = ({ simpleMap }) => {
   const tooltipRef = React.useRef<HTMLDivElement>(null)
   const tooltip = useAppSelector((state) => state.map.tooltip)
   const tooltipStatus = useAppSelector((state) => state.map.tooltipStatus)
-  const tooltipWidth = tooltipRef.current?.clientWidth || 0
+  // const tooltipWidth = tooltipRef.current?.clientWidth || 0
   const { x, y } = tooltip || {}
-  const cssProps = adjustTooltipToMousePosition(x || 0, y || 0, tooltipWidth)
+  const cssProps = adjustTooltipToMousePosition(x || 0, y || 0)
   if (!x || !y) {
     return null
   }

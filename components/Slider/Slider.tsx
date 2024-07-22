@@ -51,7 +51,7 @@ const SliderRange: React.FC<SliderRangeProps> = ({
       {showRange && <p className="py-0 prose text-xs my-0 pr-4">{formatter ? formatter(min) : min}</p>}
         
       <Slider.Root
-        className="relative flex h-5 touch-none select-none items-center flex-grow"
+        className="relative flex h-5 touch-none select-none items-center grow"
         min={min}
         max={max}
         step={step}

@@ -11,14 +11,19 @@ export const ClientReportRenderer: React.FC<{
   children: React.ReactNode
   showHeader?: boolean
 }> = (props) => {
-  const { comparability, setComparability, options } = useComparability()
+  const {
+    comparability,
+    // setComparability,
+    options,
+  } = useComparability()
   const isServer = typeof window === "undefined"
   return (
     <>
       <ReportRenderer {...props} comparability={comparability}>
         {/* options on chagne set comparability */}
-        {!!(options?.length > 1) && <div className="prose">
-          {/* <h3>Comparability</h3>
+        {!!(options?.length > 1) && (
+          <div className="prose">
+            {/* <h3>Comparability</h3>
           <p>
             <i>
               You can view data in relation to the whole country, the state of this place, or the county of this place. By default, we compare to the whole country.
@@ -33,8 +38,8 @@ export const ClientReportRenderer: React.FC<{
             <br/>
             </span>
           ))} */}
-
-        </div>}
+          </div>
+        )}
       </ReportRenderer>
       {isServer && props.children}
     </>

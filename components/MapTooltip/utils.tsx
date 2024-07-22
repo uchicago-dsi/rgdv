@@ -1,4 +1,4 @@
-export const adjustTooltipToMousePosition = (x:number, y:number, tooltipWidth: number): {left?:number, top?:number, right?:number, bottom?:number} => {
+export const adjustTooltipToMousePosition = (x:number, y:number): {left?:number, top?:number, right?:number, bottom?:number} => {
   const screenWidth = window.innerWidth
   const screenHeight = window.innerHeight
   // if in bottom right quadrant of screen

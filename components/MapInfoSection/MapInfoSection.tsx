@@ -1,7 +1,7 @@
+import React, { useEffect, useState } from "react"
 import { LeadSectionsRenderer } from "components/MapTooltip/MapTooltipSections"
 import PieChart from "components/PieChart/PieChart"
-import TimeseriesChart from "components/TimeseriesChart"
-import React, { useEffect, useState } from "react"
+// import TimeseriesChart from "components/TimeseriesChart"
 import { cleanRaceData } from "utils/data/cleaning/cleanRaceData"
 import { idColumn, parentCompanyHighlightConfig } from "utils/data/config"
 import { dataTableName } from "utils/data/service/service"
@@ -70,7 +70,6 @@ export const MapInfoSection: React.FC = () => {
     const getData = async () => {
       if (clicked?.id && data?.id !== clicked.id) {
         const res = await globals.ds.runQuery(`SELECT * FROM ${dataTableName} WHERE ${idColumn} = ${clicked.id}`)
-        console.log(JSON.parse(globals.ds.stringifyJsonWithBigInts(res[0])))
         const tooltipData = globals.ds.formatTooltipData(res[0])
         const parentCompanyData = formatParentCompanyData(res[0])
         const race = cleanRaceData(res[0])
@@ -85,7 +84,7 @@ export const MapInfoSection: React.FC = () => {
       }
     }
     getData()
-  }, [clicked?.id])
+  }, [clicked?.id, data?.id])
 
   if (!clicked?.id) {
     return null
@@ -99,7 +98,7 @@ export const MapInfoSection: React.FC = () => {
       className="relative w-96 border-r-2 border-neutral-500 pb-8 [&>*]:px-4 min-h-[100vh]"
     >
       <div className="sticky top-0 flex h-auto w-full flex-row bg-white py-2 shadow-sm z-10">
-        <div className="w-full relative h-full">
+        <div className="size-full relative">
           <h3 className="text-2xl max-w-[75%]">{data?.data?.NAME || clicked.id}</h3>
           <div className="m-x-auto my-2 flex w-full flex-row items-center justify-between gap-4 rounded-xl border-2 border-neutral-200 p-2 text-xs">
             <p>Open the report for this area</p>
