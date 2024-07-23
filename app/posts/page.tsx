@@ -1,6 +1,5 @@
-import SectionRenderer from "components/SectionRenderer"
-import { getMdxDir } from "hooks/useMdxContent"
 import Image from "next/image"
+import { getMdxDir } from "hooks/useMdxContent"
 
 export const metadata = {
   title: "Posts :: Grocery Gap Atlas",

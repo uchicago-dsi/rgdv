@@ -260,6 +260,8 @@ export type Post = Node &
   Document & {
     __typename?: "Post"
     title?: Maybe<Scalars["String"]["output"]>
+    author?: Maybe<Scalars["String"]["output"]>
+    date?: Maybe<Scalars["String"]["output"]>
     mainImage?: Maybe<Scalars["String"]["output"]>
     shortText?: Maybe<Scalars["String"]["output"]>
     body?: Maybe<Scalars["JSON"]["output"]>
@@ -268,6 +270,14 @@ export type Post = Node &
     _values: Scalars["JSON"]["output"]
   }
 
+export type DatetimeFilter = {
+  after?: InputMaybe<Scalars["String"]["input"]>
+  before?: InputMaybe<Scalars["String"]["input"]>
+  eq?: InputMaybe<Scalars["String"]["input"]>
+  exists?: InputMaybe<Scalars["Boolean"]["input"]>
+  in?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>
+}
+
 export type ImageFilter = {
   startsWith?: InputMaybe<Scalars["String"]["input"]>
   eq?: InputMaybe<Scalars["String"]["input"]>
@@ -275,16 +285,18 @@ export type ImageFilter = {
   in?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>
 }
 
-export type PostBodyWidgetFilter = {
+export type PostBodyPostWidgetFilter = {
   widget?: InputMaybe<StringFilter>
 }
 
 export type PostBodyFilter = {
-  widget?: InputMaybe<PostBodyWidgetFilter>
+  PostWidget?: InputMaybe<PostBodyPostWidgetFilter>
 }
 
 export type PostFilter = {
   title?: InputMaybe<StringFilter>
+  author?: InputMaybe<StringFilter>
+  date?: InputMaybe<DatetimeFilter>
   mainImage?: InputMaybe<ImageFilter>
   shortText?: InputMaybe<StringFilter>
   body?: InputMaybe<PostBodyFilter>
@@ -561,6 +573,8 @@ export type PageMutation = {
 
 export type PostMutation = {
   title?: InputMaybe<Scalars["String"]["input"]>
+  author?: InputMaybe<Scalars["String"]["input"]>
+  date?: InputMaybe<Scalars["String"]["input"]>
   mainImage?: InputMaybe<Scalars["String"]["input"]>
   shortText?: InputMaybe<Scalars["String"]["input"]>
   body?: InputMaybe<Scalars["JSON"]["input"]>
@@ -625,6 +639,8 @@ export type PagePartsFragment = {
 export type PostPartsFragment = {
   __typename: "Post"
   title?: string | null
+  author?: string | null
+  date?: string | null
   mainImage?: string | null
   shortText?: string | null
   body?: any | null
@@ -748,6 +764,8 @@ export type PostQuery = {
     __typename: "Post"
     id: string
     title?: string | null
+    author?: string | null
+    date?: string | null
     mainImage?: string | null
     shortText?: string | null
     body?: any | null
@@ -791,6 +809,8 @@ export type PostConnectionQuery = {
         __typename: "Post"
         id: string
         title?: string | null
+        author?: string | null
+        date?: string | null
         mainImage?: string | null
         shortText?: string | null
         body?: any | null
@@ -1019,6 +1039,8 @@ export const PostPartsFragmentDoc = gql`
   fragment PostParts on Post {
     __typename
     title
+    author
+    date
     mainImage
     shortText
     body

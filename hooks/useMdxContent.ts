@@ -25,35 +25,38 @@ const parseRich = (mdxContent: string) => {
 const parseCache: any = {}
 
 export const getMdxContent = async <T extends any>(contentType: keyof typeof client.queries, relativePath: string) => {
-  if (DEV) {
-    const r = await client.queries[contentType]({ relativePath })
-    return r
-  } else {
-    getContentDirs()
-    const filepath = path.join(process.cwd(), "content", contentType, relativePath)
-    if (!parseCache[filepath]) {
-      // @ts-ignore
-      const schema = collections[contentType]
-      const mdxContent = fs.readFileSync(filepath, "utf-8")
-      const frontMatter = matter(mdxContent)
-      const fmData = frontMatter.data
-
-      parseCache[filepath] = {
-        [contentType]: {
-          id: `content/${contentType}/${relativePath}`,
-          __typename: contentType,
-          body: parseRich(frontMatter.content),
-          ...fmData,
-        },
+  try {
+    if (DEV) {
+      const r = await client.queries[contentType]({ relativePath })
+      return r
+    } else {
+      getContentDirs()
+      const filepath = path.join(process.cwd(), "content", contentType, relativePath)
+      if (!parseCache[filepath]) {
+        // @ts-ignore
+        const schema = collections[contentType]
+        const mdxContent = fs.readFileSync(filepath, "utf-8")
+        const frontMatter = matter(mdxContent)
+        const fmData = frontMatter.data
+        parseCache[filepath] = {
+          [contentType]: {
+            id: `content/${contentType}/${relativePath}`,
+            __typename: contentType,
+            body: parseRich(frontMatter.content),
+            ...fmData,
+          },
+        }
+        // @ts-ignore
+        parseRichRecursive(parseCache[filepath][contentType], schema)
       }
-      // @ts-ignore
-      parseRichRecursive(parseCache[filepath][contentType], schema)
+      return {
+        data: parseCache[filepath] as T,
+      } as {
+        data: T
+      }
     }
-    return {
-      data: parseCache[filepath] as T,
-    } as {
-      data: T
-    }
+  } catch (e: any) {
+    return new Error(`Error getting content: ${e.message}`)
   }
 }
 
@@ -67,7 +70,7 @@ export const getMdxDir = async <T extends any>(contentType: keyof typeof client.
       ...f.node,
       _sys: undefined,
       body: undefined,
-      slug: f.node.id.split("/").pop().replace(".md", ""),
+      slug: f.node.id.split("/").pop().replace(".mdx", ""),
     }))
   } else {
     getContentDirs()

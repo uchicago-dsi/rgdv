@@ -5,11 +5,22 @@ export default {
   label: "Posts / Case Studies",
   name: "post",
   path: "content/post",
+  format: "mdx",
   fields: [
     {
       type: "string",
       label: "Title",
       name: "title",
+    },
+    {
+      type: "string",
+      label: "Author",
+      name: "author",
+    },
+    {
+      type: "datetime",
+      label: "Date",
+      name: "date",
     },
     {
       type: "image",
@@ -28,7 +39,7 @@ export default {
       isBody: true,
       templates: [
         {
-          name: "widget",
+          name: "PostWidget",
           label: "Widget",
           fields: [
             {
@@ -39,6 +50,10 @@ export default {
                 {
                   label: "Sortable Market Table",
                   value: "sortableTable",
+                },
+                {
+                  label: "Test",
+                  value: "test",
                 },
               ],
             },

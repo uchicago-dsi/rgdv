@@ -62,11 +62,22 @@ var post_default = {
   label: "Posts / Case Studies",
   name: "post",
   path: "content/post",
+  format: "mdx",
   fields: [
     {
       type: "string",
       label: "Title",
       name: "title",
+    },
+    {
+      type: "string",
+      label: "Author",
+      name: "author",
+    },
+    {
+      type: "datetime",
+      label: "Date",
+      name: "date",
     },
     {
       type: "image",
@@ -85,7 +96,7 @@ var post_default = {
       isBody: true,
       templates: [
         {
-          name: "widget",
+          name: "PostWidget",
           label: "Widget",
           fields: [
             {
@@ -96,6 +107,10 @@ var post_default = {
                 {
                   label: "Sortable Market Table",
                   value: "sortableTable",
+                },
+                {
+                  label: "Test",
+                  value: "test",
                 },
               ],
             },

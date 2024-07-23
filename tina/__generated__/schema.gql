@@ -144,12 +144,22 @@ type PageConnection implements Connection {
 
 type Post implements Node & Document {
   title: String
+  author: String
+  date: String
   mainImage: String
   shortText: String
   body: JSON
   id: ID!
   _sys: SystemInfo!
   _values: JSON!
+}
+
+input DatetimeFilter {
+  after: String
+  before: String
+  eq: String
+  exists: Boolean
+  in: [String]
 }
 
 input ImageFilter {
@@ -159,16 +169,18 @@ input ImageFilter {
   in: [String]
 }
 
-input PostBodyWidgetFilter {
+input PostBodyPostWidgetFilter {
   widget: StringFilter
 }
 
 input PostBodyFilter {
-  widget: PostBodyWidgetFilter
+  PostWidget: PostBodyPostWidgetFilter
 }
 
 input PostFilter {
   title: StringFilter
+  author: StringFilter
+  date: DatetimeFilter
   mainImage: ImageFilter
   shortText: StringFilter
   body: PostBodyFilter
@@ -365,6 +377,8 @@ input PageMutation {
 
 input PostMutation {
   title: String
+  author: String
+  date: String
   mainImage: String
   shortText: String
   body: JSON
