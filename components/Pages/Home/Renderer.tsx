@@ -70,7 +70,7 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
                 ))}
               </h1>
             </div>
-            <div className="my-12 mx-4 flex flex-col justify-end lg:my-0">
+            <div className="mx-4 my-12 flex flex-col justify-end lg:my-0">
               <h2 className="text-4xl font-bold">{getFirstTextElement(sections, "Subtitle")}</h2>
             </div>
           </div>
@@ -78,8 +78,8 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
             <div>{getFirstTextElement(sections, "Main description")}</div>
             <div>
               {getFirstTextElement(sections, "Search CTA")}
-              <br/>
-              <br/>
+              <br />
+              <br />
               <PlaceSearch />
             </div>
           </div>
@@ -91,7 +91,7 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
         {/* reports, trends, toolkit, about */}
         <div className={`my-4 grid grid-cols-1 justify-between gap-4 ${getGridcols(fourUpSections.length)}`}>
           {fourUpSections.map((title: string, i: number) => (
-            <div key={i} className="flex flex-col border-2 p-4 mb-4 lg:mb-0">
+            <div key={i} className="mb-4 flex flex-col border-2 p-4 lg:mb-0">
               <TinaMarkdown content={sections.find((f: any) => f.title === title)?.body} />
             </div>
           ))}

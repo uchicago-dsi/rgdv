@@ -72,10 +72,9 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         onFocus={() => {
           setIsFocused(true)
           if (onFocusValue) {
-            setQuery(p => !p?.length ? onFocusValue : p)
+            setQuery((p) => (!p?.length ? onFocusValue : p))
           }
         }}
-
         onBlur={handleBlur}
         placeholder={placeholder || "Search..."}
         className="
@@ -92,10 +91,10 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         (isLoading ? (
           <Box className="absolute mt-1 w-full rounded border border-gray-300 bg-neutral-900 p-2">Loading...</Box>
         ) : noResults ? (
-          <Box className="absolute mt-1 w-full rounded border border-gray-300 bg-neutral-900 p-2">No matches found. Please search again.</Box>
-
-        )
-        : (
+          <Box className="absolute mt-1 w-full rounded border border-gray-300 bg-neutral-900 p-2">
+            No matches found. Please search again.
+          </Box>
+        ) : (
           results.length > 0 && (
             <Box className="absolute mt-1 w-full rounded border border-gray-300 bg-neutral-900 p-2">
               <ul>

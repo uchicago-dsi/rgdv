@@ -1,8 +1,9 @@
 import { Antonio, Libre_Baskerville, Open_Sans } from "next/font/google"
-import Nav from "components/Nav"
 import "styles/tailwind.css"
 import "styles/global.css"
 
+import Footer from "components/Footer"
+import Nav from "components/Nav"
 import { WipTag } from "components/WipTag"
 
 // import Transitions, { Animate } from "components/Transition"
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* </Animate> */}
         <WipTag />
         {/* </Transitions> */}
+        <Footer />
       </body>
     </html>
   )
