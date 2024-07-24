@@ -11,25 +11,18 @@ const getFirstTextElement = (
   const section = sections.find((f: any) => f.title === title)
   return section?.body?.children?.[0]?.children?.[0]?.text || fallback
 }
+const gridColDict = {
+  // tailwind needs explicity to make this work
+  1: "lg:grid-cols-1",
+  2: "lg:grid-cols-2",
+  3: "lg:grid-cols-3",
+  4: "lg:grid-cols-4",
+  5: "lg:grid-cols-5",
+  6: "lg:grid-cols-6",
+}
 
 const getGridcols = (length: number) => {
-  // this needs to be explict for tailwind to work
-  switch (length) {
-    case 1:
-      return "lg:grid-cols-1"
-    case 2:
-      return "lg:grid-cols-2"
-    case 3:
-      return "lg:grid-cols-3"
-    case 4:
-      return "lg:grid-cols-4"
-    case 5:
-      return "lg:grid-cols-5"
-    case 6:
-      return "lg:grid-cols-6"
-    default:
-      return "lg:grid-cols-4"
-  }
+  return gridColDict[length as keyof typeof gridColDict] || gridColDict[4]
 }
 
 export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
@@ -77,14 +70,16 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
                 ))}
               </h1>
             </div>
-            <div className="my-12 flex flex-col justify-end lg:my-0">
-              <h2 className="text-3xl font-bold">{getFirstTextElement(sections, "Subtitle")}</h2>
+            <div className="my-12 mx-4 flex flex-col justify-end lg:my-0">
+              <h2 className="text-4xl font-bold">{getFirstTextElement(sections, "Subtitle")}</h2>
             </div>
           </div>
           <div className="z-20 grid grid-flow-col grid-rows-2 gap-8 lg:grid-cols-2 lg:grid-rows-1">
             <div>{getFirstTextElement(sections, "Main description")}</div>
             <div>
               {getFirstTextElement(sections, "Search CTA")}
+              <br/>
+              <br/>
               <PlaceSearch />
             </div>
           </div>
@@ -96,7 +91,7 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
         {/* reports, trends, toolkit, about */}
         <div className={`my-4 grid grid-cols-1 justify-between gap-4 ${getGridcols(fourUpSections.length)}`}>
           {fourUpSections.map((title: string, i: number) => (
-            <div key={i} className="flex flex-col border-2 p-4">
+            <div key={i} className="flex flex-col border-2 p-4 mb-4 lg:mb-0">
               <TinaMarkdown content={sections.find((f: any) => f.title === title)?.body} />
             </div>
           ))}
