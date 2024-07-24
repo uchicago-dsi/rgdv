@@ -9,12 +9,14 @@ interface AutoCompleteProps {
   listSubtitleProperty?: string // key of data to show in list
   delay?: number // default 300
   placeholder?: string
+  onFocusValue?: string
 }
 
 const AutoComplete: React.FC<AutoCompleteProps> = ({
   delay = 300,
   dataCallback,
   onClick,
+  onFocusValue,
   listTitleProperty,
   listSubtitleProperty,
   placeholder,
@@ -22,6 +24,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<Array<Record<string, unknown>>>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [noResults, setNoResults] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -30,8 +33,10 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     debounce(async (searchText: string) => {
       if (searchText) {
         setIsLoading(true)
+        setNoResults(false)
         try {
           const data = await dataCallback(searchText)
+          if (!data.length) setNoResults(true)
           setResults(data)
         } catch (error) {
           console.error("Error fetching data:", error)
@@ -53,6 +58,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const handleBlur = (event: React.FocusEvent) => {
     if (!containerRef.current?.contains(event.relatedTarget as Node)) {
       setIsFocused(false)
+      setQuery("")
     }
   }
 
@@ -63,7 +69,13 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         variant="soft"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => setIsFocused(true)}
+        onFocus={() => {
+          setIsFocused(true)
+          if (onFocusValue) {
+            setQuery(p => !p?.length ? onFocusValue : p)
+          }
+        }}
+
         onBlur={handleBlur}
         placeholder={placeholder || "Search..."}
         className="
@@ -79,7 +91,11 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
       {isFocused &&
         (isLoading ? (
           <Box className="absolute mt-1 w-full rounded border border-gray-300 bg-neutral-900 p-2">Loading...</Box>
-        ) : (
+        ) : noResults ? (
+          <Box className="absolute mt-1 w-full rounded border border-gray-300 bg-neutral-900 p-2">No matches found. Please search again.</Box>
+
+        )
+        : (
           results.length > 0 && (
             <Box className="absolute mt-1 w-full rounded border border-gray-300 bg-neutral-900 p-2">
               <ul>

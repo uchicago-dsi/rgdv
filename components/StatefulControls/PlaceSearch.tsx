@@ -15,7 +15,8 @@ export const PlaceSearch = () => {
     <AutoComplete
       dataCallback={fetchData}
       listTitleProperty="NAME"
-      placeholder="Search for a state, county, or census tract **NOT ADDRESS**"
+      placeholder="Search for a state, county, or census tract ID"
+      // onFocusValue={"Cook"}
       onClick={onClick}
     />
   )
