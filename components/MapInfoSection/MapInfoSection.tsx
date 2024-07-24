@@ -3,7 +3,7 @@ import { LeadSectionsRenderer } from "components/MapTooltip/MapTooltipSections"
 import PieChart from "components/PieChart/PieChart"
 // import TimeseriesChart from "components/TimeseriesChart"
 import { cleanRaceData } from "utils/data/cleaning/cleanRaceData"
-import { idColumn, parentCompanyHighlightConfig } from "utils/data/config"
+import { idColumn, parentCompanyHighlightConfig, raceEthnicityLabels } from "utils/data/config"
 import { dataTableName } from "utils/data/service/service"
 import { percentFormatter } from "utils/display/formatValue"
 import { globals } from "utils/state/globals"
@@ -137,7 +137,7 @@ export const MapInfoSection: React.FC = () => {
           <div className="my-4 w-full border-b-2 border-neutral-200" />
           <p className="text-bold pt-4 text-xs font-bold">Demographic Profile</p>
           <div className="h-128 relative w-full">
-            <PieChart layout="vertical" data={data.race} dataKey="value" labelKey="raceEthnicity" />
+            <PieChart layout="vertical" data={data.race} dataKey="value" labelKey="raceEthnicity" labelMapping={raceEthnicityLabels}/>
           </div>
         </>
       )}

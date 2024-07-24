@@ -19,6 +19,7 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   tooltipFields = [],
   tooltipFormatters = {},
   layout = "horizontal",
+  labelMapping = {}
 }) => {
   const { parentRef, width: _width } = useParentSize({ debounceTime: 150 })
   const vw = document?.documentElement?.clientWidth / 100
@@ -26,6 +27,23 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   const width = Math.min(_width / 2, maxWidth)
   const height = Math.min(_width / 2, maxHeight)
   const minDimension = Math.min(width, height)
+  
+  const renamedData = useMemo(() => {
+    if (!labelMapping) {
+      return data
+    } else {
+      return data.map((d) => {
+        const label = d[labelKey]
+        if (labelMapping[label]) {
+          return {
+            ...d,
+            [labelKey]: labelMapping[label],
+          }
+        }
+        return d
+      })
+    }
+  }, [data, labelMapping])
 
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } =
     useTooltip<Record<typeof labelKey | typeof dataKey, string | number>>()
@@ -36,14 +54,14 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
     }
     let sumTotal = 0
 
-    if (!data || data.length === 0) {
+    if (!renamedData || renamedData.length === 0) {
       return {
         cleanData,
         sums,
         sumTotal,
       }
     } else if (minThreshold === undefined) {
-      data.forEach((d) => {
+      renamedData.forEach((d) => {
         sumTotal += d[dataKey]
         sums[d[labelKey]] = (sums[d[labelKey]] || 0) + d[dataKey]
       })
@@ -51,12 +69,12 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
         sums[key] = sums[key]! / sumTotal
       })
       return {
-        cleanData: data,
+        cleanData: renamedData,
         sums,
         sumTotal,
       }
     }
-    data.forEach((d) => {
+    renamedData.forEach((d) => {
       sumTotal += d[dataKey]
       if (d[dataKey] && d[dataKey] > minThreshold) {
         cleanData.push(d)
@@ -79,10 +97,14 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
       sumTotal,
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, dataKey])
+  }, [renamedData, dataKey])
+
   const cleanData = cleanResults.cleanData || []
   const sums = cleanResults.sums || {}
   const sumTotal = Math.round(cleanResults.sumTotal || 0)
+
+  console.log(labelMapping, cleanData)
+  
   const colorScale = scaleOrdinal({
     domain: cleanData.map((d) => d[labelKey]),
     range: schemeCategory10 as string[],
