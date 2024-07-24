@@ -23,7 +23,7 @@ export const SubNavList: React.FC<{ title: string; subLinks: Array<LinkSpec> }> 
             return (
               <DropdownMenu.Item
                 key={li}
-                className="group relative flex h-[25px] select-none items-center rounded-[3px] px-[5px] text-[13px] leading-none outline-none"
+                className="group relative flex h-[2rem] select-none items-center rounded-[3px] px-[5px] leading-none outline-none transition-colors hover:text-primary-500"
               >
                 <a href={link.path} className="flex items-center">
                   {link.title}

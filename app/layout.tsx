@@ -4,7 +4,7 @@ import "styles/global.css"
 
 import Footer from "components/Footer"
 import Nav from "components/Nav"
-import { WipTag } from "components/WipTag"
+// import { WipTag } from "components/WipTag"
 
 // import Transitions, { Animate } from "components/Transition"
 // import DomEvents from "components/Transition/DomEvents"
@@ -37,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* <Animate className="flex-1"> */}
         {children}
         {/* </Animate> */}
-        <WipTag />
+        {/* <WipTag /> */}
         {/* </Transitions> */}
         <Footer />
       </body>

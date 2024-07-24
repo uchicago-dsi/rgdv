@@ -1,3 +1,17 @@
 footer img {
   max-width: 50%;
 }
+#home-case-studies img {
+  /* shaodw */
+  box-shadow: 0.5rem 0.5rem 10px 0 rgba(0, 0, 0, 0.15);
+}
+
+#home-case-studies h4 {
+  @apply text-theme-navy-500 text-xl
+}
+#home-case-studies h3 {
+  @apply text-theme-navy-500 text-3xl
+}
+#home-case-studies a {
+  @apply bg-theme-canvas-100 rounded-xl px-2 py-1 no-underline hover:text-primary-500 transition-colors
+}

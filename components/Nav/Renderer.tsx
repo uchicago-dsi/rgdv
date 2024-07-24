@@ -30,7 +30,9 @@ export const DesktopNavStatic: React.FC<NavProps> = ({ navInfo }) => {
           } else {
             return (
               <li className="mr-4" key={li}>
-                <a href={link.path}>{link.title}</a>
+                <a href={link.path} className="transition-colors hover:text-primary-500">
+                  {link.title}
+                </a>
               </li>
             )
           }

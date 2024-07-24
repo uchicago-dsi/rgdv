@@ -97,16 +97,18 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
           ))}
         </div>
       </div>
-      <article className="prose flex max-w-none flex-col p-4">
+      <article className="prose flex max-w-none flex-col p-4" id="home-case-studies">
         {caseStudies.map((caseStudy: any, i: number) => (
           <div
             key={i}
-            className="align-center prose flex min-h-[75vh] w-full min-w-full items-center border-b-2 lg:flex-row"
+            className={`align-center prose flex min-h-[75vh] w-full min-w-full items-center justify-center gap-8 px-12 lg:flex-row
+                ${i % 2 === 1 ? "bg-theme-canvas-100/25" : ""}
+              `}
           >
-            <div className="max-w-[40%]">
+            <div className={`max-w-[40%]`}>
               <TinaMarkdown content={i % 2 === 0 ? caseStudy.Image : caseStudy.Text} />
             </div>
-            <div className="max-w-[40%]">
+            <div className={`max-w-[40%]`}>
               <TinaMarkdown content={i % 2 === 0 ? caseStudy.Text : caseStudy.Image} />
             </div>
           </div>

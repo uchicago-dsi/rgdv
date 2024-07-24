@@ -26,6 +26,7 @@ module.exports = {
         ...violet,
         theme: {
           navy: {
+            300: "#0a192f",
             500: "#00152c",
           },
           canvas: {
