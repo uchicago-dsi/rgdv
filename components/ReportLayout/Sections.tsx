@@ -2,7 +2,7 @@ import dynamic from "next/dynamic"
 import React from "react"
 import StatList from "components/StatList"
 import TimeseriesChart from "components/TimeseriesChart"
-import { columnsDict, raceEthnicityLabels, type DataColumns } from "utils/data/config"
+import { columnsDict, type DataColumns, raceEthnicityLabels } from "utils/data/config"
 
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 const StoreList = dynamic(() => import("components/StoreList"), { ssr: false })
@@ -66,7 +66,7 @@ export const ReportSections: React.FC<{
       return (
         <div id={divId}>
           <h3 className="pb-2 text-2xl">Race / Ethnicity</h3>
-          <PieChart data={raceData} dataKey="value" labelKey="raceEthnicity" labelMapping={raceEthnicityLabels}/>
+          <PieChart data={raceData} dataKey="value" labelKey="raceEthnicity" labelMapping={raceEthnicityLabels} />
         </div>
       )
     case "Map":

@@ -512,3 +512,16 @@ export const sidebarConfig = {
   tooltipConfig,
   parentCompanyHighlightConfig,
 }
+
+export const raceEthnicityLabels = {
+  "NH WHITE ALONE": "White",
+  "HISPANIC OR LATINO": "Hispanic or Latino/a",
+  "NH BLACK ALONE": "Black or African American",
+  "NH ASIAN ALONE": "Asian",
+  "NH SOME OTHER RACE": "Some other race",
+  "NH AMERICAN INDIAN ALONE": "American Indian",
+  "NH PACIFIC ISLANDER ALONE": "Pacific Islander",
+  "NH TWO OR MORE": "Two or more",
+  "NH TWO OR MORE INCLUDING SOME OTHER": "Two or more including some other",
+  "NH TWO OR MORE EXCLUDING SOME OTHER": "Two or more excluding some other",
+}

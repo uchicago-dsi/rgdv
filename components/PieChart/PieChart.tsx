@@ -19,7 +19,7 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   tooltipFields = [],
   tooltipFormatters = {},
   layout = "horizontal",
-  labelMapping = {}
+  labelMapping = {},
 }) => {
   const { parentRef, width: _width } = useParentSize({ debounceTime: 150 })
   const vw = document?.documentElement?.clientWidth / 100
@@ -27,7 +27,7 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   const width = Math.min(_width / 2, maxWidth)
   const height = Math.min(_width / 2, maxHeight)
   const minDimension = Math.min(width, height)
-  
+
   const renamedData = useMemo(() => {
     if (!labelMapping) {
       return data
@@ -43,7 +43,7 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
         return d
       })
     }
-  }, [data, labelMapping])
+  }, [data, labelMapping, labelKey])
 
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } =
     useTooltip<Record<typeof labelKey | typeof dataKey, string | number>>()
@@ -104,7 +104,7 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   const sumTotal = Math.round(cleanResults.sumTotal || 0)
 
   console.log(labelMapping, cleanData)
-  
+
   const colorScale = scaleOrdinal({
     domain: cleanData.map((d) => d[labelKey]),
     range: schemeCategory10 as string[],
