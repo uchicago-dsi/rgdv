@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import React, { useMemo, useState } from "react"
 import CountyFilterSelector from "components/CountyFilterSelector"
 import { MapInfoSection } from "components/MapInfoSection/MapInfoSection"
 import { StatefulHighlightColorPicker } from "components/StatefulControls/StatefulHighlightColorPicker"
@@ -12,6 +12,8 @@ import { fetchCentroidById } from "utils/state/thunks"
 import { MenuButton } from "./MapMenuButton"
 import { MenuSection } from "./MapMenuSection"
 import { Icons, MapSettingsIcon } from "./MapSettingsIcon"
+import { MdTooltip } from "components/EnhancedMarkdown/Tooltip"
+import { TinaMarkdown } from "tinacms/dist/rich-text"
 
 const SettingsConfig: Array<{ label: string; icon: keyof typeof Icons }> = [
   // {
@@ -35,8 +37,20 @@ const SettingsConfig: Array<{ label: string; icon: keyof typeof Icons }> = [
   //   icon: "Layers"
   // }
 ]
+const contentSectionTitles = [
+  'topics'
+]
+const findContentSections = (contentSections: any[], titles: string[] = contentSectionTitles) => {
+  const entries: Record<string, React.ReactNode> = {}
+  for (const title of titles) {
+    const data: any = contentSections.find((section) => section.title === title)
+    entries[title] = data ? <TinaMarkdown content={data.body} /> : null
+  }
+  return entries
+}
 
-export const MapSettings: React.FC = () => {
+export const MapSettings: React.FC<{contentSections: any[]}> = ({contentSections}) => {
+  const sections = useMemo(() => findContentSections(contentSections), [contentSections])
   const [activeMenuSection, setActiveMenuSection] = useState<string | undefined>(undefined)
 
   const currentColumn = useAppSelector((state) => state.map.currentColumn)
@@ -45,6 +59,7 @@ export const MapSettings: React.FC = () => {
   const highlight = useAppSelector((state) => state.map.highlight)
   const filter = useAppSelector((state) => state.map.idFilter)
   const clicked = useAppSelector((state) => state.map.clicked)
+
   // @ts-ignore
   const highlightType = !highlight ? "none" : communityHighlightConfig[highlight] ? "community" : "parent"
   const dispatch = useAppDispatch()
@@ -55,6 +70,7 @@ export const MapSettings: React.FC = () => {
   const handleMenuButton = (label: string) => {
     setActiveMenuSection((prev) => (prev === label ? undefined : label))
   }
+  
 
   return (
     <>
@@ -98,6 +114,7 @@ export const MapSettings: React.FC = () => {
               </button>
             )}
             <MenuSection title="Topics" isActive={activeMenuSection === "Map Layers"}>
+              {sections['topics']}
               {Object.keys(columnGroups).map((group, i) => (
                 <MenuButton
                   key={i}

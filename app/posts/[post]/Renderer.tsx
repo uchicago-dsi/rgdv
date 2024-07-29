@@ -1,7 +1,6 @@
 import Image from "next/image"
 import React from "react"
-import { TinaMarkdown } from "tinacms/dist/rich-text"
-import PostWidget from "components/PostWidgets"
+import { PostMarkdown } from "components/EnhancedMarkdown"
 
 export const PostRenderer: React.FC<{content: any}> = ({content}) => {
   const { author, title, body, mainImage, date } = content?.data?.post || ({} as any)
@@ -26,8 +25,7 @@ export const PostRenderer: React.FC<{content: any}> = ({content}) => {
         </p>
       )}
       <Image src={mainImage} alt={title} width={800} height={400} />
-      {/* @ts-ignore */}
-      <TinaMarkdown components={{ PostWidget }} content={body} />
+      <PostMarkdown content={body} />
     </div>
   )
 }
