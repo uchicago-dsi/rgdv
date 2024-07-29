@@ -47,7 +47,7 @@ const findContentSections = (contentSections: any[], titles: string[] = contentS
 }
 
 export const MapSettings: React.FC<{ contentSections: any[] }> = ({ contentSections }) => {
-  const sections = useMemo(() => findContentSections(contentSections), [contentSections])
+  const sections = useMemo(() => contentSections ? findContentSections(contentSections) : {}, [contentSections])
   const [activeMenuSection, setActiveMenuSection] = useState<string | undefined>(undefined)
 
   const currentColumn = useAppSelector((state) => state.map.currentColumn)
