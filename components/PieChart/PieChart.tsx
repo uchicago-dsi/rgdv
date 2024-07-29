@@ -103,8 +103,6 @@ const PieChart: React.FC<PieChartProps<Record<string, any>>> = ({
   const sums = cleanResults.sums || {}
   const sumTotal = Math.round(cleanResults.sumTotal || 0)
 
-  console.log(labelMapping, cleanData)
-
   const colorScale = scaleOrdinal({
     domain: cleanData.map((d) => d[labelKey]),
     range: schemeCategory10 as string[],
