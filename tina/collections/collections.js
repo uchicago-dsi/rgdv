@@ -9,5 +9,5 @@ export const collections = {
   page: page,
   post: post,
   statistics: stats,
-  tooltips: tooltips
+  tooltips: tooltips,
 }

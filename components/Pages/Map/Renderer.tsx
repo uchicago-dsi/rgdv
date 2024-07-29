@@ -4,9 +4,7 @@ import React from "react"
 // lazy load the map
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 
-export const Renderer: React.FC<{contentSections: any}> = ({
-  contentSections
-}) => {
+export const Renderer: React.FC<{ contentSections: any }> = ({ contentSections }) => {
   return (
     <>
       <Map contentSections={contentSections} />

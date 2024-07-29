@@ -42,7 +42,7 @@ export const useClientMdxContent = <T extends any>(
   //     console.log('matter', _matter)
   //     // dynamic import parseRich and parseRichRecursive
   //     _parseRich = await import("../utils/mdx/parseRich")
-  //     _parseRichRecursive = await import("../utils/mdx/parseRichRecursive") 
+  //     _parseRichRecursive = await import("../utils/mdx/parseRichRecursive")
 
   //   }
   //   if (!ready && !_matter && !_parseRich && !_parseRichRecursive) {

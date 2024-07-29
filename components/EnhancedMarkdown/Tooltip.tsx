@@ -1,8 +1,8 @@
 "use client"
-import Tooltip from "components/Tooltip"
 import { useState } from "react"
-import { useClientMdxContent } from "hooks/useClientMdxContent"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
+import Tooltip from "components/Tooltip"
+import { useClientMdxContent } from "hooks/useClientMdxContent"
 
 export const MdTooltip: React.FC<{ tooltipKey?: string; body?: any }> = ({ tooltipKey, body }) => {
   const [open, setOpen] = useState(false)

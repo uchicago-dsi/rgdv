@@ -7,8 +7,9 @@ export const metadata = {
 
 export default async function MapPage() {
   const pageInfo = await getMdxContent("page", "map.mdx")
+  // @ts-ignore
   const contentSections = pageInfo.data.page.sections
-  
+
   return (
     <>
       <Map contentSections={contentSections} />

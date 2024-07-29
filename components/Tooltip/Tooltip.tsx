@@ -15,7 +15,7 @@ export function Tooltip({
   side = "top",
   className,
   withArrow,
-  children
+  children,
 }: TooltipProps) {
   return (
     <RadixTooltip.Provider>

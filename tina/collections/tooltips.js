@@ -17,8 +17,8 @@ export default {
       label: "Post Body",
       name: "body",
       type: "rich-text",
-      isBody: true
-    }
+      isBody: true,
+    },
   ],
   ui: {
     router: ({ document }) => {

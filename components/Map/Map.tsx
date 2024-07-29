@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from "react"
 import GlMap, { FullscreenControl, NavigationControl, ScaleControl } from "react-map-gl"
 import { Provider } from "react-redux"
 import { useDebouncedCallback } from "use-debounce"
-import { MemoryMonitor } from "components/dev/MemoryMonitor"
+// import { MemoryMonitor } from "components/dev/MemoryMonitor"
 import Legend from "components/Legend"
 import { MapSettings } from "components/MapSettings/MapSettings"
 import MapTooltip from "components/MapTooltip"
@@ -408,7 +408,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         </div>
       </div>
       <MapTooltip simpleMap={simpleMap} />
-      <MemoryMonitor />
+      {/* <MemoryMonitor /> */}
     </div>
   )
 }

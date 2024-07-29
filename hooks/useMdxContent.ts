@@ -5,8 +5,8 @@ import matter from "gray-matter"
 import { getContentDirs } from "utils/contentDirs"
 import { collections } from "tina/collections/collections"
 import IS_DEV from "utils/isDev"
-import { parseRich, parseRichRecursive } from "utils/mdx/parseRich"
-
+import parseRich from "utils/mdx/parseRich"
+import parseRichRecursive from "utils/mdx/parseRichRecursive"
 
 const parseCache: any = {}
 
@@ -33,7 +33,7 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
           },
         }
         // @ts-ignore
-      parseRichRecursive(parseCache[filepath][contentType], schema)
+        parseRichRecursive(parseCache[filepath][contentType], schema)
       }
       return {
         data: parseCache[filepath] as T,

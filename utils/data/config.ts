@@ -111,56 +111,56 @@ export const columnsDict = {
     column: '"PCT NH BLACK"',
     description: "Percentage of population that is Black or African American",
     bivariate: false,
-    colorScheme: "schemePuBuGn"
+    colorScheme: "schemePuBuGn",
   },
   "Percent Hispanic or Latinx": {
     name: "Percent Hispanic or Latinx",
     column: '"PCT HISPANIC OR LATINO"',
     description: "Percentage of population that is Hispanic or Latinx",
     bivariate: false,
-    colorScheme: "schemePuBuGn"
+    colorScheme: "schemePuBuGn",
   },
   "Percent American Indian": {
     name: "Percent American Indian or Native American",
     column: '"PCT NH AMERICAN INDIAN"',
     description: "Percentage of population that is American Indian or Native American",
     bivariate: false,
-    colorScheme: "schemePuBuGn"
+    colorScheme: "schemePuBuGn",
   },
   "Percent Asian": {
     name: "Percent Asian",
     column: '"PCT NH ASIAN"',
     description: "Percentage of population that is Asian",
     bivariate: false,
-    colorScheme: "schemePuBuGn"
+    colorScheme: "schemePuBuGn",
   },
   "Percent Pacific Islander": {
     name: "Percent Pacific Islander or Native Hawaiian",
     column: '"PCT NH PACIFIC ISLANDER"',
     description: "Percentage of population that is Pacific Islander or Native Hawaiian",
     bivariate: false,
-    colorScheme: "schemePuBuGn"
+    colorScheme: "schemePuBuGn",
   },
   "Percent Other": {
     name: "Percent Other",
     column: '"PCT NH SOME OTHER"',
     description: "Percentage of population that is Other",
     bivariate: false,
-    colorScheme: "schemePuBuGn"
+    colorScheme: "schemePuBuGn",
   },
   "Percent Two or More": {
     name: "Percent Two or More",
     column: '"PCT NH TWO OR MORE"',
     description: "Percentage of population that is Two or More",
     bivariate: false,
-    colorScheme: "schemePuBuGn"
+    colorScheme: "schemePuBuGn",
   },
   "Percent White": {
     name: "Percent White",
     column: '"PCT NH WHITE"',
     description: "Percentage of population that is White",
     bivariate: false,
-    colorScheme: "schemePuBuGn"
+    colorScheme: "schemePuBuGn",
   },
   "Concentration & Food Access - Bivariate 2020": {
     name: "Concentration & Food Access - 2020",

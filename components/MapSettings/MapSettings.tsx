@@ -1,5 +1,6 @@
 "use client"
 import React, { useMemo, useState } from "react"
+import { TinaMarkdown } from "tinacms/dist/rich-text"
 import CountyFilterSelector from "components/CountyFilterSelector"
 import { MapInfoSection } from "components/MapInfoSection/MapInfoSection"
 import { StatefulHighlightColorPicker } from "components/StatefulControls/StatefulHighlightColorPicker"
@@ -12,8 +13,6 @@ import { fetchCentroidById } from "utils/state/thunks"
 import { MenuButton } from "./MapMenuButton"
 import { MenuSection } from "./MapMenuSection"
 import { Icons, MapSettingsIcon } from "./MapSettingsIcon"
-import { MdTooltip } from "components/EnhancedMarkdown/Tooltip"
-import { TinaMarkdown } from "tinacms/dist/rich-text"
 
 const SettingsConfig: Array<{ label: string; icon: keyof typeof Icons }> = [
   // {
@@ -37,9 +36,7 @@ const SettingsConfig: Array<{ label: string; icon: keyof typeof Icons }> = [
   //   icon: "Layers"
   // }
 ]
-const contentSectionTitles = [
-  'topics'
-]
+const contentSectionTitles = ["topics"]
 const findContentSections = (contentSections: any[], titles: string[] = contentSectionTitles) => {
   const entries: Record<string, React.ReactNode> = {}
   for (const title of titles) {
@@ -49,7 +46,7 @@ const findContentSections = (contentSections: any[], titles: string[] = contentS
   return entries
 }
 
-export const MapSettings: React.FC<{contentSections: any[]}> = ({contentSections}) => {
+export const MapSettings: React.FC<{ contentSections: any[] }> = ({ contentSections }) => {
   const sections = useMemo(() => findContentSections(contentSections), [contentSections])
   const [activeMenuSection, setActiveMenuSection] = useState<string | undefined>(undefined)
 
@@ -70,7 +67,6 @@ export const MapSettings: React.FC<{contentSections: any[]}> = ({contentSections
   const handleMenuButton = (label: string) => {
     setActiveMenuSection((prev) => (prev === label ? undefined : label))
   }
-  
 
   return (
     <>
@@ -114,7 +110,7 @@ export const MapSettings: React.FC<{contentSections: any[]}> = ({contentSections
               </button>
             )}
             <MenuSection title="Topics" isActive={activeMenuSection === "Map Layers"}>
-              {sections['topics']}
+              {sections["topics"]}
               {Object.keys(columnGroups).map((group, i) => (
                 <MenuButton
                   key={i}

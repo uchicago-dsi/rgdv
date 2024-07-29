@@ -34,9 +34,7 @@ export default {
       label: "Short Description / text",
       name: "shortText",
     },
-    PostText
-
-   
+    PostText,
   ],
   ui: {
     router: ({ document }) => {

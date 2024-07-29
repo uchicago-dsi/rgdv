@@ -2,7 +2,7 @@ import Image from "next/image"
 import React from "react"
 import { PostMarkdown } from "components/EnhancedMarkdown"
 
-export const PostRenderer: React.FC<{content: any}> = ({content}) => {
+export const PostRenderer: React.FC<{ content: any }> = ({ content }) => {
   const { author, title, body, mainImage, date } = content?.data?.post || ({} as any)
   const cleanDate = date && new Date(date).toLocaleDateString()
   if (content instanceof Error)

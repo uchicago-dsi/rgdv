@@ -21,13 +21,12 @@ export const RichText = {
           name: "body",
           label: "Tooltip Body",
           isBody: true,
-          type: "rich-text"
-        }
-      ]
-    }
-  ]
+          type: "rich-text",
+        },
+      ],
+    },
+  ],
 }
-
 
 export const PostText = {
   ...RichText,
@@ -55,5 +54,5 @@ export const PostText = {
         },
       ],
     },
-  ]
+  ],
 }
