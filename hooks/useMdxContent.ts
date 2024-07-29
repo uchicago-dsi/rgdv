@@ -5,8 +5,7 @@ import matter from "gray-matter"
 import { parseMDX } from "@tinacms/mdx"
 import { getContentDirs } from "utils/contentDirs"
 import { collections } from "tina/collections/collections"
-
-const DEV = process.env.NODE_ENV === "development"
+import IS_DEV from "utils/isDev"
 
 const parseRich = (mdxContent: string) => {
   return parseMDX(
@@ -26,7 +25,7 @@ const parseCache: any = {}
 
 export const getMdxContent = async <T extends any>(contentType: keyof typeof client.queries, relativePath: string) => {
   try {
-    if (DEV) {
+    if (IS_DEV) {
       const r = await client.queries[contentType]({ relativePath })
       return r
     } else {
@@ -61,7 +60,7 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
 }
 
 export const getMdxDir = async <T extends any>(contentType: keyof typeof client.queries) => {
-  if (DEV) {
+  if (IS_DEV) {
     const contentKey = `${contentType}Connection` as keyof typeof client.queries
     // @ts-ignore
     const r = await client.queries[contentKey]()

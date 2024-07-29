@@ -1,10 +1,11 @@
 import React from "react"
 import { getMdxContent } from "hooks/useMdxContent"
+import IS_DEV from "utils/isDev"
 import { FooterClient } from "./Client"
 import { FooterRenderer } from "./Renderer"
 import { FooterProps } from "./types"
 
-const Rendererer = process.env.NODE_ENV === "development" ? FooterClient : FooterRenderer
+const Rendererer = IS_DEV ? FooterClient : FooterRenderer
 
 const Footer: React.FC = async () => {
   const footerNav = await getMdxContent<FooterProps["footerNav"]>("nav", "footer-nav.mdx")

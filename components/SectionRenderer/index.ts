@@ -1,4 +1,5 @@
+import IS_DEV from "utils/isDev"
 import ClientRenderer from "./client"
 import { SectionRenderer } from "./SectionRenderer"
 
-export default process.env.NODE_ENV === "development" ? ClientRenderer : SectionRenderer
+export default IS_DEV ? ClientRenderer : SectionRenderer
