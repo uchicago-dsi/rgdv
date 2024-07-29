@@ -4,6 +4,7 @@ import * as RadixTooltip from "@radix-ui/react-tooltip"
 import React from "react"
 import { twMerge } from "tailwind-merge"
 import { tooltipArrow, tooltipContent, TooltipProps } from "./types"
+
 export function Tooltip({
   explainer,
   open,
@@ -14,6 +15,7 @@ export function Tooltip({
   side = "top",
   className,
   withArrow,
+  children
 }: TooltipProps) {
   return (
     <RadixTooltip.Provider>
@@ -28,6 +30,7 @@ export function Tooltip({
             className={twMerge(tooltipContent({ intent, size, className })) + "max-h-96 max-w-xs overflow-auto text-xs"}
           >
             {explainer}
+            {children}
             {withArrow ? <RadixTooltip.Arrow className={twMerge(tooltipArrow({ intent, size, className }))} /> : null}
           </RadixTooltip.Content>
         </RadixTooltip.Portal>
