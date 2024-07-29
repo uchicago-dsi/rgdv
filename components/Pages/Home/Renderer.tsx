@@ -85,7 +85,7 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
           </div>
         </div>
       </div>
-      <div className="border-top-1 bg-[#00152c] p-4 text-theme-canvas-500 lg:h-[50vh]">
+      <div className="border-top-1 bg-[#00152c] p-4 text-theme-canvas-500">
         <hr />
         {/* 4 div flex layout equal widths */}
         {/* reports, trends, toolkit, about */}
