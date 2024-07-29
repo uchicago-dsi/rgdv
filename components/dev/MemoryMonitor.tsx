@@ -17,7 +17,6 @@ export const MemoryMonitor = () => {
       return () => clearInterval(intervalRef)
     }
   }, [])
-
   return (
     <div
       className="absolute bottom-2 right-2 rounded-xl

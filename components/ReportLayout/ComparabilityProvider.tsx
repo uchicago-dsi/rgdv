@@ -8,6 +8,8 @@ export const ComparabilityContext = createContext({
   options: ["national"] as readonly string[],
 })
 
+const _comparability = "national"
+const setComparability = (_comparability: string) => {}
 export default function ComparabilityProvider({
   comparabilityOptions,
   children,
@@ -15,7 +17,7 @@ export default function ComparabilityProvider({
   comparabilityOptions: readonly string[]
   children: React.ReactNode
 }) {
-  const [_comparability, setComparability] = useLocalStorage<string>("national")
+  // const [_comparability, setComparability] = useLocalStorage<string>("national")
   const [options] = useState(comparabilityOptions)
   const comparability = !_comparability ? "national" : !options.includes(_comparability) ? options[0]! : _comparability!
 

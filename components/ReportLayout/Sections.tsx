@@ -58,7 +58,7 @@ export const ReportSections: React.FC<{
     case "Key Statistics":
       return (
         <div id={divId}>
-          <h3 className="pb-2 text-2xl">Community Information</h3>
+          <h3 className="pb-2 text-2xl">{data.NAME} Community Information</h3>
           <StatList stats={stats} data={data} />
         </div>
       )
@@ -112,6 +112,9 @@ export const ReportSections: React.FC<{
         </div>
       )
     case "Scatterplot":
+      if (unit === 'tract') {
+        return null
+      }
       return (
         <div id={divId} className="h-auto w-full">
           <ScatterplotStatefulWrapper
