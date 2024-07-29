@@ -74,7 +74,7 @@ const thresholdStatList = {
 export default {
   label: "Reports",
   name: "statistics",
-  path: "content/statistics",
+  path: "public/content/statistics",
   descrption: "asdf",
   format: "mdx",
   fields: [

@@ -5,7 +5,7 @@ import { defineConfig } from "tinacms";
 var page_default = {
   label: "Page Content",
   name: "page",
-  path: "content/page",
+  path: "public/content/page",
   format: "mdx",
   fields: [
     {
@@ -57,11 +57,70 @@ var page_default = {
   }
 };
 
+// tina/utils.js
+var RichText = {
+  name: "body",
+  type: "rich-text",
+  isBody: true,
+  templates: [
+    {
+      name: "Tooltip",
+      label: "Tooltip",
+      fields: [
+        {
+          type: "string",
+          label: "Tooltip Title",
+          name: "title"
+        },
+        {
+          type: "string",
+          label: "Tooltip Key",
+          name: "key"
+        },
+        {
+          name: "body",
+          label: "Tooltip Body",
+          isBody: true,
+          type: "rich-text"
+        }
+      ]
+    }
+  ]
+};
+var PostText = {
+  ...RichText,
+  label: "Post Body",
+  templates: [
+    ...RichText.templates,
+    {
+      name: "PostWidget",
+      label: "Widget",
+      fields: [
+        {
+          name: "widget",
+          label: "Interactive Widget",
+          type: "string",
+          options: [
+            {
+              label: "Sortable Market Table",
+              value: "sortableTable"
+            },
+            {
+              label: "Test",
+              value: "test"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
 // tina/collections/post.js
 var post_default = {
   label: "Posts / Case Studies",
   name: "post",
-  path: "content/post",
+  path: "public/content/post",
   format: "mdx",
   fields: [
     {
@@ -89,35 +148,7 @@ var post_default = {
       label: "Short Description / text",
       name: "shortText"
     },
-    {
-      label: "Post Body",
-      name: "body",
-      type: "rich-text",
-      isBody: true,
-      templates: [
-        {
-          name: "PostWidget",
-          label: "Widget",
-          fields: [
-            {
-              name: "widget",
-              label: "Interactive Widget",
-              type: "string",
-              options: [
-                {
-                  label: "Sortable Market Table",
-                  value: "sortableTable"
-                },
-                {
-                  label: "Test",
-                  value: "test"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
+    PostText
   ],
   ui: {
     router: ({ document }) => {
@@ -130,7 +161,7 @@ var post_default = {
 var nav_default = {
   label: "Navigation",
   name: "nav",
-  path: "content/nav",
+  path: "public/content/nav",
   format: "mdx",
   create: true,
   fields: [
@@ -280,7 +311,7 @@ var thresholdStatList = {
 var stats_default = {
   label: "Reports",
   name: "statistics",
-  path: "content/statistics",
+  path: "public/content/statistics",
   descrption: "asdf",
   format: "mdx",
   fields: [
@@ -346,6 +377,36 @@ var stats_default = {
   }
 };
 
+// tina/collections/tooltips.js
+var tooltips_default = {
+  label: "Tooltips",
+  name: "tooltips",
+  path: "public/content/tooltips",
+  format: "mdx",
+  create: true,
+  fields: [
+    {
+      name: "title",
+      label: "Title",
+      type: "string"
+    },
+    {
+      label: "Post Body",
+      name: "body",
+      type: "rich-text",
+      isBody: true
+    }
+  ],
+  ui: {
+    router: ({ document }) => {
+      if (document._sys.filename === "home") {
+        return `/`;
+      }
+      return void 0;
+    }
+  }
+};
+
 // tina/config.js
 var config = defineConfig({
   clientId: "",
@@ -372,7 +433,7 @@ var config = defineConfig({
     // within the public folder
   },
   schema: {
-    collections: [page_default, post_default, nav_default, stats_default]
+    collections: [page_default, post_default, nav_default, stats_default, tooltips_default]
   }
 });
 var config_default = config;

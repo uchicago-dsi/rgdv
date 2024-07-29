@@ -63,3 +63,9 @@ fragment StatisticsParts on Statistics {
   }
   dataDescription
 }
+
+fragment TooltipsParts on Tooltips {
+  __typename
+  title
+  body
+}

@@ -15,7 +15,7 @@ const generateHhiConfig = (year: number, ds: boolean = false) =>
     column: `hhi_${ds ? "ds_" : ""}${year}`, // hhi_2000, hhi_2010
     bivariate: false,
     description: `Herfindahl-Hirschman Index for ${year}`,
-    colorScheme: "schemeGreens",
+    colorScheme: "schemePuRd",
   }) as ColumnConfig
 
 const generateGravityConfig = (year: number, ds: boolean = false) =>
@@ -51,12 +51,14 @@ export const columnsDict = {
   "Measure of Segregation (Black/African American and White)": {
     name: "Segregation Factor ICE Hispanic NH White Alone",
     bivariate: false,
+    colorScheme: "schemeOranges",
     column: "ICE_Black_Alone_White_Alone",
     description: `Segregation ICE Black Alone White Alone`,
   },
   "Measure of Segregation (Hispanic/Latinx and Non-hispanic White)": {
     name: "Segregation Factor ICE Hispanic NH White Alone",
     bivariate: false,
+    colorScheme: "schemeOranges",
     column: "ICE_Hispanic_NH_White_Alone",
     description: `Segregation ICE Hispanic NH White Alone`,
   },
@@ -88,6 +90,7 @@ export const columnsDict = {
     name: "Median Household Income",
     column: "MEDIAN_HOUSEHOLD_INCOME",
     description: "Median household income",
+    colorScheme: "schemeYlGnBu",
     bivariate: false,
   },
   "Poverty Rate": {
@@ -108,48 +111,56 @@ export const columnsDict = {
     column: '"PCT NH BLACK"',
     description: "Percentage of population that is Black or African American",
     bivariate: false,
+    colorScheme: "schemePuBuGn"
   },
   "Percent Hispanic or Latinx": {
     name: "Percent Hispanic or Latinx",
     column: '"PCT HISPANIC OR LATINO"',
     description: "Percentage of population that is Hispanic or Latinx",
     bivariate: false,
+    colorScheme: "schemePuBuGn"
   },
   "Percent American Indian": {
     name: "Percent American Indian or Native American",
     column: '"PCT NH AMERICAN INDIAN"',
     description: "Percentage of population that is American Indian or Native American",
     bivariate: false,
+    colorScheme: "schemePuBuGn"
   },
   "Percent Asian": {
     name: "Percent Asian",
     column: '"PCT NH ASIAN"',
     description: "Percentage of population that is Asian",
     bivariate: false,
+    colorScheme: "schemePuBuGn"
   },
   "Percent Pacific Islander": {
     name: "Percent Pacific Islander or Native Hawaiian",
     column: '"PCT NH PACIFIC ISLANDER"',
     description: "Percentage of population that is Pacific Islander or Native Hawaiian",
     bivariate: false,
+    colorScheme: "schemePuBuGn"
   },
   "Percent Other": {
     name: "Percent Other",
-    column: '"PCT NH other"',
+    column: '"PCT NH SOME OTHER"',
     description: "Percentage of population that is Other",
     bivariate: false,
+    colorScheme: "schemePuBuGn"
   },
   "Percent Two or More": {
     name: "Percent Two or More",
     column: '"PCT NH TWO OR MORE"',
     description: "Percentage of population that is Two or More",
     bivariate: false,
+    colorScheme: "schemePuBuGn"
   },
   "Percent White": {
     name: "Percent White",
     column: '"PCT NH WHITE"',
     description: "Percentage of population that is White",
     bivariate: false,
+    colorScheme: "schemePuBuGn"
   },
   "Concentration & Food Access - Bivariate 2020": {
     name: "Concentration & Food Access - 2020",
@@ -160,7 +171,7 @@ export const columnsDict = {
     description: "Bivariate",
     colorScheme: "BuPu",
   },
-  "Economic Advantage & Food Access - Bivariate 2020": {
+  "Economic Disadvantage & Food Access - Bivariate 2020": {
     name: "ADI & Food Access - 2020",
     bivariate: true,
     reversed: [true, true],
@@ -169,7 +180,7 @@ export const columnsDict = {
     description: "Bivariate",
     colorScheme: "RdBu",
   },
-  "Economic Advantage & Market Concentration - Bivariate 2020": {
+  "Economic Disadvantage & Market Concentration - Bivariate 2020": {
     name: "ADI & Food Access - 2020",
     bivariate: true,
     reversed: [true, false],
@@ -178,8 +189,8 @@ export const columnsDict = {
     description: "Bivariate",
     colorScheme: "PuOr",
   },
-  "Economic Advantage Index": {
-    name: "Economic Advantage Index",
+  "Economic Disadvantage Index": {
+    name: "Economic Disadvantage Index",
     column: "ADI_NATRANK",
     description: "ADI",
     bivariate: false,
@@ -285,7 +296,7 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
   "Racial Equity": {
     description: "Segregation Factors",
     columns: [
-      "Economic Advantage Index",
+      "Economic Disadvantage Index",
       "Measure of Segregation (Black/African American and White)",
       "Measure of Segregation (Hispanic/Latinx and Non-hispanic White)",
       "Yost Overall Quintile",
@@ -313,8 +324,8 @@ export const columnGroups: ColumnGroups<typeof columnsDict> = {
     description: "Bivariate",
     columns: [
       "Concentration & Food Access - Bivariate 2020",
-      "Economic Advantage & Food Access - Bivariate 2020",
-      "Economic Advantage & Market Concentration - Bivariate 2020",
+      "Economic Disadvantage & Food Access - Bivariate 2020",
+      "Economic Disadvantage & Market Concentration - Bivariate 2020",
     ],
   },
 } as const

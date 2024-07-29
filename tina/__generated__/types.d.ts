@@ -89,6 +89,8 @@ export type Query = {
   navConnection: NavConnection;
   statistics: Statistics;
   statisticsConnection: StatisticsConnection;
+  tooltips: Tooltips;
+  tooltipsConnection: TooltipsConnection;
 };
 
 
@@ -172,11 +174,27 @@ export type QueryStatisticsConnectionArgs = {
   filter?: InputMaybe<StatisticsFilter>;
 };
 
+
+export type QueryTooltipsArgs = {
+  relativePath?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryTooltipsConnectionArgs = {
+  before?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<TooltipsFilter>;
+};
+
 export type DocumentFilter = {
   page?: InputMaybe<PageFilter>;
   post?: InputMaybe<PostFilter>;
   nav?: InputMaybe<NavFilter>;
   statistics?: InputMaybe<StatisticsFilter>;
+  tooltips?: InputMaybe<TooltipsFilter>;
 };
 
 export type DocumentConnectionEdges = {
@@ -216,7 +234,7 @@ export type CollectionDocumentsArgs = {
   folder?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type DocumentNode = Page | Post | Nav | Statistics | Folder;
+export type DocumentNode = Page | Post | Nav | Statistics | Tooltips | Folder;
 
 export type PageSections = {
   __typename?: 'PageSections';
@@ -297,11 +315,18 @@ export type ImageFilter = {
   in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
+export type PostBodyTooltipFilter = {
+  title?: InputMaybe<StringFilter>;
+  key?: InputMaybe<StringFilter>;
+  body?: InputMaybe<RichTextFilter>;
+};
+
 export type PostBodyPostWidgetFilter = {
   widget?: InputMaybe<StringFilter>;
 };
 
 export type PostBodyFilter = {
+  Tooltip?: InputMaybe<PostBodyTooltipFilter>;
   PostWidget?: InputMaybe<PostBodyPostWidgetFilter>;
 };
 
@@ -477,6 +502,33 @@ export type StatisticsConnection = Connection & {
   edges?: Maybe<Array<Maybe<StatisticsConnectionEdges>>>;
 };
 
+export type Tooltips = Node & Document & {
+  __typename?: 'Tooltips';
+  title?: Maybe<Scalars['String']['output']>;
+  body?: Maybe<Scalars['JSON']['output']>;
+  id: Scalars['ID']['output'];
+  _sys: SystemInfo;
+  _values: Scalars['JSON']['output'];
+};
+
+export type TooltipsFilter = {
+  title?: InputMaybe<StringFilter>;
+  body?: InputMaybe<RichTextFilter>;
+};
+
+export type TooltipsConnectionEdges = {
+  __typename?: 'TooltipsConnectionEdges';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<Tooltips>;
+};
+
+export type TooltipsConnection = Connection & {
+  __typename?: 'TooltipsConnection';
+  pageInfo: PageInfo;
+  totalCount: Scalars['Float']['output'];
+  edges?: Maybe<Array<Maybe<TooltipsConnectionEdges>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addPendingDocument: DocumentNode;
@@ -491,6 +543,8 @@ export type Mutation = {
   createNav: Nav;
   updateStatistics: Statistics;
   createStatistics: Statistics;
+  updateTooltips: Tooltips;
+  createTooltips: Tooltips;
 };
 
 
@@ -568,11 +622,24 @@ export type MutationCreateStatisticsArgs = {
   params: StatisticsMutation;
 };
 
+
+export type MutationUpdateTooltipsArgs = {
+  relativePath: Scalars['String']['input'];
+  params: TooltipsMutation;
+};
+
+
+export type MutationCreateTooltipsArgs = {
+  relativePath: Scalars['String']['input'];
+  params: TooltipsMutation;
+};
+
 export type DocumentUpdateMutation = {
   page?: InputMaybe<PageMutation>;
   post?: InputMaybe<PostMutation>;
   nav?: InputMaybe<NavMutation>;
   statistics?: InputMaybe<StatisticsMutation>;
+  tooltips?: InputMaybe<TooltipsMutation>;
   relativePath?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -581,6 +648,7 @@ export type DocumentMutation = {
   post?: InputMaybe<PostMutation>;
   nav?: InputMaybe<NavMutation>;
   statistics?: InputMaybe<StatisticsMutation>;
+  tooltips?: InputMaybe<TooltipsMutation>;
 };
 
 export type PageSectionsMutation = {
@@ -652,6 +720,11 @@ export type StatisticsMutation = {
   dataDescription?: InputMaybe<Scalars['JSON']['input']>;
 };
 
+export type TooltipsMutation = {
+  title?: InputMaybe<Scalars['String']['input']>;
+  body?: InputMaybe<Scalars['JSON']['input']>;
+};
+
 export type PagePartsFragment = { __typename: 'Page', body?: any | null, sections?: Array<{ __typename: 'PageSections', title?: string | null, body?: any | null } | null> | null };
 
 export type PostPartsFragment = { __typename: 'Post', title?: string | null, author?: string | null, date?: string | null, mainImage?: string | null, shortText?: string | null, body?: any | null };
@@ -659,6 +732,8 @@ export type PostPartsFragment = { __typename: 'Post', title?: string | null, aut
 export type NavPartsFragment = { __typename: 'Nav', title?: string | null, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null };
 
 export type StatisticsPartsFragment = { __typename: 'Statistics', body?: any | null, dataDescription?: any | null, overview?: Array<{ __typename: 'StatisticsOverview', title?: string | null, measure?: string | null, column_national?: string | null, column_state?: string | null, column_county?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsOverviewTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null };
+
+export type TooltipsPartsFragment = { __typename: 'Tooltips', title?: string | null, body?: any | null };
 
 export type PageQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -736,6 +811,25 @@ export type StatisticsConnectionQueryVariables = Exact<{
 
 export type StatisticsConnectionQuery = { __typename?: 'Query', statisticsConnection: { __typename?: 'StatisticsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'StatisticsConnectionEdges', cursor: string, node?: { __typename: 'Statistics', id: string, body?: any | null, dataDescription?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, overview?: Array<{ __typename: 'StatisticsOverview', title?: string | null, measure?: string | null, column_national?: string | null, column_state?: string | null, column_county?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsOverviewTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null } | null } | null> | null } };
 
+export type TooltipsQueryVariables = Exact<{
+  relativePath: Scalars['String']['input'];
+}>;
+
+
+export type TooltipsQuery = { __typename?: 'Query', tooltips: { __typename: 'Tooltips', id: string, title?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
+
+export type TooltipsConnectionQueryVariables = Exact<{
+  before?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<TooltipsFilter>;
+}>;
+
+
+export type TooltipsConnectionQuery = { __typename?: 'Query', tooltipsConnection: { __typename?: 'TooltipsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'TooltipsConnectionEdges', cursor: string, node?: { __typename: 'Tooltips', id: string, title?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+
 export const PagePartsFragmentDoc = gql`
     fragment PageParts on Page {
   __typename
@@ -804,6 +898,13 @@ export const StatisticsPartsFragmentDoc = gql`
     }
   }
   dataDescription
+}
+    `;
+export const TooltipsPartsFragmentDoc = gql`
+    fragment TooltipsParts on Tooltips {
+  __typename
+  title
+  body
 }
     `;
 export const PageDocument = gql`
@@ -1026,6 +1127,61 @@ export const StatisticsConnectionDocument = gql`
   }
 }
     ${StatisticsPartsFragmentDoc}`;
+export const TooltipsDocument = gql`
+    query tooltips($relativePath: String!) {
+  tooltips(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ...TooltipsParts
+  }
+}
+    ${TooltipsPartsFragmentDoc}`;
+export const TooltipsConnectionDocument = gql`
+    query tooltipsConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: TooltipsFilter) {
+  tooltipsConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+        ...TooltipsParts
+      }
+    }
+  }
+}
+    ${TooltipsPartsFragmentDoc}`;
 export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R>
   export function getSdk<C>(requester: Requester<C>) {
     return {
@@ -1052,6 +1208,12 @@ export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) 
       },
     statisticsConnection(variables?: StatisticsConnectionQueryVariables, options?: C): Promise<{data: StatisticsConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: StatisticsConnectionQueryVariables, query: string}> {
         return requester<{data: StatisticsConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: StatisticsConnectionQueryVariables, query: string}, StatisticsConnectionQueryVariables>(StatisticsConnectionDocument, variables, options);
+      },
+    tooltips(variables: TooltipsQueryVariables, options?: C): Promise<{data: TooltipsQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: TooltipsQueryVariables, query: string}> {
+        return requester<{data: TooltipsQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: TooltipsQueryVariables, query: string}, TooltipsQueryVariables>(TooltipsDocument, variables, options);
+      },
+    tooltipsConnection(variables?: TooltipsConnectionQueryVariables, options?: C): Promise<{data: TooltipsConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: TooltipsConnectionQueryVariables, query: string}> {
+        return requester<{data: TooltipsConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: TooltipsConnectionQueryVariables, query: string}, TooltipsConnectionQueryVariables>(TooltipsConnectionDocument, variables, options);
       }
     };
   }

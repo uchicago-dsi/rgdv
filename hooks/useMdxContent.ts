@@ -1,25 +1,12 @@
 import { client } from "tina/__generated__/client"
 import fs from "fs"
-import path, { parse } from "path"
+import path from "path"
 import matter from "gray-matter"
-import { parseMDX } from "@tinacms/mdx"
 import { getContentDirs } from "utils/contentDirs"
 import { collections } from "tina/collections/collections"
 import IS_DEV from "utils/isDev"
+import { parseRich, parseRichRecursive } from "utils/mdx/parseRich"
 
-const parseRich = (mdxContent: string) => {
-  return parseMDX(
-    mdxContent,
-    {
-      name: "body", // This is the key in your data for the rich text content
-      label: "Body", // This is the label that will be displayed in the TinaCMS sidebar
-      // @ts-ignore
-      component: "rich-text", // This tells TinaCMS to use the rich text editor component
-      description: "Enter the main content of the page here", // Optional: Provides a description for this field in the sidebar
-    },
-    (f: any) => f
-  )
-}
 
 const parseCache: any = {}
 
@@ -30,7 +17,7 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
       return r
     } else {
       getContentDirs()
-      const filepath = path.join(process.cwd(), "content", contentType, relativePath)
+      const filepath = path.join(process.cwd(), "public", "content", contentType, relativePath)
       if (!parseCache[filepath]) {
         // @ts-ignore
         const schema = collections[contentType]
@@ -39,14 +26,14 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
         const fmData = frontMatter.data
         parseCache[filepath] = {
           [contentType]: {
-            id: `content/${contentType}/${relativePath}`,
+            id: `public/content/${contentType}/${relativePath}`,
             __typename: contentType,
             body: parseRich(frontMatter.content),
             ...fmData,
           },
         }
         // @ts-ignore
-        parseRichRecursive(parseCache[filepath][contentType], schema)
+      parseRichRecursive(parseCache[filepath][contentType], schema)
       }
       return {
         data: parseCache[filepath] as T,
@@ -73,7 +60,7 @@ export const getMdxDir = async <T extends any>(contentType: keyof typeof client.
     }))
   } else {
     getContentDirs()
-    const filepath = path.join(process.cwd(), "content", contentType)
+    const filepath = path.join(process.cwd(), "public", "content", contentType)
     const files = fs.readdirSync(filepath + "/")
     return files
       .map((file) => {
@@ -87,19 +74,4 @@ export const getMdxDir = async <T extends any>(contentType: keyof typeof client.
         slug: files[i].replace(".md", ""),
       }))
   }
-}
-
-const parseRichRecursive = (data: any, schema: any) => {
-  const keys = Object.keys(data)
-  keys.forEach((key) => {
-    const keySchema = schema.fields.find((f: any) => f.name === key)
-    if (!keySchema) return
-    if (keySchema.type === "rich-text") {
-      data[key] = parseRich(data[key])
-    } else if (keySchema.list && keySchema.type === "object") {
-      data[key].forEach((d: any) => parseRichRecursive(d, keySchema))
-    } else if (keySchema.type === "object") {
-      parseRichRecursive(data[key], keySchema)
-    }
-  })
 }

@@ -61,6 +61,8 @@ type Query {
   navConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: NavFilter): NavConnection!
   statistics(relativePath: String): Statistics!
   statisticsConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: StatisticsFilter): StatisticsConnection!
+  tooltips(relativePath: String): Tooltips!
+  tooltipsConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: TooltipsFilter): TooltipsConnection!
 }
 
 input DocumentFilter {
@@ -68,6 +70,7 @@ input DocumentFilter {
   post: PostFilter
   nav: NavFilter
   statistics: StatisticsFilter
+  tooltips: TooltipsFilter
 }
 
 type DocumentConnectionEdges {
@@ -93,7 +96,7 @@ type Collection {
   documents(before: String, after: String, first: Float, last: Float, sort: String, filter: DocumentFilter, folder: String): DocumentConnection!
 }
 
-union DocumentNode = Page | Post | Nav | Statistics | Folder
+union DocumentNode = Page | Post | Nav | Statistics | Tooltips | Folder
 
 type PageSections {
   title: String
@@ -169,11 +172,18 @@ input ImageFilter {
   in: [String]
 }
 
+input PostBodyTooltipFilter {
+  title: StringFilter
+  key: StringFilter
+  body: RichTextFilter
+}
+
 input PostBodyPostWidgetFilter {
   widget: StringFilter
 }
 
 input PostBodyFilter {
+  Tooltip: PostBodyTooltipFilter
   PostWidget: PostBodyPostWidgetFilter
 }
 
@@ -335,6 +345,30 @@ type StatisticsConnection implements Connection {
   edges: [StatisticsConnectionEdges]
 }
 
+type Tooltips implements Node & Document {
+  title: String
+  body: JSON
+  id: ID!
+  _sys: SystemInfo!
+  _values: JSON!
+}
+
+input TooltipsFilter {
+  title: StringFilter
+  body: RichTextFilter
+}
+
+type TooltipsConnectionEdges {
+  cursor: String!
+  node: Tooltips
+}
+
+type TooltipsConnection implements Connection {
+  pageInfo: PageInfo!
+  totalCount: Float!
+  edges: [TooltipsConnectionEdges]
+}
+
 type Mutation {
   addPendingDocument(collection: String!, relativePath: String!, template: String): DocumentNode!
   updateDocument(collection: String, relativePath: String!, params: DocumentUpdateMutation!): DocumentNode!
@@ -348,6 +382,8 @@ type Mutation {
   createNav(relativePath: String!, params: NavMutation!): Nav!
   updateStatistics(relativePath: String!, params: StatisticsMutation!): Statistics!
   createStatistics(relativePath: String!, params: StatisticsMutation!): Statistics!
+  updateTooltips(relativePath: String!, params: TooltipsMutation!): Tooltips!
+  createTooltips(relativePath: String!, params: TooltipsMutation!): Tooltips!
 }
 
 input DocumentUpdateMutation {
@@ -355,6 +391,7 @@ input DocumentUpdateMutation {
   post: PostMutation
   nav: NavMutation
   statistics: StatisticsMutation
+  tooltips: TooltipsMutation
   relativePath: String
 }
 
@@ -363,6 +400,7 @@ input DocumentMutation {
   post: PostMutation
   nav: NavMutation
   statistics: StatisticsMutation
+  tooltips: TooltipsMutation
 }
 
 input PageSectionsMutation {
@@ -432,6 +470,11 @@ input StatisticsMutation {
   overview: [StatisticsOverviewMutation]
   stat: [StatisticsStatMutation]
   dataDescription: JSON
+}
+
+input TooltipsMutation {
+  title: String
+  body: JSON
 }
 
 schema {

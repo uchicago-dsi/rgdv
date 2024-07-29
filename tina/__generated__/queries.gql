@@ -209,3 +209,56 @@ query statisticsConnection($before: String, $after: String, $first: Float, $last
     }
   }
 }
+
+query tooltips($relativePath: String!) {
+  tooltips(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ...TooltipsParts
+  }
+}
+
+query tooltipsConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: TooltipsFilter) {
+  tooltipsConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+        ...TooltipsParts
+      }
+    }
+  }
+}

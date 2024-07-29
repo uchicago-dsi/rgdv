@@ -75,6 +75,13 @@ export const StatisticsPartsFragmentDoc = gql`
   dataDescription
 }
     `;
+export const TooltipsPartsFragmentDoc = gql`
+    fragment TooltipsParts on Tooltips {
+  __typename
+  title
+  body
+}
+    `;
 export const PageDocument = gql`
     query page($relativePath: String!) {
   page(relativePath: $relativePath) {
@@ -295,6 +302,61 @@ export const StatisticsConnectionDocument = gql`
   }
 }
     ${StatisticsPartsFragmentDoc}`;
+export const TooltipsDocument = gql`
+    query tooltips($relativePath: String!) {
+  tooltips(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ...TooltipsParts
+  }
+}
+    ${TooltipsPartsFragmentDoc}`;
+export const TooltipsConnectionDocument = gql`
+    query tooltipsConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: TooltipsFilter) {
+  tooltipsConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+        ...TooltipsParts
+      }
+    }
+  }
+}
+    ${TooltipsPartsFragmentDoc}`;
 export function getSdk(requester) {
   return {
     page(variables, options) {
@@ -320,6 +382,12 @@ export function getSdk(requester) {
     },
     statisticsConnection(variables, options) {
       return requester(StatisticsConnectionDocument, variables, options);
+    },
+    tooltips(variables, options) {
+      return requester(TooltipsDocument, variables, options);
+    },
+    tooltipsConnection(variables, options) {
+      return requester(TooltipsConnectionDocument, variables, options);
     }
   };
 }

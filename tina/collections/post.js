@@ -1,10 +1,12 @@
+import { PostText } from "../utils"
+
 /**
  * @type {import('tinacms').Collection}
  */
 export default {
   label: "Posts / Case Studies",
   name: "post",
-  path: "content/post",
+  path: "public/content/post",
   format: "mdx",
   fields: [
     {
@@ -32,35 +34,9 @@ export default {
       label: "Short Description / text",
       name: "shortText",
     },
-    {
-      label: "Post Body",
-      name: "body",
-      type: "rich-text",
-      isBody: true,
-      templates: [
-        {
-          name: "PostWidget",
-          label: "Widget",
-          fields: [
-            {
-              name: "widget",
-              label: "Interactive Widget",
-              type: "string",
-              options: [
-                {
-                  label: "Sortable Market Table",
-                  value: "sortableTable",
-                },
-                {
-                  label: "Test",
-                  value: "test",
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
+    PostText
+
+   
   ],
   ui: {
     router: ({ document }) => {
