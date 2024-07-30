@@ -56,9 +56,9 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-theme-navy-500 to-theme-navy-500"></div>
         <div className="absolute inset-x-0 bottom-0 h-[30vh] bg-theme-navy-500"></div>
         <div className="flex h-full flex-col justify-end p-4 text-theme-canvas-500">
-          <div className="z-20 grid grid-flow-col grid-rows-2 lg:mb-12 lg:grid-cols-2 lg:grid-rows-1">
-            <div className="invisible md:visible">
-              <h1 className="text-[13vw] font-bold leading-[13vw]" style={{ WebkitTextStroke: "2px #00152c" }}>
+          <div className="z-20 lg:grid grid-flow-col grid-rows-2 lg:mb-12 lg:grid-cols-2 lg:grid-rows-1 lg:items-end">
+            <div className="invisible my-12 mt-24 md:visible flex lg:block align-middle justify-center">
+              <h1 className="text-center lg:text-left text-[13vw] font-bold leading-[13vw]" style={{ WebkitTextStroke: "2px #00152c" }}>
                 {title.split(" ").map((f: string, i: number) => (
                   <span
                     key={i}
@@ -70,12 +70,14 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
                 ))}
               </h1>
             </div>
-            <div className="mx-4 my-12 flex flex-col justify-end lg:my-0">
+            <div className="h-min my-4 lg:my-12 flex flex-col justify-end">
               <h2 className="text-4xl font-bold">{getFirstTextElement(sections, "Subtitle")}</h2>
             </div>
           </div>
-          <div className="z-20 grid grid-flow-col grid-rows-2 gap-8 lg:grid-cols-2 lg:grid-rows-1">
-            <div>{getFirstTextElement(sections, "Main description")}</div>
+          <div className="text-white prose max-w-none z-20 lg:grid grid-flow-col grid-rows-2 gap-8 lg:grid-cols-2 lg:grid-rows-1">
+            <div>
+              <p>{getFirstTextElement(sections, "Main description")}</p>
+            </div>
             <div>
               {getFirstTextElement(sections, "Search CTA")}
               <br />
@@ -89,9 +91,9 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
         <hr />
         {/* 4 div flex layout equal widths */}
         {/* reports, trends, toolkit, about */}
-        <div className={`my-4 grid grid-cols-1 justify-between gap-4 ${getGridcols(fourUpSections.length)}`}>
+        <div className={`my-4 lg:grid grid-cols-1 justify-between gap-4 ${getGridcols(fourUpSections.length)}`}>
           {fourUpSections.map((title: string, i: number) => (
-            <div key={i} className="mb-4 flex flex-col border-2 p-4 lg:mb-0">
+            <div key={i} className={`max-w-none four-up prose mb-4 flex flex-col p-4 lg:mb-0 ${i%2?'bg-white/10':''}`}>
               <TinaMarkdown content={sections.find((f: any) => f.title === title)?.body} />
             </div>
           ))}
@@ -101,14 +103,14 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
         {caseStudies.map((caseStudy: any, i: number) => (
           <div
             key={i}
-            className={`align-center prose flex min-h-[75vh] w-full min-w-full items-center justify-center gap-8 px-12 lg:flex-row
+            className={`align-center prose lg:flex lg:min-h-[75vh] w-full min-w-full items-center justify-center gap-8 px-4 lg:px-12 lg:flex-row
                 ${i % 2 === 1 ? "bg-theme-canvas-100/25" : ""}
               `}
           >
-            <div className={`max-w-[40%]`}>
+            <div className={`lg:max-w-[40%]`}>
               <TinaMarkdown content={i % 2 === 0 ? caseStudy.Image : caseStudy.Text} />
             </div>
-            <div className={`max-w-[40%]`}>
+            <div className={`lg:max-w-[40%]`}>
               <TinaMarkdown content={i % 2 === 0 ? caseStudy.Text : caseStudy.Image} />
             </div>
           </div>
