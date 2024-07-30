@@ -6,6 +6,6 @@ export const metadata = {
 }
 
 export default async function ResourcesPage() {
-  const pageInfo = await getMdxContent("page", "resources.mdx")
+  const pageInfo = await getMdxContent("page", "resources.mdx") as any
   return <>{pageInfo && <SectionRenderer pageInfo={pageInfo} />}</>
 }
