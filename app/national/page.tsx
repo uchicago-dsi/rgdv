@@ -2,6 +2,8 @@ import React from "react"
 import ReportLayout from "components/ReportLayout"
 import { getContentDirs } from "utils/contentDirs"
 
+export const invalidate = 0
+
 const NationalPage = async () => {
   getContentDirs()
   return (
