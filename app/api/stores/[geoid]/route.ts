@@ -11,8 +11,6 @@ export type ReqParams = {
 
 type units = "county" | "state" | "tract" | "national"
 
-export const revalidate = 0
-
 const cache: Record<units, any> = {
   county: {},
   state: {},
@@ -48,9 +46,10 @@ const getStores = async (geoid: string) => {
   const state = geoid.slice(0, 2) as keyof typeof cache
   const filename = queryType === "tract" ? county : state
 
-  if (true || cache[queryType][filename] === undefined) {
+  if (true){ //cache[queryType][filename] === undefined) {
     const url = `${process.env.DATA_ENDPOINT}stores/${queryType}/${filename}.msgpack.gz`
     const data = await readRemoteMsgPackFile<Record<string, Record<string, StoreEntry>>>(url, true)
+    console.log(data)
     if (Array.isArray(data)) {
       if (cache[queryType][filename] === undefined) {
         cache[queryType][filename] = {}
