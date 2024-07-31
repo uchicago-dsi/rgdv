@@ -6,6 +6,6 @@ export const metadata = {
 }
 
 export default async function ChangelogPage() {
-  const pageInfo = await getMdxContent("page", "changelog.mdx") as any
+  const pageInfo = (await getMdxContent("page", "changelog.mdx")) as any
   return <>{pageInfo && <SectionRenderer pageInfo={pageInfo} />}</>
 }

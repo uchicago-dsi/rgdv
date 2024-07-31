@@ -56,9 +56,12 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-theme-navy-500 to-theme-navy-500"></div>
         <div className="absolute inset-x-0 bottom-0 h-[30vh] bg-theme-navy-500"></div>
         <div className="flex h-full flex-col justify-end p-4 text-theme-canvas-500">
-          <div className="z-20 lg:grid grid-flow-col grid-rows-2 lg:mb-12 lg:grid-cols-2 lg:grid-rows-1 lg:items-end">
-            <div className="invisible my-12 mt-24 md:visible flex lg:block align-middle justify-center">
-              <h1 className="text-center lg:text-left text-[13vw] font-bold leading-[13vw]" style={{ WebkitTextStroke: "2px #00152c" }}>
+          <div className="z-20 grid-flow-col grid-rows-2 lg:mb-12 lg:grid lg:grid-cols-2 lg:grid-rows-1 lg:items-end">
+            <div className="invisible my-12 mt-24 flex justify-center align-middle md:visible lg:block">
+              <h1
+                className="text-center text-[13vw] font-bold leading-[13vw] lg:text-left"
+                style={{ WebkitTextStroke: "2px #00152c" }}
+              >
                 {title.split(" ").map((f: string, i: number) => (
                   <span
                     key={i}
@@ -70,11 +73,11 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
                 ))}
               </h1>
             </div>
-            <div className="h-min my-4 lg:my-12 flex flex-col justify-end">
+            <div className="my-4 flex h-min flex-col justify-end lg:my-12">
               <h2 className="text-4xl font-bold">{getFirstTextElement(sections, "Subtitle")}</h2>
             </div>
           </div>
-          <div className="text-white prose max-w-none z-20 lg:grid grid-flow-col grid-rows-2 gap-8 lg:grid-cols-2 lg:grid-rows-1">
+          <div className="prose z-20 max-w-none grid-flow-col grid-rows-2 gap-8 text-white lg:grid lg:grid-cols-2 lg:grid-rows-1">
             <div>
               <p>{getFirstTextElement(sections, "Main description")}</p>
             </div>
@@ -91,9 +94,12 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
         <hr />
         {/* 4 div flex layout equal widths */}
         {/* reports, trends, toolkit, about */}
-        <div className={`my-4 lg:grid grid-cols-1 justify-between gap-4 ${getGridcols(fourUpSections.length)}`}>
+        <div className={`my-4 grid-cols-1 justify-between gap-4 lg:grid ${getGridcols(fourUpSections.length)}`}>
           {fourUpSections.map((title: string, i: number) => (
-            <div key={i} className={`max-w-none four-up prose mb-4 flex flex-col p-4 lg:mb-0 ${i%2?'bg-white/10':''}`}>
+            <div
+              key={i}
+              className={`four-up prose mb-4 flex max-w-none flex-col p-4 lg:mb-0 ${i % 2 ? "bg-white/10" : ""}`}
+            >
               <TinaMarkdown content={sections.find((f: any) => f.title === title)?.body} />
             </div>
           ))}
@@ -103,7 +109,7 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
         {caseStudies.map((caseStudy: any, i: number) => (
           <div
             key={i}
-            className={`align-center prose lg:flex lg:min-h-[75vh] w-full min-w-full items-center justify-center gap-8 px-4 lg:px-12 lg:flex-row
+            className={`align-center prose w-full min-w-full items-center justify-center gap-8 px-4 lg:flex lg:min-h-[75vh] lg:flex-row lg:px-12
                 ${i % 2 === 1 ? "bg-theme-canvas-100/25" : ""}
               `}
           >

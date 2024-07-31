@@ -112,7 +112,7 @@ export const ReportSections: React.FC<{
         </div>
       )
     case "Scatterplot":
-      if (unit === 'tract') {
+      if (unit === "tract") {
         return null
       }
       return (
