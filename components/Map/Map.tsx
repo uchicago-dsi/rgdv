@@ -322,7 +322,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
                   col: "",
                 },
                 {
-                  label: "Percent of area sales",
+                  label: "Estimated Percent of area sales",
                   data: formatterPresets.percent(info.object?.["PCT OF TRACT SALES"]),
                   col: "",
                 },

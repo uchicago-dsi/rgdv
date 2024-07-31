@@ -110,7 +110,6 @@ export const mapSlice = createSlice({
         state.tooltipStatus = undefined
         return
       }
-
       state.tooltip = {
         x: action?.payload?.x || state.tooltip?.x || 0,
         y: action?.payload?.y || state.tooltip?.y || 0,
@@ -118,7 +117,8 @@ export const mapSlice = createSlice({
       }
       const id = action?.payload?.id
       if (action?.payload?.data) {
-        // chill
+        state.tooltip.data = action.payload.data
+        state.tooltipStatus = "ready"
       } else if (!!id && !globals?.ds?.tooltipResults?.[id]) {
         state.tooltipStatus = "pending"
       } else {

@@ -36,7 +36,24 @@ export const MapTooltipInner: React.FC<
   }
 
   if (tooltipData) {
-    return <TooltipSectionsRenderer sections={tooltipData} />
+    return (
+      <TooltipSectionsRenderer sections={tooltipData}>
+        <div>
+          {tooltipData.map((section, i) => (
+            <>
+              <h3 key={i}>{section.section}</h3>
+              <ul className="list-none">
+                {section.columns.map((column, j) => (
+                  <li key={`store-ttooltip-${i}-${j}`} className="p-0 my-1 text-xs">
+                    <b>{column.label}</b>: {column.data}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ))}
+        </div>
+      </TooltipSectionsRenderer>
+    )
   }
   if (tooltipStatus === "ready") {
     return (
