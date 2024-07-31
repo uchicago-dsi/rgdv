@@ -44,7 +44,7 @@ export const MapTooltipInner: React.FC<
               <h3 key={i}>{section.section}</h3>
               <ul className="list-none">
                 {section.columns.map((column, j) => (
-                  <li key={`store-ttooltip-${i}-${j}`} className="p-0 my-1 text-xs">
+                  <li key={`store-ttooltip-${i}-${j}`} className="my-1 p-0 text-xs">
                     <b>{column.label}</b>: {column.data}
                   </li>
                 ))}

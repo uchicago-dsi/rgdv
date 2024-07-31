@@ -10,17 +10,33 @@ import { globals } from "utils/state/globals"
 import { store, useAppSelector } from "utils/state/store"
 import ScatterPlot from "./ScatterPlot"
 import { ScatterPlotWrapperProps } from "./types"
-// import HeatmapComponent from "components/Heatmap/Heatmap"
+
+const getDefaultKeys = () => {
+  const allKeys = Object.keys(columnsDict)
+  const cleanKeys = []
+  for (const key of allKeys) {
+    // @ts-ignore
+    if (!Array.isArray(columnsDict[key].column)) {
+      cleanKeys.push(key)
+    } else {
+      console.log("Skipping key !!!!", key)
+    }
+  }
+
+  return cleanKeys
+}
 
 const ScatterPlotWrapper: React.FC<ScatterPlotWrapperProps> = ({
   id,
-  options = Object.keys(columnsDict),
+  options = getDefaultKeys(),
   initialXVar,
   initialYVar,
 }) => {
   const { parentRef } = useParentSize()
-  const [xVar, setXVar] = useState<DataColumns>(initialXVar! || options?.[0]! || Object.keys(columnsDict)[0])
-  const [yVar, setYVar] = useState<DataColumns>(initialYVar! || options?.[1]! || Object.keys(columnsDict)[1])
+  const cleanOptions = options.filter((f) => f in columnsDict && !columnsDict[f as keyof typeof columnsDict].bivariate)
+
+  const [xVar, setXVar] = useState<DataColumns>(initialXVar! || cleanOptions?.[0]! || Object.keys(columnsDict)[0])
+  const [yVar, setYVar] = useState<DataColumns>(initialYVar! || cleanOptions?.[1]! || Object.keys(columnsDict)[1])
   const [data, setData] = useState<Record<string, any>[]>([])
   // const [heatmapData, setHeatmapData] = useState<any>(null)
   const handleXChange = (value: DataColumns) => setXVar(value)
@@ -53,7 +69,7 @@ const ScatterPlotWrapper: React.FC<ScatterPlotWrapperProps> = ({
           <div className="flex flex-row items-center gap-4 border-2  border-r-0 pl-4">
             <p>X Variable</p>
             <SelectMenu title="Choose X Variable" value={xVar} onValueChange={handleXChange}>
-              {options.map((key, i) => (
+              {cleanOptions.map((key, i) => (
                 <Select.Item key={i} value={key}>
                   <Select.ItemText>{key}</Select.ItemText>
                 </Select.Item>
@@ -63,7 +79,7 @@ const ScatterPlotWrapper: React.FC<ScatterPlotWrapperProps> = ({
           <div className="flex flex-row items-center gap-4 border-2 pl-4">
             <p>Y Variable</p>
             <SelectMenu title="Choose Y Variable" value={yVar} onValueChange={handleYChange}>
-              {options.map((key, i) => (
+              {cleanOptions.map((key, i) => (
                 <Select.Item key={i} value={key}>
                   <Select.ItemText>{key}</Select.ItemText>
                 </Select.Item>
