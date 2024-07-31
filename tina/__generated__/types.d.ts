@@ -236,12 +236,6 @@ export type Page = Node &
     _values: Scalars["JSON"]["output"]
   }
 
-export type RichTextFilter = {
-  startsWith?: InputMaybe<Scalars["String"]["input"]>
-  eq?: InputMaybe<Scalars["String"]["input"]>
-  exists?: InputMaybe<Scalars["Boolean"]["input"]>
-}
-
 export type StringFilter = {
   startsWith?: InputMaybe<Scalars["String"]["input"]>
   eq?: InputMaybe<Scalars["String"]["input"]>
@@ -249,13 +243,39 @@ export type StringFilter = {
   in?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>
 }
 
-export type PageSectionsFilter = {
+export type RichTextFilter = {
+  startsWith?: InputMaybe<Scalars["String"]["input"]>
+  eq?: InputMaybe<Scalars["String"]["input"]>
+  exists?: InputMaybe<Scalars["Boolean"]["input"]>
+}
+
+export type PageBodyTooltipFilter = {
   title?: InputMaybe<StringFilter>
+  key?: InputMaybe<StringFilter>
   body?: InputMaybe<RichTextFilter>
 }
 
-export type PageFilter = {
+export type PageBodyFilter = {
+  Tooltip?: InputMaybe<PageBodyTooltipFilter>
+}
+
+export type PageSectionsBodyTooltipFilter = {
+  title?: InputMaybe<StringFilter>
+  key?: InputMaybe<StringFilter>
   body?: InputMaybe<RichTextFilter>
+}
+
+export type PageSectionsBodyFilter = {
+  Tooltip?: InputMaybe<PageSectionsBodyTooltipFilter>
+}
+
+export type PageSectionsFilter = {
+  title?: InputMaybe<StringFilter>
+  body?: InputMaybe<PageSectionsBodyFilter>
+}
+
+export type PageFilter = {
+  body?: InputMaybe<PageBodyFilter>
   sections?: InputMaybe<PageSectionsFilter>
 }
 

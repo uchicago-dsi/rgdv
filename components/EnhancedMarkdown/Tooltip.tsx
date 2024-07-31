@@ -12,8 +12,10 @@ export const MdTooltip: React.FC<{ tooltipKey?: string; body?: any }> = ({ toolt
   if (!innerContent) return null
 
   return (
-    <Tooltip explainer={""} open={open} defaultOpen={false} onOpenChange={handleToggleOpen} withArrow={true}>
-      <TinaMarkdown content={innerContent} />
-    </Tooltip>
+    <div className="inline">
+      <Tooltip explainer={""} open={open} defaultOpen={false} onOpenChange={handleToggleOpen} withArrow={true}>
+        <TinaMarkdown content={innerContent} />
+      </Tooltip>
+    </div>
   )
 }

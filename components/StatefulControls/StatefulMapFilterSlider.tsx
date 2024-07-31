@@ -50,7 +50,7 @@ export const StatefulHighlightForm = () => {
 
     return (
       <>
-        <p>Highlight: {highlight}</p>
+        <p className="text-xs font-bold uppercase">Highlight: {highlight}</p>
         <SliderRange
           value={innerValue}
           min={highlightConfigValue.range[0]}

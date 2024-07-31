@@ -22,3 +22,6 @@ footer img {
 .four-up h3 {
   @apply text-2xl
 }
+#map-settings-pane p {
+  @apply inline text-sm 
+}

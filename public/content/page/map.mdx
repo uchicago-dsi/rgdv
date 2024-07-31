@@ -1,6 +1,70 @@
 ---
 sections:
+  - title: filter map
+    body: >
+      Use the dropdown menu to filter the map to a particular state or county of
+      interest. While the dropdown is open, you may type on your keyboard to
+      quickly find your state or county.
+
+
+      >
+
+
+      Please note that the color scale of the map will change to reflect the
+      values relative to your filter, but may not be comparable across different
+      filters. 
+
+
+      <Tooltip
+        body={<>
+          By default, whenever the map is filtered it will display values based on a quantile scale of equal counts of census tracts. Bivariate data options will show three equal count bins (terciles) on two dimensions (9 total bins/colors) and single variable options will show five equal count bins (quintiles).
+        </>}
+      />
+  - title: highlight advanced
+    body: |
+      Advanced: Use the color picker below to change the highlight color
+  - title: community highlights
+    body: >
+      **Community Highlights:**
+
+       Use the buttons below to highlight areas with the available demographic or economic characteristics.
+
+      <Tooltip
+        body={<>
+          Data via Census American Community Survey (ACS) 2021 5-year estimates.
+        </>}
+      />
+
+
+      Use the slider to change the range of estimated market share for that
+      community. Only one highlight may be active at a time.
+  - title: market highlights
+    body: >
+      **Market Highlights:** Use the buttons below to highlight areas where a
+      national brand is present in the local market. Use the slider to change
+      the range of estimated market share for that company.
+
+
+      <Tooltip
+        body={<>
+          Sales data are modeled estimates from Data Axle / InfoGroup ReferenceUSA. Stores include dollar stores, and general merchandise and warehouse stores sales have been adjusted based on category sales.
+        </>}
+      />
+  - title: available data
+    body: |
+      The following data are available for this topic:
   - title: topics
-    body: ''
+    body: |
+      Choose from the below data topics to see available map data.
+
+      <Tooltip
+        title="Bivariate maps"
+        body={<>
+          All maps use quantiles, or equal count groups of census tracts, to color the map.
+          
+          Bivariate maps present two data sets together. The color scales combine to show where the two data variables intersect.
+        </>}
+        key="Bivariate maps"
+      />
 ---
 

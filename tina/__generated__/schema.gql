@@ -111,12 +111,6 @@ type Page implements Node & Document {
   _values: JSON!
 }
 
-input RichTextFilter {
-  startsWith: String
-  eq: String
-  exists: Boolean
-}
-
 input StringFilter {
   startsWith: String
   eq: String
@@ -124,13 +118,39 @@ input StringFilter {
   in: [String]
 }
 
-input PageSectionsFilter {
+input RichTextFilter {
+  startsWith: String
+  eq: String
+  exists: Boolean
+}
+
+input PageBodyTooltipFilter {
   title: StringFilter
+  key: StringFilter
   body: RichTextFilter
 }
 
-input PageFilter {
+input PageBodyFilter {
+  Tooltip: PageBodyTooltipFilter
+}
+
+input PageSectionsBodyTooltipFilter {
+  title: StringFilter
+  key: StringFilter
   body: RichTextFilter
+}
+
+input PageSectionsBodyFilter {
+  Tooltip: PageSectionsBodyTooltipFilter
+}
+
+input PageSectionsFilter {
+  title: StringFilter
+  body: PageSectionsBodyFilter
+}
+
+input PageFilter {
+  body: PageBodyFilter
   sections: PageSectionsFilter
 }
 

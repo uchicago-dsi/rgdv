@@ -1,4 +1,4 @@
-import Map from "components/Pages/Map"
+import MapPageInner from "components/Pages/Map"
 import { getMdxContent } from "hooks/useMdxContent"
 
 export const metadata = {
@@ -7,12 +7,10 @@ export const metadata = {
 
 export default async function MapPage() {
   const pageInfo = await getMdxContent("page", "map.mdx")
-  // @ts-ignore
-  const contentSections = pageInfo.data.page.sections
-
   return (
     <>
-      <Map contentSections={contentSections} />
+      {/* @ts-ignore */}
+      <MapPageInner pageInfo={pageInfo} />
     </>
   )
 }

@@ -1,3 +1,5 @@
+import { RichText } from "../utils"
+
 /**
  * @type {import('tinacms').Collection}
  */
@@ -8,10 +10,8 @@ export default {
   format: "mdx",
   fields: [
     {
-      name: "body",
+      ...RichText,
       label: "Main Content",
-      type: "rich-text",
-      isBody: true,
     },
     // list of "sections"
     // with section title
@@ -39,11 +39,7 @@ export default {
           label: "Title",
           type: "string",
         },
-        {
-          name: "body",
-          label: "Body",
-          type: "rich-text",
-        },
+        RichText,
       ],
     },
   ],

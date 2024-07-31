@@ -1,7 +1,7 @@
 "use client"
 import React, { useMemo, useState } from "react"
-import { TinaMarkdown } from "tinacms/dist/rich-text"
 import CountyFilterSelector from "components/CountyFilterSelector"
+import { EnhancedMarkdown } from "components/EnhancedMarkdown"
 import { MapInfoSection } from "components/MapInfoSection/MapInfoSection"
 import { StatefulHighlightColorPicker } from "components/StatefulControls/StatefulHighlightColorPicker"
 import { StatefulHighlightForm } from "components/StatefulControls/StatefulMapFilterSlider"
@@ -36,12 +36,20 @@ const SettingsConfig: Array<{ label: string; icon: keyof typeof Icons }> = [
   //   icon: "Layers"
   // }
 ]
-const contentSectionTitles = ["topics"]
+const contentSectionTitles = [
+  "topics",
+  "available data",
+  "market highlights",
+  "community highlights",
+  "highlight advanced",
+  "filter map",
+]
+
 const findContentSections = (contentSections: any[], titles: string[] = contentSectionTitles) => {
   const entries: Record<string, React.ReactNode> = {}
   for (const title of titles) {
     const data: any = contentSections.find((section) => section.title === title)
-    entries[title] = data ? <TinaMarkdown content={data.body} /> : null
+    entries[title] = data ? <EnhancedMarkdown content={data.body} /> : null
   }
   return entries
 }
@@ -70,7 +78,7 @@ export const MapSettings: React.FC<{ contentSections: any[] }> = ({ contentSecti
 
   return (
     <>
-      <div className={`h-full w-10 flex-none border-r-2 border-neutral-500 bg-white`}>
+      <div className={`h-full w-10 flex-none border-r-2 border-neutral-500 bg-white`} id="map-settings-ribbon">
         {SettingsConfig.map((config, i) => (
           <button
             key={i}
@@ -83,7 +91,7 @@ export const MapSettings: React.FC<{ contentSections: any[] }> = ({ contentSecti
           </button>
         ))}
       </div>
-      <div className={`flex w-auto flex-none flex-col overflow-x-hidden bg-none`}>
+      <div className={`flex w-auto flex-none flex-col overflow-x-hidden bg-none`} id="map-settings-pane">
         {!!clicked && (
           <div
             className={`${!!activeMenuSection ? "max-h-[50vh]" : "max-h-none"} h-full overflow-y-auto
@@ -95,7 +103,7 @@ export const MapSettings: React.FC<{ contentSections: any[] }> = ({ contentSecti
         )}
         {!!activeMenuSection?.length && (
           <div
-            className={`relative flex  h-full max-h-[50vh] overflow-y-auto ${
+            className={`relative flex  h-full overflow-y-auto ${
               activeMenuSection ? "w-96 border-r-2 border-neutral-500" : "w-0"
             } flex-col`}
           >
@@ -111,6 +119,7 @@ export const MapSettings: React.FC<{ contentSections: any[] }> = ({ contentSecti
             )}
             <MenuSection title="Topics" isActive={activeMenuSection === "Map Layers"}>
               {sections["topics"]}
+              <br />
               {Object.keys(columnGroups).map((group, i) => (
                 <MenuButton
                   key={i}
@@ -121,6 +130,8 @@ export const MapSettings: React.FC<{ contentSections: any[] }> = ({ contentSecti
               ))}
             </MenuSection>
             <MenuSection title="Available Data" isActive={activeMenuSection === "Map Layers"}>
+              {sections["available data"]}
+              <br />
               {availableColumns.map((c, i) => (
                 <MenuButton key={i} onClick={() => handleSetColumn(c)} label={c} selected={currentColumn === c} />
               ))}
@@ -131,7 +142,10 @@ export const MapSettings: React.FC<{ contentSections: any[] }> = ({ contentSecti
               title="Highlight areas on the map"
               titleChildren={<Tooltip explainer={<>Choose a color</>}></Tooltip>}
             >
-              <p>Communities and Socioeconomics</p>
+              <br />
+              {sections["community highlights"]}
+              <br />
+              <br />
               {Object.keys(communityHighlightConfig).map((name, i) => (
                 <MenuButton
                   key={i}
@@ -142,8 +156,18 @@ export const MapSettings: React.FC<{ contentSections: any[] }> = ({ contentSecti
                   selected={highlight === name}
                 />
               ))}
-              {highlightType === "community" && <StatefulHighlightForm />}
-              <p className="pt-8">Corporate Market Dominance</p>
+              {highlightType === "community" && (
+                <>
+                  <br />
+                  <br />
+                  <StatefulHighlightForm />
+                </>
+              )}
+              <br />
+              <br />
+              {sections["market highlights"]}
+              <br />
+              <br />
 
               {Object.keys(parentCompanyHighlightConfig).map((name, i) => (
                 <MenuButton
@@ -155,20 +179,29 @@ export const MapSettings: React.FC<{ contentSections: any[] }> = ({ contentSecti
                   selected={highlight === name}
                 />
               ))}
-              {highlightType === "parent" && <StatefulHighlightForm />}
+              {highlightType === "parent" && (
+                <>
+                  <br />
+                  <br />
+                  <StatefulHighlightForm />
+                </>
+              )}
               <div className="mt-4 flex flex-row items-center gap-4">
-                <p className="text-xs">Choose Color (Advanced)</p>
+                {sections["highlight advanced"]}
                 <StatefulHighlightColorPicker />
               </div>
 
               {/* color picker */}
             </MenuSection>
             <MenuSection title="Filter Map" isActive={activeMenuSection === "Filter Map"}>
+              {sections["filter map"]}
+              <br />
+              <br />
               <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
             </MenuSection>
-            <MenuSection title="Map Colors" isActive={activeMenuSection === "Map Colors"}>
+            {/* <MenuSection title="Map Colors" isActive={activeMenuSection === "Map Colors"}>
               fixed or relative [coming soon]
-            </MenuSection>
+            </MenuSection> */}
             {/* <DropdownMenuDemo>
       <div className="max-w-[100vw] p-4">
         <p>Choose a topic</p>

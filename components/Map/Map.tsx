@@ -388,7 +388,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         )}
       </div>
       <div className="relative flex size-full flex-row border-4">
-        {!simpleMap && <MapSettings contentSections={contentSections} />}
+        {!simpleMap && <MapSettings contentSections={contentSections as any} />}
         <div ref={parentRef} className="relative size-full">
           <GlMap
             // hash={true}

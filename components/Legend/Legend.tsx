@@ -157,7 +157,15 @@ const HighlightLegend: React.FC<{ highlight?: string; value?: readonly any[]; co
           background: `rgb(${color.join(",")}`,
         }}
       ></span>
-      {highlight} ( &gt;{value}%){" "}
+      {highlight}{" "}
+      {!!(Array.isArray(value) && value.every((n) => !isNaN(n as number))) ? (
+        <>
+          {/* @ts-ignore */}
+          {+value[0] * 100}% - {+value[1] * 100}%{" "}
+        </>
+      ) : (
+        <>( &gt;{value}%) </>
+      )}
     </p>
   )
 }
