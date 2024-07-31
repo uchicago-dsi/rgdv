@@ -1,4 +1,3 @@
-"use client"
 import React from "react"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
 import PostWidget from "components/PostWidgets"
