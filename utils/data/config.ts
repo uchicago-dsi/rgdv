@@ -526,7 +526,7 @@ export const sidebarConfig = {
 
 export const raceEthnicityLabels = {
   "NH WHITE ALONE": "White",
-  "HISPANIC OR LATINO": "Hispanic or Latino/a",
+  "HISPANIC OR LATINO": "Hispanic or Latino//a",
   "NH BLACK ALONE": "Black or African American",
   "NH ASIAN ALONE": "Asian",
   "NH SOME OTHER RACE": "Some other race",
