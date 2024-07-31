@@ -15,3 +15,10 @@ footer img {
 #home-case-studies a {
   @apply bg-theme-canvas-100 rounded-xl px-2 py-1 no-underline hover:text-primary-500 transition-colors
 }
+
+.four-up p, .four-up h4, .four-up a, .four-up h3 {
+  @apply text-white
+}
+.four-up h3 {
+  @apply text-2xl
+}
