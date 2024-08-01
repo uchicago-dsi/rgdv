@@ -71,7 +71,7 @@ export const getMdxDir = async <T extends any>(contentType: keyof typeof client.
       .map((f: any, i: number) => ({
         ...f,
         // @ts-ignore
-        slug: files[i].replace(".md", ""),
+        slug: files[i].replace(".mdx", ""),
       }))
   }
 }

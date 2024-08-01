@@ -5,8 +5,6 @@ export const metadata = {
   title: "Posts :: Grocery Gap Atlas",
 }
 
-export const invalidate = 60
-
 export default async function AboutPage() {
   const posts = await getMdxDir("post")
   return (
