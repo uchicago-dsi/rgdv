@@ -2,8 +2,8 @@ import dynamic from "next/dynamic"
 import React from "react"
 import StatList from "components/StatList"
 import TimeseriesChart from "components/TimeseriesChart"
-import { columnsDict, type DataColumns, raceEthnicityLabels } from "utils/data/config"
 import Tooltip from "components/Tooltip"
+import { columnsDict, type DataColumns, raceEthnicityLabels } from "utils/data/config"
 
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 const StoreList = dynamic(() => import("components/StoreList"), { ssr: false })
@@ -54,34 +54,35 @@ export const ReportSections: React.FC<{
   stats: any
   raceData: any
   unit: string
-}> = ({ component, id, data, stats, raceData, unit, divId }) => {
-
+  showTitle?: boolean
+}> = ({ component, id, data, stats, raceData, unit, divId, showTitle = true }) => {
   switch (component) {
     case "Key Statistics":
       return (
         <div id={divId}>
-          <h3 className="pb-2 text-2xl">{data.NAME} Community Information</h3>
+          {!!showTitle && <h3 className="pb-2 text-2xl">{data.NAME} Community Information</h3>}
           <StatList stats={stats} data={data} />
         </div>
       )
     case "Pie Chart":
       return (
         <div id={divId}>
-          <h3 className="pb-2 text-2xl">Race / Ethnicity
-
-          <Tooltip
-          explainer="Data for Race/Ethnicity comes from US Census American Community Survey (ACS) 2021 5-year estimates (2016 to 2021 data)."
-          className="ml-2"
-        />
-
-          </h3>
+          {!!showTitle && (
+            <h3 className="pb-2 text-2xl">
+              Race / Ethnicity
+              <Tooltip
+                explainer="Data for Race/Ethnicity comes from US Census American Community Survey (ACS) 2021 5-year estimates (2016 to 2021 data)."
+                className="ml-2"
+              />
+            </h3>
+          )}
           <PieChart data={raceData} dataKey="value" labelKey="raceEthnicity" labelMapping={raceEthnicityLabels} />
         </div>
       )
     case "Map":
       return (
         <div id={divId}>
-          <h3 className="pb-2 text-2xl">Area Map</h3>
+          {!!showTitle && <h3 className="pb-2 text-2xl">Area Map</h3>}
           <div className="relative h-[50vh] overflow-hidden">
             <Map initialFilter={id} />
           </div>

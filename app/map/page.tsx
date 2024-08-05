@@ -7,10 +7,11 @@ export const metadata = {
 
 export default async function MapPage() {
   const pageInfo = await getMdxContent("page", "map.mdx")
+  const stats = await getMdxContent("statistics", "primary.mdx")
   return (
     <>
       {/* @ts-ignore */}
-      <MapPageInner pageInfo={pageInfo} />
+      <MapPageInner pageInfo={pageInfo} stats={stats} />
     </>
   )
 }

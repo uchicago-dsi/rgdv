@@ -27,7 +27,6 @@ export type MapProps = {
   simpleMap?: boolean
   onClick?: (info: any) => void
   sidebarOpen?: boolean
-  contentSections?: any[]
 }
 
 const MapOuter: React.FC<MapProps> = (props) => {
@@ -49,7 +48,7 @@ const INITIAL_VIEW_STATE = {
 
 const randomString = () => Math.random().toString(36).substring(7)
 // const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
-export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick, contentSections }) => {
+export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick }) => {
   const _initialFilter = initialFilter && initialFilter.length >= 2 ? initialFilter : undefined
   const mapId = useRef(randomString())
   const router = useRouter()
@@ -388,7 +387,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         )}
       </div>
       <div className="relative flex size-full flex-row border-4">
-        {!simpleMap && <MapSettings contentSections={contentSections as any} />}
+        {!simpleMap && <MapSettings />}
         <div ref={parentRef} className="relative size-full">
           <GlMap
             // hash={true}

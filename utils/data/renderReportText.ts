@@ -52,6 +52,7 @@ const getStatResult = (generalStatText: any, measure: string, data: any, compara
     title,
   }
 }
+
 // NH WHITE ALONE: Population count of Non-Hispanic White Alone individuals.NH BLACK ALONE: Population count of Non-Hispanic Black Alone individuals.NH AMERICAN INDIAN ALONE: Population count of Non-Hispanic American Indian Alone individuals.NH ASIAN ALONE: Population count of Non-Hispanic Asian Alone individuals.NH PACIFIC ISLANDER ALONE: Population count of Non-Hispanic Pacific Islander Alone individuals.NH SOME OTHER RACE: Population count of Non-Hispanic individuals of some other race.NH TWO OR MORE: Population count of Non-Hispanic individuals of two or more races.NH TWO OR MORE INCLUDING SOME OTHER: Population count of Non-Hispanic individuals of two or more races, including some other race.NH TWO OR MORE EXCLUDING SOME OTHER: Population count of Non-Hispanic individuals of two or more races, excluding some other race.HISPANIC OR LATINO: Population count of Hispanic or Latino individuals.
 
 export const renderReportText = (

@@ -17,6 +17,7 @@ export const ReportRenderer: React.FC<{
 }> = ({ _data, statText, id, unit, comparability, children, showHeader }) => {
   const { stats, name, data, foodAccess, marketPower, segregation, economicAdvantage, descriptionText, raceData } =
     renderReportText(_data.result!, statText, id, comparability)
+
   return (
     <div className="min-h-[100vh] bg-theme-canvas-500 p-4">
       {/* button to add to current url query param comparability = state */}

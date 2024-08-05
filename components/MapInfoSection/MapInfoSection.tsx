@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react"
 import { LeadSectionsRenderer } from "components/MapTooltip/MapTooltipSections"
 import PieChart from "components/PieChart/PieChart"
 // import TimeseriesChart from "components/TimeseriesChart"
+import { ReportSections } from "components/ReportLayout/Sections"
+import { useMarkdownContext } from "hooks/useMarkdownContext"
 import { cleanRaceData } from "utils/data/cleaning/cleanRaceData"
 import { idColumn, parentCompanyHighlightConfig, raceEthnicityLabels } from "utils/data/config"
+import { renderReportText } from "utils/data/renderReportText"
 import { dataTableName } from "utils/data/service/service"
 import { percentFormatter } from "utils/display/formatValue"
 import { globals } from "utils/state/globals"
@@ -65,18 +68,22 @@ export const MapInfoSection: React.FC = () => {
   const close = () => dispatch(setClickInfo(null))
   const clicked = useAppSelector((state) => state.map.clicked)
   const [data, setData] = useState<any>(null)
+  const { stats } = useMarkdownContext()
 
   useEffect(() => {
     const getData = async () => {
-      if (clicked?.id && data?.id !== clicked.id) {
+      if (clicked?.id && data?.id !== clicked.id && !!stats) {
         const res = await globals.ds.runQuery(`SELECT * FROM ${dataTableName} WHERE ${idColumn} = ${clicked.id}`)
+        const parsedData = JSON.parse(globals.ds.stringifyJsonWithBigInts(res[0])) as Record<string, any>
         const tooltipData = globals.ds.formatTooltipData(res[0])
         const parentCompanyData = formatParentCompanyData(res[0])
         const race = cleanRaceData(res[0])
+        const statsRaw = renderReportText(parsedData, stats, clicked.id, "national")
 
         setData({
           id: clicked.id,
-          data: JSON.parse(globals.ds.stringifyJsonWithBigInts(res[0])),
+          data: parsedData,
+          statText: statsRaw.stats,
           tooltipData,
           parentCompanyData,
           race,
@@ -84,11 +91,12 @@ export const MapInfoSection: React.FC = () => {
       }
     }
     getData()
-  }, [clicked?.id, data?.id])
+  }, [stats, clicked?.id, data?.id])
 
   if (!clicked?.id) {
     return null
   }
+  console.log("sidebar data", data)
 
   const formatted = data?.tooltipData || []
   const leadSections = formatted?.filter((section: any) => section.category === "lead")
@@ -128,7 +136,7 @@ export const MapInfoSection: React.FC = () => {
       {!!(data?.parentCompanyData && Object.keys(data?.parentCompanyData).length > 0) && (
         <>
           <div className="my-4 w-full border-b-2 border-neutral-200" />
-          <p className="text-bold pt-4 text-xs font-bold">Major company market dominance</p>
+          <p className="text-bold pt-4 text-xs font-bold">Estimated market share of major national brands</p>
           <Table data={data?.parentCompanyData || []} headers={["Parent Company", "Market Share"]} />
         </>
       )}
@@ -147,9 +155,29 @@ export const MapInfoSection: React.FC = () => {
           </div>
         </>
       )}
+
+      {!!data?.statText && (
+        <>
+          <div className="my-4 w-full border-b-2 border-neutral-200" />
+          <ReportSections
+            component="Key Statistics"
+            id={data.data.GEOID}
+            divId="sidebar-key-statistics"
+            data={data.data}
+            stats={data.statText}
+            unit="unit"
+            raceData={{}}
+            showTitle={false}
+          />
+        </>
+      )}
       {/* <Table data={data?.data} /> */}
 
       {/* <TimeseriesChart id={clicked.id} placeName={clicked.id} /> */}
     </div>
   )
+}
+
+export const ClientCensusStats = () => {
+  // ReportSections
 }
