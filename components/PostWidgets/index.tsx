@@ -1,10 +1,11 @@
 "use client"
 import React from "react"
+import { StateConcentrationDataTable } from "components/EnhancedMarkdown/StateConcentrationData"
 
 const PostWidget: React.FC<{ widget: string }> = ({ widget }) => {
   switch (widget) {
-    case "sortableTable":
-      return <h2>Tabel. ..</h2>
+    case "SortableMarketTable":
+      return <StateConcentrationDataTable />
     case "test":
       return <code className="bg-gray-200 p-2">Test widget</code>
     default:
