@@ -2,6 +2,8 @@
 import React, { useEffect } from "react"
 import { Provider } from "react-redux"
 import PieChart from "components/PieChart/PieChart"
+import Spinner from "components/Spinner"
+import Tooltip from "components/Tooltip"
 import { formatValue, percentFormatter } from "utils/display/formatValue"
 import { globals } from "utils/state/globals"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
@@ -38,13 +40,22 @@ export const StoreList: React.FC<StoreListProps<string[]>> = ({
   }, [dispatch, dbStatus, id, storeDataId])
 
   if (!data) {
-    return <div>Loading...</div>
+    return (
+      <div className="mb-0 mt-24 flex w-full flex-col items-center justify-center gap-4 p-0">
+        <Spinner />
+        <h3 className="text-2xl text-gray-500">Loading market share data...</h3>
+      </div>
+    )
   }
 
   return (
     <div className="prose flex w-full max-w-full flex-col items-center">
       <h3 className="w-full text-2xl">
-        Grocery Store{data?.length > 1 ? "s" : ""} in {title || "service area"}
+        Estimated Market Share of Grocery Store{data?.length > 1 ? "s" : ""} in {title || "Service Area"}
+        <Tooltip
+          explainer="Data for estimated store sales via DataAxle / Infogroup ReferenceUSA. Data is based on modeled estimates, not actual sales data."
+          className="ml-2"
+        />
       </h3>
       {data && (
         <PieChart

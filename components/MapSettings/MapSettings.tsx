@@ -6,6 +6,7 @@ import { MapInfoSection } from "components/MapInfoSection/MapInfoSection"
 import { StatefulHighlightColorPicker } from "components/StatefulControls/StatefulHighlightColorPicker"
 import { StatefulHighlightForm } from "components/StatefulControls/StatefulMapFilterSlider"
 import Tooltip from "components/Tooltip"
+import { useMarkdownContext } from "hooks/useMarkdownContext"
 import { columnGroups, communityHighlightConfig, parentCompanyHighlightConfig } from "utils/data/config"
 import { setCurrentColumn, setCurrentColumnGroup, setHighlight } from "utils/state/map"
 import { useAppDispatch, useAppSelector } from "utils/state/store"
@@ -15,10 +16,6 @@ import { MenuSection } from "./MapMenuSection"
 import { Icons, MapSettingsIcon } from "./MapSettingsIcon"
 
 const SettingsConfig: Array<{ label: string; icon: keyof typeof Icons }> = [
-  // {
-  //   label: "Topics",
-  //   icon: "Category",
-  // },
   {
     label: "Map Layers",
     icon: "Layers",
@@ -31,11 +28,8 @@ const SettingsConfig: Array<{ label: string; icon: keyof typeof Icons }> = [
     label: "Filter Map",
     icon: "Filter",
   },
-  // {
-  //   label: "Map Colors",
-  //   icon: "Layers"
-  // }
 ]
+
 const contentSectionTitles = [
   "topics",
   "available data",
@@ -54,8 +48,11 @@ const findContentSections = (contentSections: any[], titles: string[] = contentS
   return entries
 }
 
-export const MapSettings: React.FC<{ contentSections: any[] }> = ({ contentSections }) => {
+export const MapSettings: React.FC = () => {
+  const md = useMarkdownContext()
+  const contentSections = md.pageInfo.data.page.sections
   const sections = useMemo(() => (contentSections ? findContentSections(contentSections) : {}), [contentSections])
+
   const [activeMenuSection, setActiveMenuSection] = useState<string | undefined>(undefined)
 
   const currentColumn = useAppSelector((state) => state.map.currentColumn)

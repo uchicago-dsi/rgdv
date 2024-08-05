@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import { Provider } from "react-redux"
 import LineChart from "components/LineChart"
 import { DimensionProps } from "components/LineChart/types"
+import Tooltip from "components/Tooltip"
 import { timeSeriesAggregates, timeSeriesConfig } from "utils/data/config"
 import { globals } from "utils/state/globals"
 import { requestTimeseries } from "utils/state/map"
@@ -59,7 +60,13 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
 
   return (
     <div>
-      <h3 className="pb-2 font-sans font-bold">{placeName} over time</h3>
+      <h3 className="pb-2 font-sans font-bold">
+        {placeName} over time
+        <Tooltip
+          explainer="Data for estimated store sales via DataAxle / Infogroup ReferenceUSA. Data is based on modeled estimates, not actual sales data. Food Access estimates use a floating catchment area (FCA) gravity model and per year sales estimates and population data."
+          className="ml-2"
+        />
+      </h3>
       <div className="relative mb-4 w-full">
         <ToggleGroup.Root
           className="inline-flex space-x-px rounded bg-mauve6 shadow-[0_2px_10px] shadow-blackA4"
