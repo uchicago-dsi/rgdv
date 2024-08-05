@@ -43,8 +43,8 @@ export const PostText = {
           type: "string",
           options: [
             {
-              label: "Sortable Market Table",
-              value: "sortableTable",
+              label: "Sortable Market Dominance Table",
+              value: "SortableMarketTable",
             },
             {
               label: "Test",
