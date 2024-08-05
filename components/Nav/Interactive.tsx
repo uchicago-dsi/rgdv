@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import { HiMenu, HiX } from "react-icons/hi"
 import { SubNavList } from "./SubNavList"
 import { NavProps } from "./types"
+import Link from "next/link"
 
 export const InteractiveNav: React.FC<NavProps> = ({ navInfo }) => {
   const links = navInfo.data.nav.links
@@ -16,9 +17,9 @@ export const InteractiveNav: React.FC<NavProps> = ({ navInfo }) => {
   return (
     <nav className="flex w-full flex-row justify-between bg-white/85 p-4 text-neutral-950 shadow-md" id="top-nav">
       <div className="prose m-0 p-0 font-display">
-        <a href="/" className="line-height-0 m-0 p-0 no-underline">
+        <Link href="/" className="line-height-0 m-0 p-0 no-underline">
           <h1 className="m-0 p-0">{navInfo.data.nav.title}</h1>
-        </a>
+        </Link>
       </div>
       <ul className="hidden items-center justify-end md:flex">
         {links.map((link, li) => {
@@ -31,7 +32,7 @@ export const InteractiveNav: React.FC<NavProps> = ({ navInfo }) => {
           } else {
             return (
               <li className="mr-4" key={li}>
-                <a href={link.path}>{link.title}</a>
+                <Link href={link.path}>{link.title}</Link>
               </li>
             )
           }
@@ -51,16 +52,16 @@ export const InteractiveNav: React.FC<NavProps> = ({ navInfo }) => {
             {links.map((link, idx) => (
               <div key={idx}>
                 {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                <a href={link.sublinks?.length ? "" : link.path} className="block py-2 text-2xl">
+                <Link href={link.sublinks?.length ? "" : link.path} className="block py-2 text-2xl">
                   {link.title}
-                </a>
+                </Link>
                 {!!link.sublinks?.length && (
                   <ul className="list-disc pl-6">
                     {link.sublinks.map((sublink, subIdx) => (
                       <li key={`${idx}-${subIdx}`}>
-                        <a href={sublink.path} className="block py-2 text-2xl">
+                        <Link href={sublink.path} className="block py-2 text-2xl">
                           {sublink.title}
-                        </a>
+                        </Link>
                       </li>
                     ))}
                   </ul>

@@ -6,7 +6,7 @@ import { MapState } from "utils/state/types"
 import { TooltipSectionsRenderer } from "./MapTooltipSections"
 import { MapTooltipProps } from "./types"
 import { adjustTooltipToMousePosition } from "./utils"
-import "./Spinner.css"
+import Spinner from "components/Spinner"
 
 export const MapTooltipInner: React.FC<
   MapTooltipProps & { tooltipStatus: MapState["tooltipStatus"]; tooltip: MapState["tooltip"] }
@@ -24,16 +24,8 @@ export const MapTooltipInner: React.FC<
     }
   })
 
-  if (!data) {
-    return (
-      <svg className="spinner" width="2rem" height="2rem" viewBox="0 0 50 50">
-        <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="4" />
-      </svg>
-    )
-  }
-  if (simpleMap) {
-    return <p className="pb-2">{id}</p>
-  }
+  if (!data) return <Spinner />
+  if (simpleMap) return <p className="pb-2">{id}</p>
 
   if (tooltipData) {
     return (
