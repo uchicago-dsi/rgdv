@@ -1,9 +1,9 @@
 "use client"
+import Link from "next/link"
 import React, { useState } from "react"
 import { HiMenu, HiX } from "react-icons/hi"
 import { SubNavList } from "./SubNavList"
 import { NavProps } from "./types"
-import Link from "next/link"
 
 export const InteractiveNav: React.FC<NavProps> = ({ navInfo }) => {
   const links = navInfo.data.nav.links

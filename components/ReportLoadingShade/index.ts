@@ -1,5 +1,3 @@
-import {
-  ReportLoadingShade
-} from "./ReportLoadingShade"
+import { ReportLoadingShade } from "./ReportLoadingShade"
 
 export default ReportLoadingShade

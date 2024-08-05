@@ -5,10 +5,14 @@ import { SelectMenu } from "components/Select/Select"
 import CountyList from "./county_list.json"
 import type { CountyFilterSelectorProps } from "./types"
 
-const StyledSelectItem: React.FC<{ children: React.ReactNode; value: any, disabled?: boolean }> = ({ children, value, disabled=false }) => {
+const StyledSelectItem: React.FC<{ children: React.ReactNode; value: any; disabled?: boolean }> = ({
+  children,
+  value,
+  disabled = false,
+}) => {
   return (
     <Select.Item
-    disabled={disabled}
+      disabled={disabled}
       className={`
         ${disabled ? "text-bold text-black" : "text-violet11"}
         SelectItem relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] pr-[35px] text-[13px] leading-none text-violet11 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1 data-[highlighted]:outline-none`}

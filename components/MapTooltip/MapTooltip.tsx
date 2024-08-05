@@ -1,4 +1,5 @@
 import React from "react"
+import Spinner from "components/Spinner"
 import { columnsDict } from "utils/data/config"
 import { globals } from "utils/state/globals"
 import { useAppSelector } from "utils/state/store"
@@ -6,7 +7,6 @@ import { MapState } from "utils/state/types"
 import { TooltipSectionsRenderer } from "./MapTooltipSections"
 import { MapTooltipProps } from "./types"
 import { adjustTooltipToMousePosition } from "./utils"
-import Spinner from "components/Spinner"
 
 export const MapTooltipInner: React.FC<
   MapTooltipProps & { tooltipStatus: MapState["tooltipStatus"]; tooltip: MapState["tooltip"] }
