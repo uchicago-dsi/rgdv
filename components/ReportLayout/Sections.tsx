@@ -3,6 +3,7 @@ import React from "react"
 import StatList from "components/StatList"
 import TimeseriesChart from "components/TimeseriesChart"
 import { columnsDict, type DataColumns, raceEthnicityLabels } from "utils/data/config"
+import Tooltip from "components/Tooltip"
 
 const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
 const StoreList = dynamic(() => import("components/StoreList"), { ssr: false })
@@ -54,6 +55,7 @@ export const ReportSections: React.FC<{
   raceData: any
   unit: string
 }> = ({ component, id, data, stats, raceData, unit, divId }) => {
+
   switch (component) {
     case "Key Statistics":
       return (
@@ -65,7 +67,14 @@ export const ReportSections: React.FC<{
     case "Pie Chart":
       return (
         <div id={divId}>
-          <h3 className="pb-2 text-2xl">Race / Ethnicity</h3>
+          <h3 className="pb-2 text-2xl">Race / Ethnicity
+
+          <Tooltip
+          explainer="Data for Race/Ethnicity comes from US Census American Community Survey (ACS) 2021 5-year estimates (2016 to 2021 data)."
+          className="ml-2"
+        />
+
+          </h3>
           <PieChart data={raceData} dataKey="value" labelKey="raceEthnicity" labelMapping={raceEthnicityLabels} />
         </div>
       )
@@ -81,7 +90,7 @@ export const ReportSections: React.FC<{
     case "Timeseries":
       return (
         <div className="w-full" id={divId}>
-          <TimeseriesChart id={id} placeName={data.name} />
+          <TimeseriesChart id={id} placeName={data.NAME} />
         </div>
       )
     case "Store List":
@@ -103,7 +112,7 @@ export const ReportSections: React.FC<{
                 ? undefined
                 : {
                     [`PCT OF ${data?.UNIT?.toUpperCase() || ""} SALES`]: {
-                      label: "Estimated Percent of Grocery Sales in " + data.name,
+                      label: "Estimated Percent of Grocery Sales in " + data.NAME,
                       formatterPreset: "percent",
                     },
                   }
