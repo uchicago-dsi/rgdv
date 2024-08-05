@@ -4,6 +4,7 @@ import "styles/global.css"
 
 import Footer from "components/Footer"
 import Nav from "components/Nav"
+import { ReportLoadingShade } from "components/ReportLoadingShade/ReportLoadingShade"
 // import { WipTag } from "components/WipTag"
 
 // import Transitions, { Animate } from "components/Transition"
@@ -33,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {/* <Transitions> */}
         <Nav />
-
+        <ReportLoadingShade />
         {/* <Animate className="flex-1"> */}
         {children}
         {/* </Animate> */}

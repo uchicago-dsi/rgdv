@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 import CountyFilterSelector from "components/CountyFilterSelector"
 import MapComponent from "components/Map/Map"
+import ReportLoadingShade from "components/ReportLoadingShade"
 
 const StatePage: React.FC = () => {
   const [filter, setFilter] = useState<string>("")
@@ -41,27 +42,22 @@ const StatePage: React.FC = () => {
   return (
     <div className="bg-canvas-500 align-center prose flex min-h-[100vh] max-w-none items-center justify-center p-8">
       <div className="min-h-[20vh] min-w-[50vw] bg-white p-8 shadow-xl">
-        {isTractId ? (
-          <code>Loading, please wait...</code>
-        ) : (
-          <>
-            <h1 className="mb-4 text-2xl">Tract (neighborhood) Home Page</h1>
-            <CountyFilterSelector currentFilter={filter} handleSetFilter={handleChange} />
-            {isCountyFilter && (
-              <div className="">
-                <h3>Click a census tract to see it&apos;s report:</h3>
-                <div className="my-2 flex flex-row items-center gap-4 p-2">
-                  <div className="relative h-[50vh] max-w-full">
-                    <MapComponent
-                      onClick={(e) => handleChange(e?.object?.properties?.GEOID)}
-                      initialFilter={filter}
-                      simpleMap={true}
-                    />
-                  </div>
-                </div>
+        <ReportLoadingShade forceLoading={isTractId} />
+        <h1 className="mb-4 text-2xl">Tract (neighborhood) Home Page</h1>
+        <CountyFilterSelector currentFilter={filter} handleSetFilter={handleChange} />
+        {isCountyFilter && (
+          <div className="">
+            <h3>Click a census tract to see it&apos;s report:</h3>
+            <div className="my-2 flex flex-row items-center gap-4 p-2">
+              <div className="relative h-[50vh] max-w-full">
+                <MapComponent
+                  onClick={(e) => handleChange(e?.object?.properties?.GEOID)}
+                  initialFilter={filter}
+                  simpleMap={true}
+                />
               </div>
-            )}
-          </>
+            </div>
+          </div>
         )}
       </div>
     </div>
