@@ -14,7 +14,8 @@ export const ReportRenderer: React.FC<{
   comparability?: string
   children?: React.ReactNode
   showHeader?: boolean
-}> = ({ _data, statText, id, unit, comparability, children, showHeader }) => {
+  mapPageInfo?: any
+}> = ({ _data, statText, id, unit, comparability, children, showHeader, mapPageInfo }) => {
   const { stats, name, data, foodAccess, marketPower, segregation, economicAdvantage, descriptionText, raceData } =
     renderReportText(_data.result!, statText, id, comparability)
 
@@ -91,8 +92,10 @@ export const ReportRenderer: React.FC<{
               id={id}
               data={data}
               stats={stats}
+              statText={statText}
               raceData={raceData}
               unit={unit}
+              mapPageInfo={mapPageInfo}
             />
           ))}
         </div>

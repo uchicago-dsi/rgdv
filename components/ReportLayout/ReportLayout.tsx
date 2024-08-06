@@ -24,9 +24,10 @@ const comparability = {
 export const ReportLayout: React.FC<ReportLayoutProps> = async ({ id, showHeader = true }) => {
   const unit = units[id.length as keyof typeof units]
   const comparabilityOptions = comparability[id.length as keyof typeof comparability]
-  const [_data, statText] = await Promise.all([
+  const [_data, statText, mapPageInfo] = await Promise.all([
     getSummaryStats<any>(unit, id),
     getMdxContent("statistics", "primary.mdx"),
+    getMdxContent("page", "map.mdx"),
   ])
 
   if (!_data.ok) {
@@ -35,8 +36,22 @@ export const ReportLayout: React.FC<ReportLayoutProps> = async ({ id, showHeader
   const Wrapper = comparabilityOptions.length > 1 ? ComparabilityProvider : React.Fragment
   return (
     <Wrapper comparabilityOptions={comparabilityOptions}>
-      <ClientReportRenderer id={id} _data={_data} statText={statText} unit={unit} showHeader={showHeader}>
-        <ReportRenderer id={id} _data={_data} statText={statText} unit={unit} showHeader={showHeader} />
+      <ClientReportRenderer
+        id={id}
+        _data={_data}
+        statText={statText}
+        unit={unit}
+        showHeader={showHeader}
+        mapPageInfo={mapPageInfo}
+      >
+        <ReportRenderer
+          id={id}
+          _data={_data}
+          statText={statText}
+          unit={unit}
+          showHeader={showHeader}
+          mapPageInfo={mapPageInfo}
+        />
       </ClientReportRenderer>
     </Wrapper>
   )

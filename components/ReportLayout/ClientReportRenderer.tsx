@@ -10,6 +10,7 @@ export const ClientReportRenderer: React.FC<{
   unit: string
   children: React.ReactNode
   showHeader?: boolean
+  mapPageInfo?: any
 }> = (props) => {
   const {
     comparability,

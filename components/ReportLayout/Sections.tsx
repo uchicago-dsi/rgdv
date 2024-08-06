@@ -1,11 +1,12 @@
 import dynamic from "next/dynamic"
 import React from "react"
+import { Renderer as MapInner } from "components/Pages/Map/Renderer"
 import StatList from "components/StatList"
 import TimeseriesChart from "components/TimeseriesChart"
 import Tooltip from "components/Tooltip"
 import { columnsDict, type DataColumns, raceEthnicityLabels } from "utils/data/config"
 
-const Map = dynamic(() => import("components/Map/Map"), { ssr: false })
+// const Map = dynamic(() => import("components/Map/MapInner"), { ssr: false })
 const StoreList = dynamic(() => import("components/StoreList"), { ssr: false })
 // const ComparisonOverTimeChart = dynamic(() => import("components/ComparisonOverTime"), { ssr: false })
 const PieChart = dynamic(() => import("components/PieChart/PieChart"), { ssr: false })
@@ -55,7 +56,9 @@ export const ReportSections: React.FC<{
   raceData: any
   unit: string
   showTitle?: boolean
-}> = ({ component, id, data, stats, raceData, unit, divId, showTitle = true }) => {
+  mapPageInfo?: any
+  statText?: any
+}> = ({ component, id, data, stats, statText, raceData, unit, divId, showTitle = true, mapPageInfo }) => {
   switch (component) {
     case "Key Statistics":
       return (
@@ -84,7 +87,7 @@ export const ReportSections: React.FC<{
         <div id={divId}>
           {!!showTitle && <h3 className="pb-2 text-2xl">Area Map</h3>}
           <div className="relative h-[50vh] overflow-hidden">
-            <Map initialFilter={id} />
+            <MapInner initialFilter={id} pageInfo={mapPageInfo} stats={statText} />
           </div>
         </div>
       )
