@@ -8,7 +8,7 @@ export const DesktopNavStatic: React.FC<NavProps> = ({ navInfo }) => {
   // right aligned list of items
   // render subLinks as dropdown
   return (
-    <div className="bg-white/85 p-4 text-neutral-950 shadow-md " id="top-nav">
+    <nav className="flex w-full flex-row justify-between bg-white/85 p-4 text-neutral-950 shadow-md" id="top-nav">
       <div className="prose m-0 p-0 font-display">
         <a href="/" className="line-height-0 m-0 p-0 no-underline">
           <h1 className="m-0 p-0">{navInfo.data.nav.title}</h1>
@@ -38,7 +38,7 @@ export const DesktopNavStatic: React.FC<NavProps> = ({ navInfo }) => {
           }
         })}
       </ul>
-    </div>
+    </nav>
   )
 }
 
