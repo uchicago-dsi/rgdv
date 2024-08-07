@@ -63,6 +63,7 @@ var PostText = {
           name: "props",
           label: "Extra Props (advanced)",
           type: "string",
+          component: "textarea",
         },
       ],
     },
