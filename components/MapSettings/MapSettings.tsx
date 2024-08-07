@@ -38,6 +38,7 @@ const contentSectionTitles = [
   "highlight advanced",
   "filter map",
 ]
+const nullSections: any[] = []
 
 const findContentSections = (contentSections: any[], titles: string[] = contentSectionTitles) => {
   const entries: Record<string, React.ReactNode> = {}
@@ -50,7 +51,7 @@ const findContentSections = (contentSections: any[], titles: string[] = contentS
 
 export const MapSettings: React.FC = () => {
   const md = useMarkdownContext()
-  const contentSections = md.pageInfo.data.page.sections
+  const contentSections = md?.pageInfo?.data?.page?.sections || nullSections
   const sections = useMemo(() => (contentSections ? findContentSections(contentSections) : {}), [contentSections])
 
   const [activeMenuSection, setActiveMenuSection] = useState<string | undefined>(undefined)

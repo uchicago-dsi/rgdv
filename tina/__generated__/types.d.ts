@@ -329,6 +329,7 @@ export type PostBodyTooltipFilter = {
 
 export type PostBodyPostWidgetFilter = {
   widget?: InputMaybe<StringFilter>
+  props?: InputMaybe<StringFilter>
 }
 
 export type PostBodyFilter = {

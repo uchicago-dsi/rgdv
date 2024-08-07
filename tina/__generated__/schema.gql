@@ -200,6 +200,7 @@ input PostBodyTooltipFilter {
 
 input PostBodyPostWidgetFilter {
   widget: StringFilter
+  props: StringFilter
 }
 
 input PostBodyFilter {

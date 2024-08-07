@@ -1,12 +1,10 @@
 import React from "react"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
 import PostWidget from "components/PostWidgets"
-import { StateConcentrationDataTable } from "./StateConcentrationData"
 import { MdTooltip } from "./Tooltip"
 
 const DEFAULT_MARKDOWN_COMPONENTS = {
   Tooltip: MdTooltip,
-  SortableMarketTable: StateConcentrationDataTable,
 }
 
 export const PostMarkdown: React.FC<{ content: any }> = ({ content }) => {

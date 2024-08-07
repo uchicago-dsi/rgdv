@@ -50,7 +50,16 @@ export const PostText = {
               label: "Test",
               value: "test",
             },
+            {
+              label: "Map",
+              value: "Map",
+            },
           ],
+        },
+        {
+          name: "props",
+          label: "Extra Props (advanced)",
+          type: "string",
         },
       ],
     },
