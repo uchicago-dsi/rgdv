@@ -3,9 +3,7 @@ import { usePathname } from "next/navigation"
 import React, { useEffect, useState } from "react"
 import Spinner from "components/Spinner"
 
-const DOWNLOAD_PATH_NAMES = [
-  "/data"
-]
+const DOWNLOAD_PATH_NAMES = ["/data"]
 
 export const ReportLoadingShade: React.FC<{ forceLoading?: boolean }> = ({ forceLoading }) => {
   const pathname = usePathname()
