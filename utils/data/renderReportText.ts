@@ -67,7 +67,7 @@ export const renderReportText = (
     ..._data,
     ...unitInfo,
   }
-  const stats = generalStatText?.data?.statistics?.stat
+  const rawStats = generalStatText?.data?.statistics?.stat
   const name = data.NAME.toLowerCase().includes("tract") ? data.NAME : `${data.NAME}`
 
   const foodAccess = getStatResult(generalStatText, "gravity", data, comparability)
@@ -76,6 +76,7 @@ export const renderReportText = (
   const economicAdvantage = getStatResult(generalStatText, "adi", data, comparability)
   const descriptionText = formatMarkdownTemplate(generalStatText.data.statistics.body, data)
   const raceData = cleanRaceData(data)
+  const stats = formatMarkdownTemplate(rawStats, data)
 
   return {
     name,
