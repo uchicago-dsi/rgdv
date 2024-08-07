@@ -116,7 +116,7 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
           )}
         </div>
         <HighlightLegend highlight={highlight} value={higlightValue} color={highlightColor} />
-        <p className="pt-4 text-right text-xs max-w-36 lg:max-w-[17.5vw]">{filterInfo}</p>
+        <p className="max-w-36 pt-4 text-right text-xs lg:max-w-[17.5vw]">{filterInfo}</p>
       </div>
     )
   } else {

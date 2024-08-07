@@ -34,9 +34,13 @@ export const PostRenderer: React.FC<{ content: any }> = ({ content }) => {
           </i>
         </p>
       )}
-      <Image src={mainImage} alt={title} width={800} height={400}
+      <Image
+        src={mainImage}
+        alt={title}
+        width={800}
+        height={400}
         style={{
-          margin: "0 auto"
+          margin: "0 auto",
         }}
       />
       <PostMarkdown content={body} />

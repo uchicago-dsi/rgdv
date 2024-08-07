@@ -55,8 +55,7 @@ const INITIAL_VIEW_STATE = {
 
 const randomString = () => Math.random().toString(36).substring(7)
 // const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
-export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick, initialViewState={} }) => {
-
+export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick, initialViewState = {} }) => {
   const initialView = useRef({
     ...INITIAL_VIEW_STATE,
     ...initialViewState,
