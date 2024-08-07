@@ -195,7 +195,11 @@ export const MapSettings: React.FC = () => {
               {sections["filter map"]}
               <br />
               <br />
-              <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
+              {Array.isArray(filter) ? (
+                <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter[0]} />
+              ) : (
+                <CountyFilterSelector handleSetFilter={handleSetFilter} currentFilter={filter} />
+              )}
             </MenuSection>
             {/* <MenuSection title="Map Colors" isActive={activeMenuSection === "Map Colors"}>
               fixed or relative [coming soon]
