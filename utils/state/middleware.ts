@@ -39,7 +39,7 @@ mapDataMiddleware.startListening({
       const colorParams = columnConfig.bivariate
         ? (_params as BivariateColorParamteres)
         : (_params as MonovariateColorParamteres)
-      const colorResults = await ds.getColorValues(colorParams)
+      const colorResults = await ds.getColorValues(colorParams as any)
       if (!colorResults) {
         return null
       }
