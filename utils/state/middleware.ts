@@ -39,15 +39,23 @@ mapDataMiddleware.startListening({
       const colorParams = columnConfig.bivariate
         ? (_params as BivariateColorParamteres)
         : (_params as MonovariateColorParamteres)
-
       const colorResults = await ds.getColorValues(colorParams)
       if (!colorResults) {
         return null
       }
       const { colorMap, breaks, colors } = colorResults
+      const inFilterFn = !filter?.length
+        ? (_id: any) => true
+        : typeof filter === "string"
+        ? (id: string) => id.startsWith(filter)
+        : Array.isArray(filter)
+        ? (id: string) => filter.some((f) => id.startsWith(f))
+        : (_id: any) => true
+
       const colorFunction: (id: string | number) => Array<number> = (_id: string | number) => {
         const id = _id.toString()
-        if (filter?.length && id.startsWith(filter) === false) {
+        const isInSet = inFilterFn(id)
+        if (!isInSet) {
           return [120, 120, 120, 0]
         }
         // @ts-ignore

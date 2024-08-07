@@ -142,7 +142,7 @@ export const mapSlice = createSlice({
         state.tooltipStatus = "ready"
       }
     },
-    setCurrentFilter: (state, action: PayloadAction<string>) => {
+    setCurrentFilter: (state, action: PayloadAction<string | string[]>) => {
       state.idFilter = action.payload
     },
     upcertColorFilter: (state, action: PayloadAction<number[]>) => {

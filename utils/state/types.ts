@@ -14,7 +14,7 @@ export interface MapState {
   // currentData: string,
   currentColumn: DataColumns
   currentColumnGroup: keyof typeof columnGroups
-  idFilter?: string
+  idFilter?: string | string[]
   centroid?: {
     x: number
     y: number

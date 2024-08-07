@@ -168,18 +168,33 @@ export class DataService<DataT extends Record<string, any>> {
     if (filters) {
       for (let i = 0; i < filters.length; i++) {
         const filter = filters[i]!
-        query += ` ${i === 0 ? "WHERE" : "AND"} ${filter.column} ${filter.operator}`
+        query += ` ${i === 0 ? "WHERE" : "AND"} `
         switch (filter.operator) {
+          case "LIKE_ONE_OF":
+            query += `(`
+            const values = filter.value as string[]
+            values.forEach((v, j) => {
+              query += ` ${filter.column} LIKE ${v} `
+              if (j < values.length - 1) {
+                query += ` OR `
+              } else {
+                query += `)`
+              }
+            })
+            break
           case "IN":
           case "NOT IN":
+            query += `${filter.column} ${filter.operator}`
             query += `(${(filter.value as string[] | number[]).join(",")})`
             break
           case "BETWEEN":
+            query += `${filter.column} ${filter.operator}`
             query += `${(filter.value as any as [number, number])[0]} AND ${
               (filter.value as any as [number, number])[1]
             }`
             break
           default:
+            query += `${filter.column} ${filter.operator}`
             query += ` ${filter.value}`
             break
         }
@@ -209,7 +224,6 @@ export class DataService<DataT extends Record<string, any>> {
       this.getQuantiles(cleanColumns[0]!, 3, filter),
       this.getQuantiles(cleanColumns[1]!, 3, filter),
     ])
-
     const legendColors = d3Bivariate[colorScheme]?.map((row: any) =>
       row.map((c: any) => {
         const tc = tinycolor(c).toRgb()
@@ -331,25 +345,34 @@ export class DataService<DataT extends Record<string, any>> {
           column: string | number
           nBins: number
           reversed?: boolean
-          filter?: string
+          filter?: string | string[]
           range?: "continuous" | "categorical"
         })
       | ({ bivariate: true } & {
           colorScheme: keyof typeof d3Bivariate
           column: Array<string | number>
-          filter?: string
+          filter?: string | string[]
           [key: string]: any
         })
   ) {
-    const columnFilter: FilterSpec[] | undefined = props.filter
-      ? [
-          {
-            column: idColumn,
-            operator: "LIKE",
-            value: `'${props.filter}%'`,
-          },
-        ]
-      : undefined
+    const columnFilter: FilterSpec[] | undefined =
+      props.filter && typeof props.filter === "string"
+        ? [
+            {
+              column: idColumn,
+              operator: "LIKE",
+              value: `'${props.filter}%'`,
+            },
+          ]
+        : Array.isArray(props.filter)
+        ? [
+            {
+              column: idColumn,
+              operator: "LIKE_ONE_OF",
+              value: props.filter.map((f) => `'${f}%'`),
+            },
+          ]
+        : undefined
 
     const bivariate = props.bivariate
     if (bivariate) {

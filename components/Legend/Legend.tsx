@@ -28,7 +28,11 @@ export const Legend: React.FC<LegendProps> = ({ column, isBivariate, colors, bre
   const higlightValue = useAppSelector((state) => state.map.highlightValue)
   const highlightColor = useAppSelector((state) => state.map.highlightColor)
   const idFilter = useAppSelector((state) => state.map.idFilter)
-  const filterInfo = idFilter?.length ? `* Data for ${findName(idFilter)}` : "National Data"
+  const filterInfo = idFilter?.length
+    ? typeof idFilter === "string"
+      ? `* Data for ${findName(idFilter)}`
+      : `* Data for ${idFilter.map((f) => findName(f)).join(", ")}`
+    : "National Data"
 
   const dispatch = useAppDispatch()
 

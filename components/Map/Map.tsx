@@ -15,7 +15,7 @@ import MapTooltip from "components/MapTooltip"
 import { deepCompare2d1d } from "utils/data/compareArrayElements"
 import { formatterPresets } from "utils/display/formatValue"
 import { useDataService } from "utils/hooks/useDataService"
-import { setClickInfo, setTooltipInfo } from "utils/state/map"
+import { setClickInfo, setCurrentFilter, setTooltipInfo } from "utils/state/map"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
 import { fetchCentroidById } from "utils/state/thunks"
 import { zeroPopTracts } from "utils/zeroPopTracts"
@@ -23,7 +23,7 @@ import "./styles.css"
 import { DeckGLOverlay } from "./DeckGLOverlay"
 
 export type MapProps = {
-  initialFilter?: string
+  initialFilter?: string | string[]
   simpleMap?: boolean
   onClick?: (info: any) => void
   sidebarOpen?: boolean
@@ -94,7 +94,10 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
     const y = event?.srcEvent?.clientY
     const id = info.object?.properties?.GEOID
     const isZeroPop = zeroPopTracts.indexOf(info.object?.properties?.GEOID) !== -1
-    const isFiltered = filter && info.object?.properties?.GEOID?.startsWith(filter) === false
+    const isFiltered =
+      filter &&
+      ((typeof filter === "string" && id?.startsWith(filter) === false) ||
+        (Array.isArray(filter) && filter.every((f) => id?.startsWith(f) === false)))
     if (info?.x && info?.y && info?.object && !isFiltered && !isZeroPop) {
       dispatch(setTooltipInfo({ x, y, id: undefined }))
       handleSetTooltipId(id)
@@ -154,7 +157,11 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
   const getElementColor = simpleMap
     ? (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
         const id = element?.properties?.GEOID
-        if (id === undefined || !id.startsWith(_initialFilter)) {
+        if (
+          id === undefined ||
+          (Array.isArray(_initialFilter) && !_initialFilter.some((filter) => id.startsWith(filter))) ||
+          (typeof _initialFilter === "string" && !id.startsWith(_initialFilter))
+        ) {
           return [0, 0, 0, 0]
         }
         return [120, 120, 120]
@@ -338,10 +345,13 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
   ]
   const mapRef = useRef(null)
   // const year = useAppSelector((state) => state.map.year)
-
   useEffect(() => {
     if (_initialFilter) {
-      dispatch(fetchCentroidById(_initialFilter))
+      if (Array.isArray(_initialFilter)) {
+        dispatch(setCurrentFilter(_initialFilter))
+      } else {
+        dispatch(fetchCentroidById(_initialFilter))
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_initialFilter])
