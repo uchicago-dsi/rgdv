@@ -6,7 +6,9 @@ import MapPageInner from "components/Pages/Map"
 const PostWidget: React.FC<{ widget: string; props?: string }> = ({ widget, props }) => {
   switch (widget) {
     case "SortableMarketTable":
-      return <StateConcentrationDataTable />
+      return <span className="not-prose">
+        <StateConcentrationDataTable />
+        </span>
     case "test":
       return <code className="bg-gray-200 p-2">Test widget</code>
     case "Map":
@@ -17,7 +19,7 @@ const PostWidget: React.FC<{ widget: string; props?: string }> = ({ widget, prop
         console.error("Error parsing props", e, props)
       }
       return (
-        <div className="relative h-[50vh] w-full">
+        <div className="relative h-[50vh] w-full not-prose">
           <MapPageInner pageInfo={{}} stats={{}} {...extraProps} />
         </div>
       )
