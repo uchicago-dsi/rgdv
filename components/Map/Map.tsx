@@ -27,6 +27,13 @@ export type MapProps = {
   simpleMap?: boolean
   onClick?: (info: any) => void
   sidebarOpen?: boolean
+  initialViewState?: {
+    longitude: number
+    latitude: number
+    zoom: number
+    pitch: number
+    bearing: number
+  }
 }
 
 const MapOuter: React.FC<MapProps> = (props) => {
@@ -48,7 +55,13 @@ const INITIAL_VIEW_STATE = {
 
 const randomString = () => Math.random().toString(36).substring(7)
 // const years = Array.from({ length: 25 }, (_, i) => 1997 + i)
-export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick }) => {
+export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onClick, initialViewState={} }) => {
+
+  const initialView = useRef({
+    ...INITIAL_VIEW_STATE,
+    ...initialViewState,
+  })
+
   const _initialFilter = initialFilter && initialFilter.length >= 2 ? initialFilter : undefined
   const mapId = useRef(randomString())
   const router = useRouter()
@@ -403,7 +416,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
             // hash={true}
             mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
             mapStyle="mapbox://styles/dhalpern/clsb432ya02pi01pf1o813uwa"
-            initialViewState={INITIAL_VIEW_STATE}
+            initialViewState={initialView.current}
             // @ts-ignore
             projection={"mercator"}
             ref={mapRef}
