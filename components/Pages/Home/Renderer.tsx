@@ -109,7 +109,7 @@ export const Renderer: React.FC<HomeProps> = ({ pageInfo }) => {
         {caseStudies.map((caseStudy: any, i: number) => (
           <div
             key={i}
-            className={`align-center prose w-full min-w-full items-center justify-center gap-8 px-4 lg:flex lg:min-h-[75vh] lg:flex-row lg:px-12
+            className={`align-center prose w-full min-w-full items-center justify-center gap-8 px-4 lg:flex lg:min-h-[50vh] lg:flex-row lg:px-12
                 ${i % 2 === 1 ? "bg-theme-canvas-100/25" : ""}
               `}
           >
