@@ -3,6 +3,10 @@ import { usePathname } from "next/navigation"
 import React, { useEffect, useState } from "react"
 import Spinner from "components/Spinner"
 
+const DOWNLOAD_PATH_NAMES = [
+  "/data"
+]
+
 export const ReportLoadingShade: React.FC<{ forceLoading?: boolean }> = ({ forceLoading }) => {
   const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(false)
@@ -10,7 +14,9 @@ export const ReportLoadingShade: React.FC<{ forceLoading?: boolean }> = ({ force
   useEffect(() => setIsLoading(false), [pathname])
 
   useEffect(() => {
-    window.addEventListener("beforeunload", (_) => {
+    window.addEventListener("beforeunload", (e: any) => {
+      const destination = e.target.location.pathname
+      if (DOWNLOAD_PATH_NAMES.includes(destination)) return
       setIsLoading(true)
     })
   }, [])
