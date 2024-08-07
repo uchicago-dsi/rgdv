@@ -7,7 +7,12 @@ export const PostRenderer: React.FC<{ content: any }> = ({ content }) => {
   const cleanDate = date && new Date(date).toLocaleDateString()
   if (content instanceof Error)
     return (
-      <div className="prose m-auto my-12">
+      <div
+        className="prose m-auto my-12 w-full"
+        style={{
+          maxWidth: "min(100vw - 2rem, 1400px)",
+        }}
+      >
         <h1>Unable to find post</h1>
         <a href="/posts">Back to list of posts</a>
         <br />
@@ -15,7 +20,12 @@ export const PostRenderer: React.FC<{ content: any }> = ({ content }) => {
       </div>
     )
   return (
-    <div className="prose m-auto my-12">
+    <div
+      className="prose m-auto my-12"
+      style={{
+        maxWidth: "min(100vw - 2rem, 1024px)",
+      }}
+    >
       <h1>{title}</h1>
       {author && (
         <p>
@@ -24,7 +34,11 @@ export const PostRenderer: React.FC<{ content: any }> = ({ content }) => {
           </i>
         </p>
       )}
-      <Image src={mainImage} alt={title} width={800} height={400} />
+      <Image src={mainImage} alt={title} width={800} height={400}
+        style={{
+          margin: "0 auto"
+        }}
+      />
       <PostMarkdown content={body} />
     </div>
   )
