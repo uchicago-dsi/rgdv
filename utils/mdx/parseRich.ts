@@ -8,7 +8,9 @@ const cleanHtmlJsx = (elementName: string, htmlChild: any) => {
     props: {},
   }
   // replace \n with space
-  htmlChild.value = htmlChild.value.replace(/\n/g, " ")
+  if (elementName === "PostWidget") {
+    htmlChild.value = htmlChild.value.replace(/\n/g, " ")
+  }
 
   const propsRegex = /(\w+)=({[^}]+}|".*?")/g
   let match

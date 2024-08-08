@@ -17,8 +17,7 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
     } else {
       getContentDirs()
       const filepath = path.join(process.cwd(), "public", "content", contentType, relativePath)
-      if (true) {
-        //(!parseCache[filepath]) {
+      if (!parseCache[filepath]) {
         // @ts-ignore
         const schema = collections[contentType]
         const mdxContent = fs.readFileSync(filepath, "utf-8")
