@@ -50,8 +50,12 @@ var PostText = {
               value: "SortableMarketTable",
             },
             {
-              label: "Test",
-              value: "test",
+              label: "CR4 Table",
+              value: "CR4Table",
+            },
+            {
+              label: "ACP Table",
+              value: "AcpTable",
             },
             {
               label: "Map",
