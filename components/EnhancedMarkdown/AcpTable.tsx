@@ -1,11 +1,8 @@
 "use client"
-import * as ToggleGroup from "@radix-ui/react-toggle-group"
 import { createColumnHelper } from "@tanstack/react-table"
 import Papa from "papaparse"
 import React, { useEffect, useState } from "react"
-// import { SortableTableProps } from "components/SortableTable/SortableTable"
 import SortableTable from "components/SortableTable"
-import Tooltip from "components/Tooltip"
 import { percentFormatter } from "utils/display/formatValue"
 
 type AcpData = {
@@ -35,9 +32,6 @@ const cols = [
   "% Native American",
   "Avg Neighborhood Disadvantage Percentile",
 ]
-
-const toggleGroupItemClasses =
-  "min-w-48 hover:bg-violet3 color-mauve11 data-[state=on]:bg-violet6 data-[state=on]:text-violet12 flex h-[35px] w-[35px] items-center justify-center bg-white text-base leading-4 first:rounded-l last:rounded-r focus:z-10 focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none"
 
 const columnHelper = createColumnHelper<AcpData>()
 

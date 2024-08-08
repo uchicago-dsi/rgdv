@@ -27,12 +27,12 @@ const PostWidget: React.FC<{ widget: string; props?: string }> = ({ widget, prop
       )
     case "Map":
       let extraProps: any = {}
+
       try {
         // parse html codes in props eg  &#x22; -> "
         if (typeof props === "string") {
           const parsed = props?.replace(/&#x([0-9a-fA-F]+);/g, (_, g) => String.fromCharCode(parseInt(g, 16)))
           extraProps = JSON.parse(parsed)
-          console.log("Parsed props", extraProps)
         }
       } catch (e) {
         console.error("Error parsing props", e, props)

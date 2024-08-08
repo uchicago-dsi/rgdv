@@ -17,10 +17,12 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
     } else {
       getContentDirs()
       const filepath = path.join(process.cwd(), "public", "content", contentType, relativePath)
-      if (!parseCache[filepath]) {
+      if (true) {
+        //(!parseCache[filepath]) {
         // @ts-ignore
         const schema = collections[contentType]
         const mdxContent = fs.readFileSync(filepath, "utf-8")
+
         const frontMatter = matter(mdxContent)
         const fmData = frontMatter.data
         parseCache[filepath] = {
@@ -31,6 +33,9 @@ export const getMdxContent = async <T extends any>(contentType: keyof typeof cli
             ...fmData,
           },
         }
+        // if (contentType === 'post') {
+        //   console.log(parseCache[filepath][contentType])
+        // }
         // @ts-ignore
         parseRichRecursive(parseCache[filepath][contentType], schema)
       }

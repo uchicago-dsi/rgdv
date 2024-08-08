@@ -1,5 +1,4 @@
 "use client"
-import * as ToggleGroup from "@radix-ui/react-toggle-group"
 import { createColumnHelper } from "@tanstack/react-table"
 import Papa from "papaparse"
 import React, { useEffect, useState } from "react"
@@ -30,9 +29,6 @@ const cols = [
   "Merged HHI with Divestment, 50% Survival",
   "Merged CR4 with Divestment, 50% Survival",
 ]
-
-const toggleGroupItemClasses =
-  "min-w-48 hover:bg-violet3 color-mauve11 data-[state=on]:bg-violet6 data-[state=on]:text-violet12 flex h-[35px] w-[35px] items-center justify-center bg-white text-base leading-4 first:rounded-l last:rounded-r focus:z-10 focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none"
 
 const columnHelper = createColumnHelper<CR4Data>()
 
@@ -70,7 +66,7 @@ export const Cr4ScenarioTable: React.FC = () => {
     const getData = async () => {
       const [divestData] = await Promise.all([fetch("/data/divest-scenarios.csv").then((res) => res.text())])
       const [divestParsed] = [Papa.parse<CR4Data>(divestData, { header: true, dynamicTyping: true })]
-      console.log("data", divestParsed)
+
       setData({
         ready: true,
         divest: divestParsed.data,

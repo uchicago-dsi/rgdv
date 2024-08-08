@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react"
 import { Antonio, Libre_Baskerville, Open_Sans } from "next/font/google"
 import "styles/tailwind.css"
 import "styles/global.css"
@@ -5,7 +6,6 @@ import "styles/global.css"
 import Footer from "components/Footer"
 import Nav from "components/Nav"
 import { ReportLoadingShade } from "components/ReportLoadingShade/ReportLoadingShade"
-import { Analytics } from "@vercel/analytics/react"
 // import { WipTag } from "components/WipTag"
 
 // import Transitions, { Animate } from "components/Transition"

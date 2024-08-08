@@ -18,7 +18,7 @@ export const useClientMdxContent = <T extends any>(
   const getData = async () => {
     if (!ready) return
     try {
-      if (false) {
+      if (IS_DEV) {
         const r = await client.queries[contentType]({ relativePath })
         // @ts-ignore
         setData(r?.data?.tooltips?.body)

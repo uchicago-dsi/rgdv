@@ -7,6 +7,8 @@ const cleanHtmlJsx = (elementName: string, htmlChild: any) => {
     children: htmlChild.children,
     props: {},
   }
+  // replace \n with space
+  htmlChild.value = htmlChild.value.replace(/\n/g, " ")
 
   const propsRegex = /(\w+)=({[^}]+}|".*?")/g
   let match
