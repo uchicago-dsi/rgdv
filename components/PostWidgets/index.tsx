@@ -1,5 +1,7 @@
 "use client"
 import React from "react"
+import { AcpTable } from "components/EnhancedMarkdown/AcpTable"
+import { Cr4ScenarioTable } from "components/EnhancedMarkdown/Cr4ScenarioData"
 import { StateConcentrationDataTable } from "components/EnhancedMarkdown/StateConcentrationData"
 import MapPageInner from "components/Pages/Map"
 
@@ -11,8 +13,18 @@ const PostWidget: React.FC<{ widget: string; props?: string }> = ({ widget, prop
           <StateConcentrationDataTable />
         </span>
       )
-    case "test":
-      return <code className="bg-gray-200 p-2">Test widget</code>
+    case "CR4Table":
+      return (
+        <span className="not-prose">
+          <Cr4ScenarioTable />
+        </span>
+      )
+    case "AcpTable":
+      return (
+        <span className="not-prose">
+          <AcpTable />
+        </span>
+      )
     case "Map":
       let extraProps: any = {}
       try {
