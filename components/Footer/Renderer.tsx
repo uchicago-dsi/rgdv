@@ -23,7 +23,7 @@ export const FooterRenderer: React.FC<FooterProps> = ({ nav, content }) => {
       </div>
       <div className="bg-white/25">
         {/* horizontal ul of nav.data.links */}
-        <ul className="flex list-none space-x-4 py-2 pl-4 text-white ">
+        <ul className="list-none columns-2 py-2 pl-4 text-white lg:flex lg:columns-1 lg:space-x-4">
           {nav.data.nav.links.map((link: any) => (
             <li key={link.title}>
               <a href={link.path} className="text-white">

@@ -12,12 +12,14 @@ export const PlaceSearch = () => {
   }
 
   return (
-    <AutoComplete
-      dataCallback={fetchData}
-      listTitleProperty="NAME"
-      placeholder="Search for a state, county, or census tract ID"
-      // onFocusValue={"Cook"}
-      onClick={onClick}
-    />
+    <span className="not-prose">
+      <AutoComplete
+        dataCallback={fetchData}
+        listTitleProperty="NAME"
+        placeholder="Search for a state, county, or census tract ID"
+        // onFocusValue={"Cook"}
+        onClick={onClick}
+      />
+    </span>
   )
 }
