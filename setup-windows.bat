@@ -22,12 +22,8 @@ REM Navigate to the application folder
 cd /d "%~dp0"
 
 REM Install npm dependencies
-echo Installing npm dependencies...
-npm install
-
-REM Run the Next.js development server
-echo Starting Next.js...
-npm run dev
+echo Installing npm dependencies and running the application...
+npm i -g pnpm --silent && pnpm install --silent && pnpm run dev
 
 ENDLOCAL
 pause
