@@ -24,7 +24,7 @@ overview:
     column_national: segregation_2023_percentile
     column_state: segregation_2023_state_percentile
     column_county: segregation_2023_county_percentile
-    tooltip: "The measure of residential segregation helps identify areas with significant disparities in residential neighborhoods and highlights the extremes of socio-economic conditions within that neighborhood.\n\nResidential segregation, as defined in this project by the Indicators of Concentration at the Extremes (ICE) metric, measures the extent to which a population within a geographic area is polarized at the extremes of an economic or social spectrum. This metric captures the degree of segregation by considering the concentration of two contrasting groups. Here, it measures the concentration of Black or African American people and White people, as reported in the Census.\n\nBy identifying areas with significant disparities across these populations, this measure can help inform strategies for fostering more equitable communities.\n\nThis score reflects the median value for the Census tract. The score is relative to the rest of the tracts in the United States, where 100 is the \\*most segregated, and \\*zero (0) is the *least segregated*.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    tooltip: "The measure of residential segregation helps identify areas with significant disparities in residential neighborhoods and highlights the extremes of socio-economic conditions within that neighborhood.\n\nResidential segregation, as defined in this project by the Indicators of Concentration at the Extremes (ICE) metric, measures the extent to which a population within a geographic area is polarized at the extremes of an economic or social spectrum. This metric captures the degree of segregation by considering the concentration of two contrasting groups. Here, it measures the concentration of Black or African American people and White people, as reported in the Census.\n\nBy identifying areas with significant disparities across these populations, this measure can help inform strategies for fostering more equitable communities.\n\nThis score reflects the median value for the Census tract. The score is relative to the rest of the tracts in the United States, where 100 is the \\*most segregated, and \\*zero (0) is the *least segregated*.\n\nFor more information on how this measure is calculated, read our\_[methodology](/about#methodology).\n"
     templates:
       - body: >
           The residential segregation of this %%UNIT%% is higher than
@@ -35,7 +35,7 @@ overview:
     column_national: hhi_2023_percentile
     column_state: hhi_2023_state_percentile
     column_county: hhi_2023_county_percentile
-    tooltip: "**Market concentration** is a measure of diversity in the marketplace. It looks at how dominant single grocery stores and their parent companies are in a given area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThe Market Concentration score reflects the median value for the Census tract. The score is relative to the rest of the tracts in the United States, where 100 is the *most* *competitive* marketplace and zero (0) is the \\*least competitive, \\*or a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    tooltip: "**Market concentration** is a measure of diversity in the marketplace. It looks at how dominant single grocery stores and their parent companies are in a given area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThe Market Concentration score reflects the median value for the Census tract. The score is relative to the rest of the tracts in the United States, where 100 is the *most* *competitive* marketplace and zero (0) is the \\*least competitive, \\*or a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](/about#methodology).\n"
     templates:
       - body: >
           This %%UNIT%% has a less concentrated grocery store market than
@@ -86,19 +86,19 @@ overview:
 stat:
   - title: Median Food Access (Gravity)
     column: gravity_2023
-    tooltip: "Food access reflects the amount of grocery supply available relative to people living in a given area. This measure is calculated using a gravity model, which estimates access to services based on the number of service providers, the number of people in a given area, and how close they are together.\n\nThis score reflects the median tract value in the state. The score is relative to the rest of the United States, where one hundred (100) is the best food access and zero (0) is the worst food access.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    tooltip: "Food access reflects the amount of grocery supply available relative to people living in a given area. This measure is calculated using a gravity model, which estimates access to services based on the number of service providers, the number of people in a given area, and how close they are together.\n\nThis score reflects the median tract value in the state. The score is relative to the rest of the United States, where one hundred (100) is the best food access and zero (0) is the worst food access.\n\nFor more information on how this measure is calculated, read our\_[methodology](/about#methodology).\n"
     templates:
       - body: |
           %%gravity\_2023%%
   - title: Median Market Concentration (HHI)
     column: hhi_2023
-    tooltip: "Market concentration is a measure of diversity in the marketplace. It looks at how dominant single grocery stores are in an area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThis score reflects the median tract value for the tract. The score is relative to the rest of the United tracts, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    tooltip: "Market concentration is a measure of diversity in the marketplace. It looks at how dominant single grocery stores are in an area. This measure is calculated using the Herfindahl–Hirschman Index (HHI).\n\nThis score reflects the median tract value for the tract. The score is relative to the rest of the United tracts, where one hundred (100) is the most evenly competitive marketplace and zero (0) is a market with a total monopoly.\n\nFor more information on how this measure is calculated, read our\_[methodology](/about#methodology).\n"
     templates:
       - body: |
           %%hhi\_2023%%
   - title: Median Segregation
     column: segregation_2023
-    tooltip: "ICE (Indicators of Concentration at the Extremes) is a measure that looks at how concentrated and how separate populations live within an area. In this case, the ICE metric reflects how segregated black or african american and white people tend to be in the tract.\n\nFor more information on how this measure is calculated, read our\_[methodology](http://localhost:3000/about#methodology).\n"
+    tooltip: "ICE (Indicators of Concentration at the Extremes) is a measure that looks at how concentrated and how separate populations live within an area. In this case, the ICE metric reflects how segregated black or african american and white people tend to be in the tract.\n\nFor more information on how this measure is calculated, read our\_[methodology](/about#methodology).\n"
     templates:
       - body: |
           %%segregation\_ICE\_Black\_Alone\_White\_Alone\_weighted%%
