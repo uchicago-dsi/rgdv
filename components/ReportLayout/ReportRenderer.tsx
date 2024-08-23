@@ -77,7 +77,7 @@ export const ReportRenderer: React.FC<{
       )}
       <div className="mt-8 grid gap-8 lg:grid-cols-4">
         {/* first grid col */}
-        <div className="prose top-0 col-span-1 hidden h-min bg-white/50 p-4 shadow-xl lg:sticky">
+        <div className="prose top-0 col-span-1 hidden h-min bg-white/50 p-4 shadow-xl lg:sticky lg:block">
           <h3>Report Sections</h3>
           <ul className="list-disc pl-6">
             <SectionScroll sections={Sections} />
