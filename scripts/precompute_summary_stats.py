@@ -11,7 +11,7 @@ pd.set_option('display.max_columns', None)
 current_dir = path.dirname(path.abspath(__file__))
 data_dir = path.join(current_dir, '..', 'public', 'data')
 # %%
-df_full =  pd.read_parquet(path.join(data_dir, 'full_tract.parquet'))
+df_full = pd.read_parquet(path.join(data_dir, 'full_tract.parquet'))
 
 # %%
 year = '2023'
@@ -143,6 +143,7 @@ def columnarize_msgpack(data, id_col, filepath, cols, compress=False):
     data_min[id] = []
     for col in cols:
       data_min[id].append(values[col])
+  print(data_min)
   try:
     write_msgpack(data_min, filepath, compress)
   except Exception as e: 
@@ -405,10 +406,10 @@ split_df_and_msgpack(
 )
 # %%
 us_demog = pd.read_parquet(path.join(data_dir, 'demography_us.parquet'))
-us_demog['GEOID'] = 'us'
+us_demog['GEOID'] = 1
 us_demog['UNIT'] = "nation"
 us_demog["UNIT_PLURAL"] = "nation"
 # %%
-data_dir = path.join(current_dir, '..', 'public', 'data')
-columnarize_msgpack(us_demog.to_dict(orient="records"), 'GEOID', path.join(data_dir, 'national', f'1.msgpack'), list(us_demog.columns), compress=True)
+out_dir = path.join(current_dir, '..', 'public', 'data', 'summary', 'national')
+columnarize_msgpack(us_demog.to_dict(orient="records"), 'GEOID', path.join(data_dir, f'1.msgpack'), list(us_demog.columns), compress=True)
 # %%

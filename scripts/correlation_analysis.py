@@ -12,7 +12,12 @@ pd.set_option('display.max_columns', None)
 # %%
 current_dir = path.dirname(path.abspath(__file__))
 data_dir = path.join(current_dir, '..', 'public', 'data')
-df_full = get_full_data()
+# df_full = get_full_data()
+df= pd.read_parquet(path.join(data_dir, 'full_.parquet'))
+# %%
+df = df.replace(-666666666.0, np.nan)
+# %%
+df.to_parquet(path.join(data_dir, 'full_tract.parquet'))
 # %%
 corr_df = df_full.rename(columns=corr_columns_dict)[corr_columns]
 corr_df.replace(-666666666.0, np.nan, inplace=True)

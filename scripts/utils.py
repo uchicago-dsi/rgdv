@@ -133,15 +133,15 @@ def get_full_data():
     properties = [{'geoid': row['id'], **row['properties']} for row in data]
     acp_data = pd.DataFrame(properties)   
     df_full =  pd.read_parquet(path.join(data_dir, 'full_tract.parquet'))
-    tract_info = pd.read_parquet(path.join(data_dir, 'tracts_info.parquet'))
-    df_full = df_full.merge(tract_info, on='GEOID')
-    df_full['COUMTY'] = df_full['GEOID'].str.slice(0, 5)
-    df_full = df_full.merge(acp_data, left_on='COUMTY', right_on='geoid')
-    df_full['ALAND'] = pd.to_numeric(df_full['ALAND'])
-    df_full['DENSITY'] = df_full['TOTAL_POPULATION'] / df_full['ALAND']
-    # sf to sq mi
-    df_full['ALAND'] = pd.to_numeric(df_full['ALAND'])/ 2589988.11
-    df_full['DENSITY'] = df_full['TOTAL_POPULATION'] / df_full['ALAND']
+    # tract_info = pd.read_parquet(path.join(data_dir, 'tracts_info.parquet'))
+    # df_full = df_full.merge(tract_info, on='GEOID')
+    # df_full['COUMTY'] = df_full['GEOID'].str.slice(0, 5)
+    # df_full = df_full.merge(acp_data, left_on='COUMTY', right_on='geoid')
+    # df_full['ALAND'] = pd.to_numeric(df_full['ALAND'])
+    # df_full['DENSITY'] = df_full['TOTAL_POPULATION'] / df_full['ALAND']
+    # # sf to sq mi
+    # df_full['ALAND'] = pd.to_numeric(df_full['ALAND'])/ 2589988.11
+    # df_full['DENSITY'] = df_full['TOTAL_POPULATION'] / df_full['ALAND']
     # replace -666666666.0 with None
     df_full = df_full.replace(-666666666.0, None)
     rurality = pd.read_excel(path.join(data_dir, 'Urban Rural Classification 2013.xlsx'))[[

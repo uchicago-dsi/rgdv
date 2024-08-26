@@ -12,6 +12,14 @@ import requests
 pd.set_option('display.float_format', lambda x: '%.3f' % x)
 pd.set_option('display.max_columns', None)
 # %%
+df_full = pd.read_parquet("../public/data/full_tract.parquet")
+matches = pd.read_csv('../../rafi-data-viz-data/data/divest_geoids.csv')
+# %%
+matches['GEOID_left'] = matches['GEOID_left'].astype(str).str.zfill(11)
+# %%
+divest_tracts = df_full[df_full.GEOID.isin(matches.GEOID_left)]
+# %%
+
 # %%
 # acp stats
 acp_stats_df = df_full[['community', 'TOTAL_POPULATION','NH WHITE ALONE','NH BLACK ALONE','NH AMERICAN INDIAN ALONE','HISPANIC OR LATINO']]

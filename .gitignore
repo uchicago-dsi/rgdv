@@ -37,3 +37,5 @@ yarn-error.log*
 package.json
 public/data/___*
 public/data/archive
+scripts/__pycache__/utils.cpython-39.pyc
+.env copy
