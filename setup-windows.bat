@@ -24,8 +24,8 @@ if not exist ".\node-v18.17.1-win-x64\node.exe" (
 
 
 REM Install npm dependencies
-echo Installing npm dependencies and running applicaiton...
-.\node-v18.17.1-win-x64\npx pnpm install && .\node-v18.17.1-win-x64\npx pnpm dev
+echo Installing npm dependencies and running application...
+.\node-v18.17.1-win-x64\npm i -g pnpm && pnpm install && .\node-v18.17.1-win-x64\npx pnpm dev
 
 ENDLOCAL
 pause
