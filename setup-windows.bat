@@ -1,13 +1,15 @@
 @echo off
 SETLOCAL
 
-REM Prompt for environment variables
-set /p DATA_ENDPOINT=Please enter the DATA_ENDPOINT: 
-set /p NEXT_PUBLIC_MAPBOX_TOKEN=Please enter the NEXT_PUBLIC_MAPBOX_TOKEN: 
+if exist .env (echo .env file exists, skipping prompts.) else (
+    REM Prompt for environment variables
+    set /p DATA_ENDPOINT=Please enter the DATA_ENDPOINT: 
+    set /p NEXT_PUBLIC_MAPBOX_TOKEN=Please enter the NEXT_PUBLIC_MAPBOX_TOKEN: 
 
-REM Create or update the .env file
-echo DATA_ENDPOINT=%DATA_ENDPOINT% > .env
-echo NEXT_PUBLIC_MAPBOX_TOKEN=%NEXT_PUBLIC_MAPBOX_TOKEN% >> .env
+    REM Create or update the .env file
+    echo DATA_ENDPOINT=%DATA_ENDPOINT% > .env
+    echo NEXT_PUBLIC_MAPBOX_TOKEN=%NEXT_PUBLIC_MAPBOX_TOKEN% >> .env
+)
 
 REM Navigate to the application folder
 cd /d "%~dp0"

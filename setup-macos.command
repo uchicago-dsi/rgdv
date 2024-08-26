@@ -1,12 +1,13 @@
 #!/bin/bash
+if [ -f .env ]; then echo ".env file exists, skipping prompts."; else
+    # Prompt for environment variables
+    read -p "Please enter the DATA_ENDPOINT: " DATA_ENDPOINT
+    read -p "Please enter the NEXT_PUBLIC_MAPBOX_TOKEN: " NEXT_PUBLIC_MAPBOX_TOKEN
 
-# Prompt for environment variables
-read -p "Please enter the DATA_ENDPOINT: " DATA_ENDPOINT
-read -p "Please enter the NEXT_PUBLIC_MAPBOX_TOKEN: " NEXT_PUBLIC_MAPBOX_TOKEN
-
-# Create or update the .env file
-echo "DATA_ENDPOINT=$DATA_ENDPOINT" > .env
-echo "NEXT_PUBLIC_MAPBOX_TOKEN=$NEXT_PUBLIC_MAPBOX_TOKEN" >> .env
+    # Create or update the .env file
+    echo "DATA_ENDPOINT=$DATA_ENDPOINT" > .env
+    echo "NEXT_PUBLIC_MAPBOX_TOKEN=$NEXT_PUBLIC_MAPBOX_TOKEN" >> .env
+fi
 
 # Check if Node.js is installed
 if ! command -v node &> /dev/null

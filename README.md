@@ -1,5 +1,5 @@
 ## Beginner Quickstart
-If you simply want to run the application or use the visual interface to edit content, use the following to get started:
+If you simply want to run the application or use the visual interface to edit content, use the following to get started. Important: this setup is not recommedned for those with existing development environments. 
 
 *On windows:*
 - Double click `setup-windows.bat` in the base folder for the project
