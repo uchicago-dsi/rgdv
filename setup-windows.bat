@@ -22,16 +22,10 @@ if not exist ".\node-v18.17.1-win-x64\node.exe" (
     del nodejs.zip
 )
 
-REM Add the local Node.js to the PATH
-set PATH=%CD%\node-v18.17.1-win-x64;%PATH%
 
 REM Install npm dependencies
-echo Installing npm dependencies...
-.\node-v18.17.1-win-x64\npm install
-
-REM Run the Next.js development server
-echo Starting Next.js...
-.\node-v18.17.1-win-x64\npx next dev
+echo Installing npm dependencies and running applicaiton...
+.\node-v18.17.1-win-x64\npx pnpm install && .\node-v18.17.1-win-x64\npx pnpm dev
 
 ENDLOCAL
 pause
