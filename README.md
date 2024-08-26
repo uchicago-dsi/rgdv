@@ -1,23 +1,18 @@
 ## Beginner Quickstart
-
 If you simply want to run the application or use the visual interface to edit content, use the following to get started:
 
-_On windows:_
-
+*On windows:*
 - Double click `setup-windows.bat` in the base folder for the project
 - Enter the `DATA_ENDPOINT` and `NEXT_PUBLIC_MAPBOX_TOKEN` provided from the project team. For non-affiliated users, see data requirements below.
 - Open your web browser and navigate to `localhost:3000` to view the website, and `localhost:3000/admin/index.html` for the content editor.
 
-_On macos:_
-
+*On macos:* 
 - Open the terminal and navigate to the project. You may want to use Github Desktop, then clicked "Repository" > "Open in Terminal"
 - Run the following command in the terminal:
-
 ```
 chmod a+x setup-macos.command
 ```
-
-- Double click `setup-macos.command`. The first time you run the set up script, you may receive an error that the app/script is from an unknown or unidentified developer. To run it anyways, control-click and choose "Open" from the shortcut menu -- you'll see an additional option to run it and in the future you can simply double click it.
+- Double click `setup-macos.command`
 - Enter the `DATA_ENDPOINT` and `NEXT_PUBLIC_MAPBOX_TOKEN` provided from the project team. For non-affiliated users, see data requirements below.
 - Open your web browser and navigate to `localhost:3000` to view the website, and `localhost:3000/admin/index.html` for the content editor.
 

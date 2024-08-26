@@ -8,30 +8,23 @@ read -p "Please enter the NEXT_PUBLIC_MAPBOX_TOKEN: " NEXT_PUBLIC_MAPBOX_TOKEN
 echo "DATA_ENDPOINT=$DATA_ENDPOINT" > .env
 echo "NEXT_PUBLIC_MAPBOX_TOKEN=$NEXT_PUBLIC_MAPBOX_TOKEN" >> .env
 
+# Check if Node.js is installed
+if ! command -v node &> /dev/null
+then
+    echo "Node.js not found, installing..."
+    curl -o nodejs.pkg https://nodejs.org/dist/v18.17.1/node-v18.17.1.pkg
+    sudo installer -pkg nodejs.pkg -target /
+    rm nodejs.pkg
+fi
+
 # Navigate to the application folder
 cd "$(dirname "$0")"
 
-# Check if NVM (Node Version Manager) is installed
-if ! command -v nvm &> /dev/null
-then
-    echo "NVM not found, installing..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-fi
-
-# Load NVM into the current shell session
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-
-# Install Node.js locally using NVM
-nvm install 18.17.1
-nvm use 18.17.1
-
 # Install npm dependencies
 echo "Installing npm dependencies..."
-npm i -g pnpm && pnpm install 
+npm i -g pnpm
+pnpm install
 
 # Run the Next.js development server
 echo "Starting Next.js..."
-pnpm dev
+pnpm run dev

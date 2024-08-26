@@ -9,21 +9,27 @@ REM Create or update the .env file
 echo DATA_ENDPOINT=%DATA_ENDPOINT% > .env
 echo NEXT_PUBLIC_MAPBOX_TOKEN=%NEXT_PUBLIC_MAPBOX_TOKEN% >> .env
 
-REM Check if Node.js is installed
-where node >nul 2>&1
-IF %ERRORLEVEL% NEQ 0 (
-    echo Installing Node.js...
-    curl -o nodejs.msi https://nodejs.org/dist/v18.17.1/node-v18.17.1-x64.msi
-    start /wait msiexec /i nodejs.msi /quiet /norestart
-    del nodejs.msi
-)
-
 REM Navigate to the application folder
 cd /d "%~dp0"
 
+REM Check if Node.js is locally installed
+if not exist ".\node-v18.17.1-win-x64\node.exe" (
+    echo Downloading Node.js...
+    curl -o nodejs.zip https://nodejs.org/dist/v18.17.1/node-v18.17.1-win-x64.zip
+    tar -xf nodejs.zip
+    del nodejs.zip
+)
+
+REM Add the local Node.js to the PATH
+set PATH=%CD%\node-v18.17.1-win-x64;%PATH%
+
 REM Install npm dependencies
-echo Installing npm dependencies and running the application...
-npm i -g pnpm --silent && pnpm install --silent && pnpm run dev
+echo Installing npm dependencies...
+.\node-v18.17.1-win-x64\npm install
+
+REM Run the Next.js development server
+echo Starting Next.js...
+.\node-v18.17.1-win-x64\npx next dev
 
 ENDLOCAL
 pause
