@@ -1,5 +1,5 @@
 // tina/config.js
-import { defineConfig } from "tinacms"
+import { defineConfig } from "tinacms";
 
 // tina/utils.js
 var RichText = {
@@ -14,23 +14,23 @@ var RichText = {
         {
           type: "string",
           label: "Tooltip Title",
-          name: "title",
+          name: "title"
         },
         {
           type: "string",
           label: "Tooltip Key",
-          name: "key",
+          name: "key"
         },
         {
           name: "body",
           label: "Tooltip Body",
           isBody: true,
-          type: "rich-text",
-        },
-      ],
-    },
-  ],
-}
+          type: "rich-text"
+        }
+      ]
+    }
+  ]
+};
 var PostText = {
   ...RichText,
   label: "Post Body",
@@ -47,32 +47,32 @@ var PostText = {
           options: [
             {
               label: "Sortable Market Dominance Table",
-              value: "SortableMarketTable",
+              value: "SortableMarketTable"
             },
             {
               label: "CR4 Table",
-              value: "CR4Table",
+              value: "CR4Table"
             },
             {
               label: "ACP Table",
-              value: "AcpTable",
+              value: "AcpTable"
             },
             {
               label: "Map",
-              value: "Map",
-            },
-          ],
+              value: "Map"
+            }
+          ]
         },
         {
           name: "props",
           label: "Extra Props (advanced)",
           type: "string",
-          component: "textarea",
-        },
-      ],
-    },
-  ],
-}
+          component: "textarea"
+        }
+      ]
+    }
+  ]
+};
 
 // tina/collections/page.js
 var page_default = {
@@ -83,7 +83,7 @@ var page_default = {
   fields: [
     {
       ...RichText,
-      label: "Main Content",
+      label: "Main Content"
     },
     // list of "sections"
     // with section title
@@ -95,34 +95,34 @@ var page_default = {
       list: true,
       ui: {
         itemProps: (item) => {
-          return { label: item?.title }
+          return { label: item?.title };
         },
         router: ({ document }) => {
           if (document._sys.filename === "home") {
-            return `/`
+            return `/`;
           }
-          return void 0
-        },
+          return void 0;
+        }
       },
       fields: [
         {
           name: "title",
           label: "Title",
-          type: "string",
+          type: "string"
         },
-        RichText,
-      ],
-    },
+        RichText
+      ]
+    }
   ],
   ui: {
     router: ({ document }) => {
       if (document._sys.filename === "home") {
-        return `/`
+        return `/`;
       }
-      return void 0
-    },
-  },
-}
+      return void 0;
+    }
+  }
+};
 
 // tina/collections/post.js
 var post_default = {
@@ -134,36 +134,36 @@ var post_default = {
     {
       type: "string",
       label: "Title",
-      name: "title",
+      name: "title"
     },
     {
       type: "string",
       label: "Author",
-      name: "author",
+      name: "author"
     },
     {
       type: "datetime",
       label: "Date",
-      name: "date",
+      name: "date"
     },
     {
       type: "image",
       lable: "Main Image",
-      name: "mainImage",
+      name: "mainImage"
     },
     {
       type: "string",
       label: "Short Description / text",
-      name: "shortText",
+      name: "shortText"
     },
-    PostText,
+    PostText
   ],
   ui: {
     router: ({ document }) => {
-      return `/posts/${document._sys.filename}`
-    },
-  },
-}
+      return `/posts/${document._sys.filename}`;
+    }
+  }
+};
 
 // tina/collections/nav.js
 var nav_default = {
@@ -176,7 +176,7 @@ var nav_default = {
     {
       name: "title",
       label: "Title",
-      type: "string",
+      type: "string"
     },
     {
       name: "links",
@@ -185,25 +185,25 @@ var nav_default = {
       list: true,
       ui: {
         itemProps: (item) => {
-          return { label: item?.title }
+          return { label: item?.title };
         },
         router: ({ document }) => {
           if (document._sys.filename === "home") {
-            return `/`
+            return `/`;
           }
-          return void 0
-        },
+          return void 0;
+        }
       },
       fields: [
         {
           name: "title",
           label: "Title",
-          type: "string",
+          type: "string"
         },
         {
           name: "path",
           label: "path",
-          type: "string",
+          type: "string"
         },
         // subitems
         {
@@ -213,40 +213,40 @@ var nav_default = {
           list: true,
           ui: {
             itemProps: (item) => {
-              return { label: item?.title }
+              return { label: item?.title };
             },
             router: ({ document }) => {
               if (document._sys.filename === "home") {
-                return `/`
+                return `/`;
               }
-              return void 0
-            },
+              return void 0;
+            }
           },
           fields: [
             {
               name: "title",
               label: "Title",
-              type: "string",
+              type: "string"
             },
             {
               name: "path",
               label: "path",
-              type: "string",
-            },
-          ],
-        },
-      ],
-    },
+              type: "string"
+            }
+          ]
+        }
+      ]
+    }
   ],
   ui: {
     router: ({ document }) => {
       if (document._sys.filename === "home") {
-        return `/`
+        return `/`;
       }
-      return void 0
-    },
-  },
-}
+      return void 0;
+    }
+  }
+};
 
 // tina/collections/stats.js
 var thresholdStatList = {
@@ -256,30 +256,30 @@ var thresholdStatList = {
   list: true,
   ui: {
     itemProps: (item) => {
-      return { label: item?.title }
+      return { label: item?.title };
     },
     router: ({ document }) => {
       if (document._sys.filename === "home") {
-        return `/`
+        return `/`;
       }
-      return void 0
-    },
+      return void 0;
+    }
   },
   fields: [
     {
       name: "title",
       label: "Title",
-      type: "string",
+      type: "string"
     },
     {
       name: "column",
       label: "Data Column",
-      type: "string",
+      type: "string"
     },
     {
       name: "tooltip",
       label: "Tooltip",
-      type: "rich-text",
+      type: "rich-text"
     },
     {
       name: "templates",
@@ -288,21 +288,21 @@ var thresholdStatList = {
       list: true,
       ui: {
         itemProps: (item) => {
-          return { label: item?.threshold }
+          return { label: item?.threshold };
         },
         router: ({ document }) => {
           if (document._sys.filename === "home") {
-            return `/`
+            return `/`;
           }
-          return void 0
-        },
+          return void 0;
+        }
       },
       fields: [
         {
           name: "body",
           label: "Body",
           type: "rich-text",
-          description: "Use double percent signs to denote a column (eg. My stat is %%column%%).",
+          description: "Use double percent signs to denote a column (eg. My stat is %%column%%)."
         },
         {
           name: "threshold",
@@ -310,13 +310,12 @@ var thresholdStatList = {
           type: "number",
           max: 100,
           min: 0,
-          description:
-            "The threshold of the statistic as a percentile. Reports will check each threshold in order, and if the value",
-        },
-      ],
-    },
-  ],
-}
+          description: "The threshold of the statistic as a percentile. Reports will check each threshold in order, and if the value"
+        }
+      ]
+    }
+  ]
+};
 var stats_default = {
   label: "Reports",
   name: "statistics",
@@ -328,7 +327,7 @@ var stats_default = {
       name: "body",
       label: "Report Main Text (Optional)",
       type: "rich-text",
-      isBody: true,
+      isBody: true
     },
     {
       ...thresholdStatList,
@@ -339,26 +338,26 @@ var stats_default = {
         {
           label: "Measure (Don't edit this unless you are also updating the React components.)",
           name: "measure",
-          type: "string",
+          type: "string"
         },
         {
           name: "column_national",
           label: "National Comparability Data Column (Neighborhood, County, State)",
-          type: "string",
+          type: "string"
         },
         {
           name: "column_state",
           label: "State Comparability Data Column (Neighborhood, County)",
-          type: "string",
+          type: "string"
         },
         {
           name: "column_county",
           label: "County Comparability Data Column (Neighborhood only)",
-          type: "string",
+          type: "string"
         },
         thresholdStatList.fields.find((f) => f.name === "tooltip"),
-        thresholdStatList.fields.find((f) => f.name === "templates"),
-      ],
+        thresholdStatList.fields.find((f) => f.name === "templates")
+      ]
     },
     // list of "sections"
     // with section title
@@ -366,25 +365,25 @@ var stats_default = {
     {
       ...thresholdStatList,
       label: "Stat Block",
-      name: "stat",
+      name: "stat"
     },
     {
       name: "dataDescription",
       label: "[META] Report Data Description (not rendered on page)",
       type: "rich-text",
       isBody: true,
-      readOnly: true,
-    },
+      readOnly: true
+    }
   ],
   ui: {
     router: ({ document }) => {
       if (document._sys.filename === "home") {
-        return `/`
+        return `/`;
       }
-      return void 0
-    },
-  },
-}
+      return void 0;
+    }
+  }
+};
 
 // tina/collections/tooltips.js
 var tooltips_default = {
@@ -397,24 +396,24 @@ var tooltips_default = {
     {
       name: "title",
       label: "Title",
-      type: "string",
+      type: "string"
     },
     {
       label: "Post Body",
       name: "body",
       type: "rich-text",
-      isBody: true,
-    },
+      isBody: true
+    }
   ],
   ui: {
     router: ({ document }) => {
       if (document._sys.filename === "home") {
-        return `/`
+        return `/`;
       }
-      return void 0
-    },
-  },
-}
+      return void 0;
+    }
+  }
+};
 
 // tina/config.js
 var config = defineConfig({
@@ -432,18 +431,21 @@ var config = defineConfig({
     // this is the config for the tina cloud media store
     tina: {
       publicFolder: "public",
-      mediaRoot: "uploads",
-    },
+      mediaRoot: "uploads"
+    }
   },
   build: {
     publicFolder: "public",
     // The public asset folder for your framework
-    outputFolder: "admin",
+    outputFolder: "admin"
     // within the public folder
   },
   schema: {
-    collections: [page_default, post_default, nav_default, stats_default, tooltips_default],
-  },
-})
-var config_default = config
-export { config, config_default as default }
+    collections: [page_default, post_default, nav_default, stats_default, tooltips_default]
+  }
+});
+var config_default = config;
+export {
+  config,
+  config_default as default
+};
