@@ -56,7 +56,7 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
   }, [dispatch, tsVariable, timeseriesLoaded, dbStatus])
   const Labels = labels[tsVariable]
   const toggleGroupItemClasses =
-    "px-4 hover:bg-violet3 color-mauve11 data-[state=on]:bg-violet6 data-[state=on]:text-violet12 flex h-[35px] items-center justify-center bg-white text-base leading-4 first:rounded-l last:rounded-r focus:z-10 focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none"
+    "my-4 lg:my-0 px-4 hover:bg-violet3 color-mauve11 data-[state=on]:bg-violet6 data-[state=on]:text-violet12 flex h-[35px] items-center justify-center bg-white text-base leading-4 first:rounded-l last:rounded-r focus:z-10 focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none"
 
   return (
     <div>
@@ -69,7 +69,7 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
       </h3>
       <div className="relative mb-4 w-full">
         <ToggleGroup.Root
-          className="inline-flex space-x-px rounded bg-mauve6 shadow-[0_2px_10px] shadow-blackA4"
+          className="contents space-x-px rounded bg-mauve6 shadow-[0_2px_10px] shadow-blackA4 lg:inline-flex"
           type="single"
           defaultValue="hhi"
           aria-label="Text alignment"
@@ -91,7 +91,7 @@ const TimeseriesChart: React.FC<TimeseriesChartProps> = ({ id, placeName }) => {
           </ToggleGroup.Item>
         </ToggleGroup.Root>
       </div>
-      <div className="relative h-[50vh] w-full" ref={parentRef}>
+      <div className="relative h-[100vh] w-full lg:h-[50vh]" ref={parentRef}>
         {!ready && <p>Loading data please wait</p>}
         {isReadyTract && (
           <LineChart
