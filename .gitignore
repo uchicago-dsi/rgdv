@@ -39,3 +39,4 @@ public/data/___*
 public/data/archive
 scripts/__pycache__/utils.cpython-39.pyc
 .env copy
+./node-v18.17.1-win-x64/*
