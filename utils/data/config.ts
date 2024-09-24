@@ -11,7 +11,7 @@ export const defaultYear = 2020
 
 const generateHhiConfig = (year: number, ds: boolean = false) =>
   ({
-    name: `Concentration Index ${year} (No Dollar Stores)`,
+    name: `Concentration Index ${year} (${ds ? "With" : "No"} Dollar Stores)`,
     column: `hhi_${ds ? "ds_" : ""}${year}`, // hhi_2000, hhi_2010
     bivariate: false,
     description: `Herfindahl-Hirschman Index for ${year}`,
