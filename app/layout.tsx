@@ -1,3 +1,4 @@
+import { GoogleTagManager } from '@next/third-parties/google'
 import { Analytics } from "@vercel/analytics/react"
 import { Antonio, Libre_Baskerville, Open_Sans } from "next/font/google"
 import "styles/tailwind.css"
@@ -6,6 +7,7 @@ import "styles/global.css"
 import Footer from "components/Footer"
 import Nav from "components/Nav"
 import { ReportLoadingShade } from "components/ReportLoadingShade/ReportLoadingShade"
+
 // import { WipTag } from "components/WipTag"
 
 // import Transitions, { Animate } from "components/Transition"
@@ -32,6 +34,7 @@ const openSans = Open_Sans({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${antonio.variable} ${libreBaskerville.variable} ${openSans.variable} fontSans`}>
+      <GoogleTagManager gtmId="GTM-WZWPHCG" />
       <body>
         {/* <Transitions> */}
         <Nav />
