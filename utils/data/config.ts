@@ -49,7 +49,7 @@ export const columnsDict = {
     bivariate: false,
   },
   "Measure of Segregation (Black/African American and White)": {
-    name: "Segregation Factor ICE Hispanic NH White Alone",
+    name: "Segregation Factor ICE Black/African American NH White Alone",
     bivariate: false,
     colorScheme: "schemeOranges",
     column: "ICE_Black_Alone_White_Alone",
