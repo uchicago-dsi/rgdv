@@ -89,7 +89,7 @@ export const MapSettings: React.FC = () => {
           </button>
         ))}
       </div>
-      <div className={`flex w-auto flex-none flex-col overflow-x-hidden bg-none`} id="map-settings-pane">
+      <div className={`flex w-auto flex-none flex-col overflow-x-hidden bg-white`} id="map-settings-pane">
         {!!clicked && (
           <div
             className={`${!!activeMenuSection ? "max-h-[50vh]" : "max-h-none"} h-full overflow-y-auto
