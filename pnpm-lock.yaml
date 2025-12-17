@@ -270,8 +270,8 @@ importers:
         specifier: ^4.0.4
         version: 4.0.11
       duckdb:
-        specifier: ^0.10.2
-        version: 0.10.2(encoding@0.1.13)
+        specifier: 1.4.3
+        version: 1.4.3(encoding@0.1.13)
       duckdb-wasm-kit:
         specifier: ^0.1.31
         version: 0.1.39(@duckdb/duckdb-wasm@1.29.0)(apache-arrow@15.0.2)(react@19.1.0)
@@ -2203,6 +2203,10 @@ packages:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
 
+  '@isaacs/fs-minipass@4.0.1':
+    resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
+    engines: {node: '>=18.0.0'}
+
   '@isaacs/ttlcache@1.4.1':
     resolution: {integrity: sha512-RQgQ4uQ+pLbqXfOmieB91ejmLwvSgv9nLx6sT6sD83s7umBypgg+OIBOBbEUiJXrfpnp9j0mRhYYdzp9uqq3lA==}
     engines: {node: '>=12'}
@@ -2510,8 +2514,9 @@ packages:
   '@mapbox/martini@0.2.0':
     resolution: {integrity: sha512-7hFhtkb0KTLEls+TRw/rWayq5EeHtTaErgm/NskVoXmtgAQu/9D299aeyj6mzAR/6XUnYRp2lU+4IcrYRFjVsQ==}
 
-  '@mapbox/node-pre-gyp@1.0.11':
-    resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
+  '@mapbox/node-pre-gyp@2.0.3':
+    resolution: {integrity: sha512-uwPAhccfFJlsfCxMYTwOdVfOz3xqyj8xYL3zJj8f0pb30tLohnnFPhLuqp4/qoEz8sNxe4SESZedcBojRefIzg==}
+    engines: {node: '>=18'}
     hasBin: true
 
   '@mapbox/point-geometry@0.1.0':
@@ -6939,6 +6944,10 @@ packages:
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
 
+  abbrev@3.0.1:
+    resolution: {integrity: sha512-AO2ac6pjRB3SJmGJo+v5/aK6Omggp6fsLrs6wN9bd35ulu4cCwaAU9+7ZhXjeqHVkaHThLuzH0nZr0YpCDhygg==}
+    engines: {node: ^18.17.0 || >=20.5.0}
+
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
     engines: {node: '>=6.5'}
@@ -7134,11 +7143,6 @@ packages:
 
   archy@1.0.0:
     resolution: {integrity: sha512-Xg+9RwCg/0p32teKdGMPTPnVXKD0w3DfHnFTficozsAgsvq2XenPJq/MYpzzQ/v8zrOyJn6Ds39VA4JIDwFfqw==}
-
-  are-we-there-yet@2.0.0:
-    resolution: {integrity: sha512-Ci/qENmwHnsYo9xKIcUJN5LeDKdJ6R1Z1j9V/J5wyq8nh/mYPEpIKJbBZXtZjG04HiK7zV/p6Vs9952MrMeUIw==}
-    engines: {node: '>=10'}
-    deprecated: This package is no longer supported.
 
   are-we-there-yet@3.0.1:
     resolution: {integrity: sha512-QZW4EDmGwlYur0Yyf/b2uGucHQMa8aFUP7eu9ddR73vvhFyt4V0Vl3QHPcTNJ8l6qYOBdxgXdnBXQrHilfRQBg==}
@@ -7748,6 +7752,10 @@ packages:
   chownr@2.0.0:
     resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
     engines: {node: '>=10'}
+
+  chownr@3.0.0:
+    resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
+    engines: {node: '>=18'}
 
   chrome-launcher@0.15.2:
     resolution: {integrity: sha512-zdLEwNo3aUVzIhKhTtXfxhdvZhUghrnmkvcAq2NoDd+LeOHKf03H5jwZ8T/STsAlzyALkBVK552iaG1fGf1xVQ==}
@@ -8826,8 +8834,8 @@ packages:
       apache-arrow: '>=15.0.0'
       react: '>=16.8'
 
-  duckdb@0.10.2:
-    resolution: {integrity: sha512-7UGLRp+zkAzE0AQjyUfOyEjuX7Xs3St452+ZtUSbQEE8DJjc6GUWscxYPm5XPe5fX4nL+Zy9lVMEss1Yuw74kA==}
+  duckdb@1.4.3:
+    resolution: {integrity: sha512-xTh2H/xhAkM4luLNi0uRQWqKq2VzX9VWa9JOpnI4pM9705JY/sLFxWgxWMuS1AVsOsA0ROIOKevhuCWSLPR1Jg==}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -9744,11 +9752,6 @@ packages:
   fx@36.0.3:
     resolution: {integrity: sha512-E+flQ8IQpctke+/dfBdKg2h8UGZapVfadRU3LR4xC/BYvaJPoUlxfbrfWBLzdKYrqfWse5YxEpekRl853L/zrw==}
     hasBin: true
-
-  gauge@3.0.2:
-    resolution: {integrity: sha512-+5J6MS/5XksCuXq++uFRsnUd7Ovu1XenbeuIuNRJxYWjgQbPuFhT14lAvsWfqfAmnwluf1OwMjz39HjfLPci0Q==}
-    engines: {node: '>=10'}
-    deprecated: This package is no longer supported.
 
   gauge@4.0.4:
     resolution: {integrity: sha512-f9m+BEN5jkg6a0fZjleidjN51VE1X+mPFQ2DJ0uv1V39oCLCbsGe6yjbBnp7eK7z/+GAon99a3nHuqbuuthyPg==}
@@ -12098,6 +12101,10 @@ packages:
     resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
     engines: {node: '>= 8'}
 
+  minizlib@3.1.0:
+    resolution: {integrity: sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==}
+    engines: {node: '>= 18'}
+
   mitt@2.1.0:
     resolution: {integrity: sha512-ILj2TpLiysu2wkBbWjAmww7TkZb65aiQO+DkVdUTBpBXq+MHYiETENkKFMtsJZX1Lf4pe4QOrTSjIfUwN5lRdg==}
 
@@ -12371,14 +12378,14 @@ packages:
   non-layered-tidy-tree-layout@2.0.2:
     resolution: {integrity: sha512-gkXMxRzUH+PB0ax9dUN0yYF0S25BqeAYqhgMaLUFmpXLEk7Fcu8f4emJuOAY0V8kjDICxROIKsTAKsV/v355xw==}
 
-  nopt@5.0.0:
-    resolution: {integrity: sha512-Tbj67rffqceeLpcRXrT7vKAN8CwfPeIBgM7E6iBkmKLV7bEMwpGgYLGv0jACUsECaa/vuxP0IjEont6umdMgtQ==}
-    engines: {node: '>=6'}
-    hasBin: true
-
   nopt@6.0.0:
     resolution: {integrity: sha512-ZwLpbTgdhuZUnZzjd7nb1ZV+4DoiC6/sfiVKok72ym/4Tlf+DFdlHYmT2JPmcNNWV6Pi3SDf1kT+A4r9RTuT9g==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
+    hasBin: true
+
+  nopt@8.1.0:
+    resolution: {integrity: sha512-ieGu42u/Qsa4TFktmaKEwM6MQH0pOWnaB3htzh0JRtx84+Mebc0cbZYN5bC+6WTZ4+77xrL9Pn5m7CV6VIkV7A==}
+    engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
   normalize-package-data@2.5.0:
@@ -12489,10 +12496,6 @@ packages:
       - validate-npm-package-name
       - which
       - write-file-atomic
-
-  npmlog@5.0.1:
-    resolution: {integrity: sha512-AqZtDUWOMKs1G/8lwylVjrdYgqA4d9nu8hc+0gzRxlDb1I10+FHBGMXs6aiQHFdCUUlqH99MUMuLfzWDNDtfxw==}
-    deprecated: This package is no longer supported.
 
   npmlog@6.0.2:
     resolution: {integrity: sha512-/vBvz5Jfr9dT/aFWd0FIRf+T/Q2WBsLENygUaFUqstqsycmZAP/t5BvFJTK0viFmSUxiUKTUplWy5vt+rvKIxg==}
@@ -14805,6 +14808,10 @@ packages:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
 
+  tar@7.5.2:
+    resolution: {integrity: sha512-7NyxrTE4Anh8km8iEy7o0QYPs+0JKBTj5ZaqHg6B39erLg0qYXN3BijtShwbsNSvQ+LN75+KV+C4QR/f6Gwnpg==}
+    engines: {node: '>=18'}
+
   telejson@7.2.0:
     resolution: {integrity: sha512-1QTEcJkJEhc8OnStBx/ILRu5J2p0GjvWsBx56bmZRqnrkdBMUe+nX92jxV+p3dB4CP6PZCdJMQJwCggkNBMzkQ==}
 
@@ -15939,6 +15946,10 @@ packages:
 
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+
+  yallist@5.0.0:
+    resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
+    engines: {node: '>=18'}
 
   yaml@1.10.2:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
@@ -17926,6 +17937,10 @@ snapshots:
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: wrap-ansi@7.0.0
 
+  '@isaacs/fs-minipass@4.0.1':
+    dependencies:
+      minipass: 7.1.2
+
   '@isaacs/ttlcache@1.4.1': {}
 
   '@istanbuljs/load-nyc-config@1.1.0':
@@ -18435,17 +18450,15 @@ snapshots:
 
   '@mapbox/martini@0.2.0': {}
 
-  '@mapbox/node-pre-gyp@1.0.11(encoding@0.1.13)':
+  '@mapbox/node-pre-gyp@2.0.3(encoding@0.1.13)':
     dependencies:
+      consola: 3.4.2
       detect-libc: 2.0.4
-      https-proxy-agent: 5.0.1
-      make-dir: 3.1.0
+      https-proxy-agent: 7.0.6
       node-fetch: 2.7.0(encoding@0.1.13)
-      nopt: 5.0.0
-      npmlog: 5.0.1
-      rimraf: 3.0.2
+      nopt: 8.1.0
       semver: 7.7.2
-      tar: 6.2.1
+      tar: 7.5.2
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -25275,6 +25288,8 @@ snapshots:
 
   abbrev@1.1.1: {}
 
+  abbrev@3.0.1: {}
+
   abort-controller@3.0.0:
     dependencies:
       event-target-shim: 5.0.1
@@ -25486,11 +25501,6 @@ snapshots:
   aproba@2.0.0: {}
 
   archy@1.0.0: {}
-
-  are-we-there-yet@2.0.0:
-    dependencies:
-      delegates: 1.0.0
-      readable-stream: 3.6.2
 
   are-we-there-yet@3.0.1:
     dependencies:
@@ -26229,6 +26239,8 @@ snapshots:
   chownr@1.1.4: {}
 
   chownr@2.0.0: {}
+
+  chownr@3.0.0: {}
 
   chrome-launcher@0.15.2:
     dependencies:
@@ -27380,9 +27392,9 @@ snapshots:
       react: 19.1.0
       react-async-hook: 4.0.0(react@19.1.0)
 
-  duckdb@0.10.2(encoding@0.1.13):
+  duckdb@1.4.3(encoding@0.1.13):
     dependencies:
-      '@mapbox/node-pre-gyp': 1.0.11(encoding@0.1.13)
+      '@mapbox/node-pre-gyp': 2.0.3(encoding@0.1.13)
       node-addon-api: 7.1.1
       node-gyp: 9.4.1
     transitivePeerDependencies:
@@ -28720,18 +28732,6 @@ snapshots:
   functions-have-names@1.2.3: {}
 
   fx@36.0.3: {}
-
-  gauge@3.0.2:
-    dependencies:
-      aproba: 2.0.0
-      color-support: 1.1.3
-      console-control-strings: 1.1.0
-      has-unicode: 2.0.1
-      object-assign: 4.1.1
-      signal-exit: 3.0.7
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      wide-align: 1.1.5
 
   gauge@4.0.4:
     dependencies:
@@ -32153,6 +32153,10 @@ snapshots:
       minipass: 3.3.6
       yallist: 4.0.0
 
+  minizlib@3.1.0:
+    dependencies:
+      minipass: 7.1.2
+
   mitt@2.1.0: {}
 
   mjolnir.js@3.0.0: {}
@@ -32468,13 +32472,13 @@ snapshots:
 
   non-layered-tidy-tree-layout@2.0.2: {}
 
-  nopt@5.0.0:
-    dependencies:
-      abbrev: 1.1.1
-
   nopt@6.0.0:
     dependencies:
       abbrev: 1.1.1
+
+  nopt@8.1.0:
+    dependencies:
+      abbrev: 3.0.1
 
   normalize-package-data@2.5.0:
     dependencies:
@@ -32517,13 +32521,6 @@ snapshots:
       path-key: 4.0.0
 
   npm@10.9.2: {}
-
-  npmlog@5.0.1:
-    dependencies:
-      are-we-there-yet: 2.0.0
-      console-control-strings: 1.1.0
-      gauge: 3.0.2
-      set-blocking: 2.0.0
 
   npmlog@6.0.2:
     dependencies:
@@ -35365,6 +35362,14 @@ snapshots:
       mkdirp: 1.0.4
       yallist: 4.0.0
 
+  tar@7.5.2:
+    dependencies:
+      '@isaacs/fs-minipass': 4.0.1
+      chownr: 3.0.0
+      minipass: 7.1.2
+      minizlib: 3.1.0
+      yallist: 5.0.0
+
   telejson@7.2.0:
     dependencies:
       memoizerific: 1.11.3
@@ -36638,6 +36643,8 @@ snapshots:
   yallist@3.1.1: {}
 
   yallist@4.0.0: {}
+
+  yallist@5.0.0: {}
 
   yaml@1.10.2: {}
 
