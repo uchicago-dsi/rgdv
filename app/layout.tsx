@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${antonio.variable} ${libreBaskerville.variable} ${openSans.variable} fontSans`}>
       <GoogleTagManager gtmId="GTM-WZWPHCG" />
       <head>
-        <script defer src="https://core-facility-umami.vercel.app/script.js" data-website-id="930de253-ea28-4dc2-9e46-aeccbe2f0294"></script>
+        <script defer src="https://analytics.ds.uchicago.edu/script.js" data-website-id="930de253-ea28-4dc2-9e46-aeccbe2f0294"></script>
       </head>
       <body>
         {/* <Transitions> */}
