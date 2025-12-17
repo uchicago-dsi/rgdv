@@ -4,6 +4,7 @@ query page($relativePath: String!) {
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -38,6 +39,7 @@ query pageConnection($before: String, $after: String, $first: Float, $last: Floa
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -57,6 +59,7 @@ query post($relativePath: String!) {
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -91,6 +94,7 @@ query postConnection($before: String, $after: String, $first: Float, $last: Floa
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -110,6 +114,7 @@ query nav($relativePath: String!) {
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -144,6 +149,7 @@ query navConnection($before: String, $after: String, $first: Float, $last: Float
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -163,6 +169,7 @@ query statistics($relativePath: String!) {
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -197,6 +204,7 @@ query statisticsConnection($before: String, $after: String, $first: Float, $last
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -216,6 +224,7 @@ query tooltips($relativePath: String!) {
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -250,6 +259,7 @@ query tooltipsConnection($before: String, $after: String, $first: Float, $last: 
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath

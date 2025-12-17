@@ -45,7 +45,7 @@ With this template, you get all the awesomeness you need:
 - **[Storybook](https://storybook.js.org/)** - Create, test, and showcase your components
 - **Smoke Testing** and **Acceptance Tests** - For confidence in your deployments
 - **[Conventional commits git hook](https://www.conventionalcommits.org/)** - Keep your commit history neat and tidy
-- **[Observability](https://opentelemetry.io/)** - Open Telemetry integration for seamless monitoring
+<!-- - **[Observability](https://opentelemetry.io/)** - Open Telemetry integration for seamless monitoring -->
 - **[Absolute imports](https://nextjs.org/docs/advanced-features/module-path-aliases)** - No more spaghetti imports
 - **[Health checks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)** - Kubernetes-compatible for robust deployments
 - **[Radix UI](https://www.radix-ui.com/)** - Headless UI components for endless customization

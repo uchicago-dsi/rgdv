@@ -1,17 +1,25 @@
 "use client"
 import Link from "next/link"
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { HiMenu, HiX } from "react-icons/hi"
 import { SubNavList } from "./SubNavList"
 import { NavProps } from "./types"
 
 export const InteractiveNav: React.FC<NavProps> = ({ navInfo }) => {
   const links = navInfo.data.nav.links
-  // const title = navInfo.data.nav.title
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
+
+  if (!isMounted) {
+    return null
   }
 
   return (
@@ -51,8 +59,7 @@ export const InteractiveNav: React.FC<NavProps> = ({ navInfo }) => {
           <div className="space-y-4 text-left">
             {links.map((link, idx) => (
               <div key={idx}>
-                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                <Link href={link.sublinks?.length ? "" : link.path} className="block py-2 text-2xl">
+                <Link href={link.sublinks?.length ? "#" : link.path} className="block py-2 text-2xl">
                   {link.title}
                 </Link>
                 {!!link.sublinks?.length && (

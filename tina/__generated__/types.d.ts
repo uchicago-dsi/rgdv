@@ -31,6 +31,7 @@ export type SystemInfo = {
   filename: Scalars['String']['output'];
   title?: Maybe<Scalars['String']['output']>;
   basename: Scalars['String']['output'];
+  hasReferences?: Maybe<Scalars['Boolean']['output']>;
   breadcrumbs: Array<Scalars['String']['output']>;
   path: Scalars['String']['output'];
   relativePath: Scalars['String']['output'];
@@ -556,6 +557,7 @@ export type Mutation = {
   updateDocument: DocumentNode;
   deleteDocument: DocumentNode;
   createDocument: DocumentNode;
+  createFolder: DocumentNode;
   updatePage: Page;
   createPage: Page;
   updatePost: Post;
@@ -593,6 +595,12 @@ export type MutationCreateDocumentArgs = {
   collection?: InputMaybe<Scalars['String']['input']>;
   relativePath: Scalars['String']['input'];
   params: DocumentMutation;
+};
+
+
+export type MutationCreateFolderArgs = {
+  collection?: InputMaybe<Scalars['String']['input']>;
+  relativePath: Scalars['String']['input'];
 };
 
 
@@ -761,7 +769,7 @@ export type PageQueryVariables = Exact<{
 }>;
 
 
-export type PageQuery = { __typename?: 'Query', page: { __typename: 'Page', id: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, sections?: Array<{ __typename: 'PageSections', title?: string | null, body?: any | null } | null> | null } };
+export type PageQuery = { __typename?: 'Query', page: { __typename: 'Page', id: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, sections?: Array<{ __typename: 'PageSections', title?: string | null, body?: any | null } | null> | null } };
 
 export type PageConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -773,14 +781,14 @@ export type PageConnectionQueryVariables = Exact<{
 }>;
 
 
-export type PageConnectionQuery = { __typename?: 'Query', pageConnection: { __typename?: 'PageConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PageConnectionEdges', cursor: string, node?: { __typename: 'Page', id: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, sections?: Array<{ __typename: 'PageSections', title?: string | null, body?: any | null } | null> | null } | null } | null> | null } };
+export type PageConnectionQuery = { __typename?: 'Query', pageConnection: { __typename?: 'PageConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PageConnectionEdges', cursor: string, node?: { __typename: 'Page', id: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, sections?: Array<{ __typename: 'PageSections', title?: string | null, body?: any | null } | null> | null } | null } | null> | null } };
 
 export type PostQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post: { __typename: 'Post', id: string, title?: string | null, author?: string | null, date?: string | null, mainImage?: string | null, shortText?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
+export type PostQuery = { __typename?: 'Query', post: { __typename: 'Post', id: string, title?: string | null, author?: string | null, date?: string | null, mainImage?: string | null, shortText?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
 
 export type PostConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -792,14 +800,14 @@ export type PostConnectionQueryVariables = Exact<{
 }>;
 
 
-export type PostConnectionQuery = { __typename?: 'Query', postConnection: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PostConnectionEdges', cursor: string, node?: { __typename: 'Post', id: string, title?: string | null, author?: string | null, date?: string | null, mainImage?: string | null, shortText?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+export type PostConnectionQuery = { __typename?: 'Query', postConnection: { __typename?: 'PostConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PostConnectionEdges', cursor: string, node?: { __typename: 'Post', id: string, title?: string | null, author?: string | null, date?: string | null, mainImage?: string | null, shortText?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
 
 export type NavQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
 }>;
 
 
-export type NavQuery = { __typename?: 'Query', nav: { __typename: 'Nav', id: string, title?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null } };
+export type NavQuery = { __typename?: 'Query', nav: { __typename: 'Nav', id: string, title?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null } };
 
 export type NavConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -811,14 +819,14 @@ export type NavConnectionQueryVariables = Exact<{
 }>;
 
 
-export type NavConnectionQuery = { __typename?: 'Query', navConnection: { __typename?: 'NavConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'NavConnectionEdges', cursor: string, node?: { __typename: 'Nav', id: string, title?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null } | null } | null> | null } };
+export type NavConnectionQuery = { __typename?: 'Query', navConnection: { __typename?: 'NavConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'NavConnectionEdges', cursor: string, node?: { __typename: 'Nav', id: string, title?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, links?: Array<{ __typename: 'NavLinks', title?: string | null, path?: string | null, sublinks?: Array<{ __typename: 'NavLinksSublinks', title?: string | null, path?: string | null } | null> | null } | null> | null } | null } | null> | null } };
 
 export type StatisticsQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
 }>;
 
 
-export type StatisticsQuery = { __typename?: 'Query', statistics: { __typename: 'Statistics', id: string, body?: any | null, dataDescription?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, overview?: Array<{ __typename: 'StatisticsOverview', title?: string | null, measure?: string | null, column_national?: string | null, column_state?: string | null, column_county?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsOverviewTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null } };
+export type StatisticsQuery = { __typename?: 'Query', statistics: { __typename: 'Statistics', id: string, body?: any | null, dataDescription?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, overview?: Array<{ __typename: 'StatisticsOverview', title?: string | null, measure?: string | null, column_national?: string | null, column_state?: string | null, column_county?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsOverviewTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null } };
 
 export type StatisticsConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -830,14 +838,14 @@ export type StatisticsConnectionQueryVariables = Exact<{
 }>;
 
 
-export type StatisticsConnectionQuery = { __typename?: 'Query', statisticsConnection: { __typename?: 'StatisticsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'StatisticsConnectionEdges', cursor: string, node?: { __typename: 'Statistics', id: string, body?: any | null, dataDescription?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, overview?: Array<{ __typename: 'StatisticsOverview', title?: string | null, measure?: string | null, column_national?: string | null, column_state?: string | null, column_county?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsOverviewTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null } | null } | null> | null } };
+export type StatisticsConnectionQuery = { __typename?: 'Query', statisticsConnection: { __typename?: 'StatisticsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'StatisticsConnectionEdges', cursor: string, node?: { __typename: 'Statistics', id: string, body?: any | null, dataDescription?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, overview?: Array<{ __typename: 'StatisticsOverview', title?: string | null, measure?: string | null, column_national?: string | null, column_state?: string | null, column_county?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsOverviewTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null, stat?: Array<{ __typename: 'StatisticsStat', title?: string | null, column?: string | null, tooltip?: any | null, templates?: Array<{ __typename: 'StatisticsStatTemplates', body?: any | null, threshold?: number | null } | null> | null } | null> | null } | null } | null> | null } };
 
 export type TooltipsQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
 }>;
 
 
-export type TooltipsQuery = { __typename?: 'Query', tooltips: { __typename: 'Tooltips', id: string, title?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
+export type TooltipsQuery = { __typename?: 'Query', tooltips: { __typename: 'Tooltips', id: string, title?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
 
 export type TooltipsConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -849,7 +857,7 @@ export type TooltipsConnectionQueryVariables = Exact<{
 }>;
 
 
-export type TooltipsConnectionQuery = { __typename?: 'Query', tooltipsConnection: { __typename?: 'TooltipsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'TooltipsConnectionEdges', cursor: string, node?: { __typename: 'Tooltips', id: string, title?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+export type TooltipsConnectionQuery = { __typename?: 'Query', tooltipsConnection: { __typename?: 'TooltipsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'TooltipsConnectionEdges', cursor: string, node?: { __typename: 'Tooltips', id: string, title?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
 
 export const PagePartsFragmentDoc = gql`
     fragment PageParts on Page {
@@ -935,6 +943,7 @@ export const PageDocument = gql`
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -970,6 +979,7 @@ export const PageConnectionDocument = gql`
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -990,6 +1000,7 @@ export const PostDocument = gql`
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -1025,6 +1036,7 @@ export const PostConnectionDocument = gql`
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -1045,6 +1057,7 @@ export const NavDocument = gql`
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -1080,6 +1093,7 @@ export const NavConnectionDocument = gql`
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -1100,6 +1114,7 @@ export const StatisticsDocument = gql`
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -1135,6 +1150,7 @@ export const StatisticsConnectionDocument = gql`
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -1155,6 +1171,7 @@ export const TooltipsDocument = gql`
       _sys {
         filename
         basename
+        hasReferences
         breadcrumbs
         path
         relativePath
@@ -1190,6 +1207,7 @@ export const TooltipsConnectionDocument = gql`
           _sys {
             filename
             basename
+            hasReferences
             breadcrumbs
             path
             relativePath
@@ -1245,12 +1263,18 @@ import { createClient, TinaClient } from "tinacms/dist/client";
 
 const generateRequester = (
   client: TinaClient,
-  options?: { branch?: string }
 ) => {
   const requester: (
     doc: any,
     vars?: any,
-    options?: { branch?: string },
+    options?: {
+      branch?: string,
+      /**
+       * Aside from `method` and `body`, all fetch options are passed
+       * through to underlying fetch request
+       */
+      fetchOptions?: Omit<Parameters<typeof fetch>[1], 'body' | 'method'>,
+    },
     client
   ) => Promise<any> = async (doc, vars, options) => {
     let url = client.apiUrl
@@ -1262,7 +1286,7 @@ const generateRequester = (
       query: doc,
       variables: vars,
       url,
-    })
+    }, options)
 
     return { data: data?.data, errors: data?.errors, query: doc, variables: vars || {} }
   }
@@ -1285,11 +1309,8 @@ export const ExperimentalGetTinaClient = () =>
 
 export const queries = (
   client: TinaClient,
-  options?: {
-    branch?: string
-  }
 ) => {
-  const requester = generateRequester(client, options)
+  const requester = generateRequester(client)
   return getSdk(requester)
 }
 

@@ -3,7 +3,8 @@ import React from "react"
 import { TinaMarkdown } from "tinacms/dist/rich-text"
 import DataLockup from "components/DataLockup"
 import { renderReportText } from "utils/data/renderReportText"
-import { ReportSections, Sections } from "./Sections"
+import { Sections } from "./sections-data"
+import { ReportSections } from "./Sections"
 import { SectionScroll } from "./SectionScroll"
 
 export const ReportRenderer: React.FC<{

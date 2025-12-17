@@ -43,9 +43,7 @@ export const DesktopNavStatic: React.FC<NavProps> = ({ navInfo }) => {
 }
 
 export const NavRenderer: React.FC<NavProps> = ({ navInfo }) => {
-  if (typeof window === "undefined") {
-    return <DesktopNavStatic navInfo={navInfo} />
-  } else {
-    return <InteractiveNav navInfo={navInfo} />
-  }
+  // Always use InteractiveNav since this is called from NavClient (a client component)
+  // InteractiveNav handles mounting state internally
+  return <InteractiveNav navInfo={navInfo} />
 }

@@ -1,11 +1,11 @@
 "use client"
 import "mapbox-gl/dist/mapbox-gl.css"
-import { MVTLayer } from "@deck.gl/geo-layers/typed"
-import { GeoJsonLayer, ScatterplotLayer } from "@deck.gl/layers/typed"
+import { MVTLayer } from "@deck.gl/geo-layers"
+import { GeoJsonLayer, ScatterplotLayer } from "@deck.gl/layers"
 import { useParentSize } from "@visx/responsive"
 import { useRouter } from "next/navigation"
 import React, { useEffect, useRef, useState } from "react"
-import GlMap, { FullscreenControl, NavigationControl, ScaleControl } from "react-map-gl"
+import GlMap, { FullscreenControl, NavigationControl, ScaleControl } from "react-map-gl/mapbox"
 import { Provider } from "react-redux"
 import { useDebouncedCallback } from "use-debounce"
 // import { MemoryMonitor } from "components/dev/MemoryMonitor"
@@ -60,6 +60,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
     ...INITIAL_VIEW_STATE,
     ...initialViewState,
   })
+
 
   const _initialFilter = initialFilter && initialFilter.length >= 2 ? initialFilter : undefined
   const mapId = useRef(randomString())

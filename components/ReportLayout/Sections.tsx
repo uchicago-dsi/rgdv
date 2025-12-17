@@ -1,3 +1,4 @@
+"use client"
 import dynamic from "next/dynamic"
 import React from "react"
 import { Renderer as MapInner } from "components/Pages/Map/Renderer"
@@ -13,39 +14,6 @@ const PieChart = dynamic(() => import("components/PieChart/PieChart"), { ssr: fa
 const ScatterplotStatefulWrapper = dynamic(() => import("components/ScatterPlot/ScaterplotStatefulWrapper"), {
   ssr: false,
 })
-
-export const Sections = [
-  {
-    key: "Market Composition",
-    Component: "Store List",
-    id: "marketComposition",
-  },
-  {
-    key: "Community Information",
-    Component: "Key Statistics",
-    id: "keyStatistics",
-  },
-  {
-    key: "Race / Ethnicity",
-    Component: "Pie Chart",
-    id: "racialComposition",
-  },
-  {
-    key: "Map",
-    Component: "Map",
-    id: "map",
-  },
-  {
-    key: "Change Over Time",
-    Component: "Timeseries",
-    id: "timeseries",
-  },
-  {
-    key: "Scatterplot",
-    Component: "Scatterplot",
-    id: "scatterplot",
-  },
-]
 
 export const ReportSections: React.FC<{
   component: string

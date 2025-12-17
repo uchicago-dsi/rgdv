@@ -1,5 +1,5 @@
-import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed"
-import { useControl } from "react-map-gl"
+import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox"
+import { useControl } from "react-map-gl/mapbox"
 
 export function DeckGLOverlay(
   props: MapboxOverlayProps & {
