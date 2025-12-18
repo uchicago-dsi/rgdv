@@ -14,7 +14,8 @@ type PostData = {
   }
 }
 
-export default async function Page({ params }: { params: any }) {
-  const content = (await getMdxContent<PostData>("post", params.post + ".mdx")) as unknown as PostData
+export default async function Page({ params }: { params: Promise<{ post: string }> }) {
+  const { post } = await params
+  const content = (await getMdxContent<PostData>("post", post + ".mdx")) as unknown as PostData
   return <Post content={content} />
 }

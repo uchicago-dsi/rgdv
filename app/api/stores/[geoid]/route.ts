@@ -4,9 +4,9 @@ import { readRemoteMsgPackFile } from "utils/data/msgpack"
 import { StoreEntry } from "./types"
 
 export type ReqParams = {
-  params: {
+  params: Promise<{
     geoid: string
-  }
+  }>
 }
 
 type units = "county" | "state" | "tract" | "national"
@@ -75,7 +75,7 @@ const getStores = async (geoid: string) => {
 }
 
 export async function GET(_req: Request, reqParams: ReqParams) {
-  const geoid = reqParams.params.geoid
+  const { geoid } = await reqParams.params
   if (!geoid || geoid === "null") {
     return new Response("Not found", { status: 404 })
   }

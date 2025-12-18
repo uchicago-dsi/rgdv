@@ -1,16 +1,25 @@
 "use client"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { ChevronDownIcon } from "@radix-ui/react-icons"
+import React from "react"
 import { LinkSpec } from "./types"
+
+const TriggerButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { title: string }
+>(({ title, ...props }, ref) => (
+  <button ref={ref} className="group flex cursor-pointer items-center outline-none" aria-label="Customise options" {...props}>
+    {title}
+    <ChevronDownIcon className="size-4" />
+  </button>
+))
+TriggerButton.displayName = "TriggerButton"
 
 export const SubNavList: React.FC<{ title: string; subLinks: Array<LinkSpec> }> = ({ title, subLinks }) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button className="group flex cursor-pointer items-center outline-none" aria-label="Customise options">
-          {title}
-          <ChevronDownIcon className="size-4" />
-        </button>
+        <TriggerButton title={title} />
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content

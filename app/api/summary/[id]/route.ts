@@ -9,12 +9,12 @@ const units = {
 } as const
 
 type SummaryReq = {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 export const GET = async (req: SummaryReq) => {
-  const { id } = req.params
+  const { id } = await req.params
   const unit = units[id.length as keyof typeof units]
 
   const [data, statText] = await Promise.all([

@@ -8,9 +8,6 @@ import NodePolyFillPlugin from "node-polyfill-webpack-plugin"
  */
 const config = withPlugins([[new NodePolyFillPlugin(), withBundleAnalyzer({ enabled: env.ANALYZE })]], {
   reactStrictMode: true,
-  experimental: {
-    instrumentationHook: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },

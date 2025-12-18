@@ -1,3 +1,5 @@
+"use client"
+
 import dynamic from "next/dynamic"
 import React from "react"
 import { Renderer as MapInner } from "components/Pages/Map/Renderer"
