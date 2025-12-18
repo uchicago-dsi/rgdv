@@ -5,6 +5,13 @@ import React from "react"
 import { twMerge } from "tailwind-merge"
 import { tooltipArrow, tooltipContent, TooltipProps } from "./types"
 
+const TooltipTriggerIcon = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpanElement>>((props, ref) => (
+  <span ref={ref} className="mx-2 inline size-4 min-h-4 min-w-4" {...props}>
+    <InfoCircledIcon />
+  </span>
+))
+TooltipTriggerIcon.displayName = "TooltipTriggerIcon"
+
 export function Tooltip({
   explainer,
   open,
@@ -20,8 +27,8 @@ export function Tooltip({
   return (
     <RadixTooltip.Provider>
       <RadixTooltip.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange} delayDuration={200}>
-        <RadixTooltip.Trigger asChild className="mx-2 inline size-4 min-h-4 min-w-4">
-          <InfoCircledIcon />
+        <RadixTooltip.Trigger asChild>
+          <TooltipTriggerIcon />
         </RadixTooltip.Trigger>
         <RadixTooltip.Portal>
           <RadixTooltip.Content

@@ -175,6 +175,12 @@ export const mapSlice = createSlice({
     setSnapshot: (state, action: PayloadAction<string>) => {
       state.snapshot[action.payload] = performance.now()
     },
+    resetMapState: (state) => {
+      // Reset to initial state but preserve dbStatus
+      const dbStatus = state.dbStatus
+      Object.assign(state, initialState)
+      state.dbStatus = dbStatus
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCentroidById.pending, (state, action) => {
@@ -218,6 +224,7 @@ export const {
   setHighlightValue,
   setHighlightColor,
   setClickInfo,
+  resetMapState,
 } = mapSlice.actions
 
 export default mapSlice.reducer

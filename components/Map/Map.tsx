@@ -3,7 +3,7 @@ import "mapbox-gl/dist/mapbox-gl.css"
 import { MVTLayer } from "@deck.gl/geo-layers/typed"
 import { GeoJsonLayer, ScatterplotLayer } from "@deck.gl/layers/typed"
 import { useParentSize } from "@visx/responsive"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import React, { useEffect, useRef, useState } from "react"
 import GlMap, { FullscreenControl, NavigationControl, ScaleControl } from "react-map-gl"
 import { Provider } from "react-redux"
@@ -15,7 +15,7 @@ import MapTooltip from "components/MapTooltip"
 import { deepCompare2d1d } from "utils/data/compareArrayElements"
 import { formatterPresets } from "utils/display/formatValue"
 import { useDataService } from "utils/hooks/useDataService"
-import { setClickInfo, setCurrentFilter, setTooltipInfo } from "utils/state/map"
+import { resetMapState, setClickInfo, setCurrentFilter, setTooltipInfo } from "utils/state/map"
 import { store, useAppDispatch, useAppSelector } from "utils/state/store"
 import { fetchCentroidById } from "utils/state/thunks"
 import { zeroPopTracts } from "utils/zeroPopTracts"
@@ -64,6 +64,7 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
   const _initialFilter = initialFilter && initialFilter.length >= 2 ? initialFilter : undefined
   const mapId = useRef(randomString())
   const router = useRouter()
+  const pathname = usePathname()
   const clickedId = useAppSelector((state) => state.map.clicked?.id)
   // ACTIONS
   const dispatch = useAppDispatch()
@@ -74,6 +75,9 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
     geometry: null,
     centroid: null,
   })
+  
+  // Track if we've reset for this pathname to avoid resetting multiple times
+  const resetPathnameRef = useRef<string | null>(null)
   const { parentRef, width, height } = useParentSize({ debounceTime: 150 })
 
   const handleResize = () => {
@@ -163,8 +167,18 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
         zoom: currentCentroid.z,
         speed: 2,
       })
+    } else if (!_initialFilter && !simpleMap && mapRef.current) {
+      // Reset map view to initial state when on main map page without filter
+      // @ts-ignore
+      mapRef.current?.jumpTo({
+        center: [INITIAL_VIEW_STATE.longitude, INITIAL_VIEW_STATE.latitude],
+        zoom: INITIAL_VIEW_STATE.zoom,
+        pitch: INITIAL_VIEW_STATE.pitch,
+        bearing: INITIAL_VIEW_STATE.bearing,
+        speed: 1,
+      })
     }
-  }, [currentCentroid])
+  }, [currentCentroid, _initialFilter, simpleMap])
 
   const getElementColor = simpleMap
     ? (element: GeoJSON.Feature<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>) => {
@@ -357,6 +371,27 @@ export const Map: React.FC<MapProps> = ({ initialFilter, simpleMap = false, onCl
   ]
   const mapRef = useRef(null)
   // const year = useAppSelector((state) => state.map.year)
+  
+  // Reset map state when navigating to the map page (no initialFilter)
+  useEffect(() => {
+    // Only reset if we're on the /map route and haven't reset for this pathname yet
+    const isMapPage = pathname === "/map"
+    if (isMapPage && !_initialFilter && !simpleMap && resetPathnameRef.current !== pathname) {
+      // Reset Redux state when on the main map page
+      dispatch(resetMapState())
+      // Reset local clickedGeo state
+      setClickedGeo({
+        geoid: null,
+        geometry: null,
+        centroid: null,
+      })
+      resetPathnameRef.current = pathname
+    } else if (!isMapPage) {
+      // Reset the ref when navigating away from map page
+      resetPathnameRef.current = null
+    }
+  }, [dispatch, _initialFilter, simpleMap, pathname])
+
   useEffect(() => {
     if (_initialFilter) {
       if (Array.isArray(_initialFilter)) {
