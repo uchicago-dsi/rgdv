@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  better-sqlite3: ^12.3.0
+
 importers:
 
   .:
@@ -6815,8 +6818,9 @@ packages:
     resolution: {integrity: sha512-aVNobHnJqLiUelTaHat9DZ1qM2w0C0Eym4LPI/3JxOnSokGVdsl1T1kN7TFvsEAD8G47A6VKQ0TVHqbBnYMJlQ==}
     engines: {node: '>=12.0.0'}
 
-  better-sqlite3@8.7.0:
-    resolution: {integrity: sha512-99jZU4le+f3G6aIl6PmmV0cxUIWqKieHxsiF7G34CVFiE+/UabpYqkU0NJIkY/96mQKikHeBjtR27vFfs5JpEw==}
+  better-sqlite3@12.5.0:
+    resolution: {integrity: sha512-WwCZ/5Diz7rsF29o27o0Gcc1Du+l7Zsv7SYtVPG0X3G/uUI1LqdxrQI7c9Hs2FWpqXXERjW9hp6g3/tH7DlVKg==}
+    engines: {node: 20.x || 22.x || 23.x || 24.x || 25.x}
 
   big-integer@1.6.52:
     resolution: {integrity: sha512-QxD8cf2eVqJOOz63z6JIN9BzvVs/dlySa5HGSBH5xtR8dPteIRQnBxxKqkNTiT6jbDTF6jAfrd4oMcND9RGbQg==}
@@ -26651,7 +26655,7 @@ snapshots:
     dependencies:
       open: 8.4.2
 
-  better-sqlite3@8.7.0:
+  better-sqlite3@12.5.0:
     dependencies:
       bindings: 1.5.0
       prebuild-install: 7.1.1
@@ -28607,6 +28611,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  eslint-module-utils@2.8.0(@typescript-eslint/parser@6.20.0(eslint@8.54.0)(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@8.54.0):
+    dependencies:
+      debug: 3.2.7
+    optionalDependencies:
+      '@typescript-eslint/parser': 6.20.0(eslint@8.54.0)(typescript@5.9.3)
+      eslint: 8.54.0
+      eslint-import-resolver-node: 0.3.9
+    transitivePeerDependencies:
+      - supports-color
+
   eslint-plugin-flowtype@8.0.3(@babel/plugin-syntax-flow@7.23.3(@babel/core@7.23.9))(@babel/plugin-transform-react-jsx@7.23.4(@babel/core@7.23.9))(eslint@8.54.0):
     dependencies:
       '@babel/plugin-syntax-flow': 7.23.3(@babel/core@7.23.9)
@@ -28652,7 +28666,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.54.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.20.0(eslint@8.54.0)(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.54.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.20.0(eslint@8.54.0)(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@8.54.0)
       hasown: 2.0.0
       is-core-module: 2.13.1
       is-glob: 4.0.3
@@ -35905,7 +35919,7 @@ snapshots:
   sqlite-level@1.0.1:
     dependencies:
       abstract-level: 1.0.4
-      better-sqlite3: 8.7.0
+      better-sqlite3: 12.5.0
       module-error: 1.0.2
 
   ss@0.0.1:
