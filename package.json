@@ -225,6 +225,11 @@
     "webpack": "5.89.0"
   },
   "engines": {
-    "node": ">=20.9.0 <24.0.0"
+    "node": ">=20.9.0 <21.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "better-sqlite3": "^12.3.0"
+    }
   }
 }
