@@ -1,3 +1,5 @@
+"use client"
+
 import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import React from "react"
 import { TinaMarkdown } from "tinacms/dist/rich-text"

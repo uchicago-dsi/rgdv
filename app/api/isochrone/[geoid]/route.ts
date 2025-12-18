@@ -3,9 +3,9 @@ import { unpack } from "msgpackr"
 import nodeFetch from "node-fetch"
 
 export type ReqParams = {
-  params: {
+  params: Promise<{
     geoid: string
-  }
+  }>
 }
 
 const isochorones: Record<string, Record<string, { geometry: any }>> = {}
@@ -23,7 +23,7 @@ const getIsochrone = async (geoid: string) => {
 }
 
 export async function GET(_req: Request, reqParams: ReqParams) {
-  const geoid = reqParams.params.geoid
+  const { geoid } = await reqParams.params
   if (!geoid || geoid === "null") {
     return new Response("{}", { status: 404 })
   }

@@ -2,13 +2,13 @@ import { PMTiles } from "pmtiles"
 import { CACHE, getSource, nativeDecompress } from "utils/pmtiles"
 
 export type tileReqParams = {
-  params: {
+  params: Promise<{
     args: string[]
-  }
+  }>
 }
 export async function GET(request: Request, reqParams: tileReqParams) {
   // get the tilesArgs from the request object
-  const tileArgs = reqParams.params.args
+  const { args: tileArgs } = await reqParams.params
   if (!tileArgs || tileArgs.length < 4 || tileArgs.some((a) => typeof a !== "string")) {
     return Response.json(
       "Invalid tileset request. Please provide your tileset request as endpoint/{tileset}/{z}/{x}/{y}",

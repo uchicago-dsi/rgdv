@@ -3,14 +3,15 @@ import ReportLayout from "components/ReportLayout"
 import { getContentDirs } from "utils/contentDirs"
 
 type CountyRouteParams = {
-  params: {
+  params: Promise<{
     county: string
-  }
+  }>
 }
 
 const CountyPage: React.FC<CountyRouteParams> = async ({ params }) => {
   getContentDirs()
-  return <ReportLayout id={params.county} />
+  const { county } = await params
+  return <ReportLayout id={county} />
 }
 
 export default CountyPage

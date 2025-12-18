@@ -1,6 +1,7 @@
 import { GoogleTagManager } from '@next/third-parties/google'
 import { Analytics } from "@vercel/analytics/react"
 import { Antonio, Libre_Baskerville, Open_Sans } from "next/font/google"
+import Script from "next/script"
 import "styles/tailwind.css"
 import "styles/global.css"
 
@@ -35,10 +36,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${antonio.variable} ${libreBaskerville.variable} ${openSans.variable} fontSans`}>
       <GoogleTagManager gtmId="GTM-WZWPHCG" />
-      <head>
-        <script defer src="https://analytics.ds.uchicago.edu/script.js" data-website-id="930de253-ea28-4dc2-9e46-aeccbe2f0294"></script>
-      </head>
       <body>
+        <Script
+          defer
+          src="https://analytics.ds.uchicago.edu/script.js"
+          data-website-id="930de253-ea28-4dc2-9e46-aeccbe2f0294"
+        />
         {/* <Transitions> */}
         <Nav />
         <ReportLoadingShade />

@@ -1,13 +1,13 @@
 import { getCentroid } from "utils/getCentroid"
 
 export type ReqParams = {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export async function GET(_req: Request, reqParams: ReqParams) {
-  const id = reqParams.params.id
+  const { id } = await reqParams.params
   if (typeof id !== "string") {
     return new Response("Error: Invalid ID", {
       headers: {
