@@ -6,8 +6,8 @@ import { twMerge } from "tailwind-merge"
 import { tooltipArrow, tooltipContent, TooltipProps } from "./types"
 
 const TooltipTriggerIcon = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpanElement>>((props, ref) => (
-  <span ref={ref} className="mx-2 inline size-4 min-h-4 min-w-4" {...props}>
-    <InfoCircledIcon />
+  <span ref={ref} className="mx-2 inline-flex align-middle size-4 min-h-4 min-w-4" {...props}>
+    <InfoCircledIcon className="w-full h-full" />
   </span>
 ))
 TooltipTriggerIcon.displayName = "TooltipTriggerIcon"
